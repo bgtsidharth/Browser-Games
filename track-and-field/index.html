@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Retro Track & Field 1983 - Hurdles & Sprint 🏃‍♂️🏅</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Bungee&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      background: #111;
+      color: #fff;
+      font-family: 'Press Start 2P', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 10px;
+    }
+
+    /* Top Navigation */
+    .top-nav {
+      position: absolute;
+      top: 14px;
+      left: 18px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffd700;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-family: inherit;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .nav-btn:hover {
+      background: #ffd700;
+      color: #111;
+    }
+
+    /* Main NES Arcade Frame */
+    .arcade-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 820px;
+      background: #2b2b2b;
+      border: 8px solid #555;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .olympic-header {
+      width: 100%;
+      max-width: 760px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #ffe600;
+      margin-bottom: 10px;
+      padding: 0 8px;
+    }
+
+    #gameCanvas {
+      width: 100%;
+      max-width: 760px;
+      height: 380px;
+      background: #000;
+      border: 4px solid #fff;
+      display: block;
+      cursor: pointer;
+    }
+
+    /* Arcade Physical Push Buttons (Run 1, Jump, Run 2) */
+    .olympic-console {
+      width: 100%;
+      max-width: 760px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-top: 14px;
+      gap: 14px;
+    }
+
+    .console-btn {
+      flex: 1;
+      height: 64px;
+      border-radius: 14px;
+      border: 4px solid #fff;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 11px;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: transform 0.05s, box-shadow 0.05s;
+    }
+
+    .btn-run {
+      background: linear-gradient(180deg, #ff3366, #b3002d);
+      box-shadow: 0 6px 0 #66001a;
+    }
+
+    .btn-run:active, .btn-run.pressed {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #66001a;
+    }
+
+    .btn-jump {
+      background: linear-gradient(180deg, #00d2ff, #007799);
+      box-shadow: 0 6px 0 #004455;
+    }
+
+    .btn-jump:active, .btn-jump.pressed {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #004455;
+    }
+
+    .controls-hint {
+      margin-top: 14px;
+      font-size: 9px;
+      color: #aaa;
+      text-align: center;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-btn">🎮 All Games</a>
+  </nav>
+
+  <main class="arcade-wrapper">
+    <div class="olympic-header">
+      <div>EVENT: 110M HURDLES</div>
+      <div>RECORD: <span id="recordText">14.50S</span></div>
+      <div>TIME: <span id="timeText" style="color: #00e5ff;">0.00S</span></div>
+    </div>
+
+    <canvas id="gameCanvas" width="760" height="380"></canvas>
+
+    <div class="olympic-console">
+      <button class="console-btn btn-run" id="btnRun1">
+        <span>RUN L</span>
+        <span style="font-size: 8px; color: #ffd700;">[ Z / ◄ ]</span>
+      </button>
+
+      <button class="console-btn btn-jump" id="btnJump">
+        <span>JUMP</span>
+        <span style="font-size: 8px; color: #ffd700;">[ SPACE ]</span>
+      </button>
+
+      <button class="console-btn btn-run" id="btnRun2">
+        <span>RUN R</span>
+        <span style="font-size: 8px; color: #ffd700;">[ X / ► ]</span>
+      </button>
+    </div>
+
+    <p class="controls-hint">
+      ALTERNATE <kbd>Z</kbd> & <kbd>X</kbd> (or <kbd>◄</kbd> & <kbd>►</kbd>) RAPIDLY TO SPRINT &bull; PRESS <kbd>SPACE</kbd> TO CLEAR HURDLES!
+    </p>
+  </main>
+
+  <script>
+    /* Retro Track & Field - 100% Silent 1983 Olympic Arcade Simulation */
+    (function () {
+      'use strict';
+
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+      const timeText = document.getElementById('timeText');
+      const recordText = document.getElementById('recordText');
+
+      const btnRun1 = document.getElementById('btnRun1');
+      const btnRun2 = document.getElementById('btnRun2');
+      const btnJump = document.getElementById('btnJump');
+
+      // Best Time Record from localStorage
+      let bestTimeSec = parseFloat(localStorage.getItem('trackField_bestTime') || '0');
+      if (bestTimeSec > 0) {
+        recordText.textContent = `${bestTimeSec.toFixed(2)}S`;
+      } else {
+        recordText.textContent = 'NONE';
+      }
+
+      // States: 'READY', 'RUNNING', 'FINISHED', 'KNOCKED'
+      let state = 'READY';
+      let readyCountdown = 120; // frames
+      let raceTimeMs = 0;
+      let lastFrameTime = 0;
+
+      // Track Parameters: 110 meters = 2200 world pixels
+      const TRACK_LENGTH = 2400;
+      let cameraX = 0;
+
+      // Player Athlete (Player: Lane 1, CPU: Lane 2)
+      const player = {
+        x: 60,
+        y: 260,
+        baseY: 260,
+        speed: 0,
+        vy: 0,
+        isJumping: false,
+        legFrame: 0,
+        lastFoot: null,
+        knockTimer: 0
+      };
+
+      const cpu = {
+        x: 60,
+        y: 320,
+        baseY: 320,
+        speed: 0,
+        vy: 0,
+        isJumping: false,
+        legFrame: 0
+      };
+
+      // 10 Hurdles placed between 250px and 2150px
+      const hurdles = [];
+      for (let i = 0; i < 9; i++) {
+        hurdles.push({
+          x: 320 + i * 210,
+          knockedPlayer: false,
+          knockedCpu: false
+        });
+      }
+
+      function resetRace() {
+        state = 'READY';
+        readyCountdown = 100;
+        raceTimeMs = 0;
+        cameraX = 0;
+
+        player.x = 60;
+        player.speed = 0;
+        player.vy = 0;
+        player.isJumping = false;
+        player.knockTimer = 0;
+        player.lastFoot = null;
+
+        cpu.x = 60;
+        cpu.speed = 0;
+        cpu.vy = 0;
+        cpu.isJumping = false;
+
+        hurdles.forEach(h => {
+          h.knockedPlayer = false;
+          h.knockedCpu = false;
+        });
+
+        timeText.textContent = '0.00S';
+      }
+
+      function handleRunInput(foot) {
+        if (state === 'READY') {
+          // False start penalty if before gun
+          return;
+        }
+        if (state === 'FINISHED' || player.knockTimer > 0) return;
+
+        // Alternation mechanic: players must alternate left and right foot
+        if (player.lastFoot !== foot) {
+          player.speed = Math.min(13.8, player.speed + 1.25);
+          player.lastFoot = foot;
+        } else {
+          // Stumble penalty if pressing same button twice
+          player.speed = Math.max(1, player.speed * 0.85);
+        }
+      }
+
+      function handleJumpInput() {
+        if (state === 'FINISHED') {
+          resetRace();
+          return;
+        }
+        if (state !== 'RUNNING' || player.knockTimer > 0) return;
+
+        if (!player.isJumping && player.speed > 1.5) {
+          player.isJumping = true;
+          player.vy = -10.5;
+        }
+      }
+
+      // Input Event Handlers
+      btnRun1.addEventListener('pointerdown', (e) => { e.preventDefault(); handleRunInput(1); });
+      btnRun2.addEventListener('pointerdown', (e) => { e.preventDefault(); handleRunInput(2); });
+      btnJump.addEventListener('pointerdown', (e) => { e.preventDefault(); handleJumpInput(); });
+
+      window.addEventListener('keydown', (e) => {
+        if (e.repeat) return; // Must physically mash keys!
+
+        if (e.code === 'KeyZ' || e.code === 'ArrowLeft' || e.code === 'Digit1') {
+          btnRun1.classList.add('pressed');
+          setTimeout(() => btnRun1.classList.remove('pressed'), 80);
+          handleRunInput(1);
+        } else if (e.code === 'KeyX' || e.code === 'ArrowRight' || e.code === 'Digit2') {
+          btnRun2.classList.add('pressed');
+          setTimeout(() => btnRun2.classList.remove('pressed'), 80);
+          handleRunInput(2);
+        } else if (e.code === 'Space' || e.code === 'ArrowUp') {
+          e.preventDefault();
+          btnJump.classList.add('pressed');
+          setTimeout(() => btnJump.classList.remove('pressed'), 80);
+          handleJumpInput();
+        } else if (e.code === 'KeyR' || (state === 'FINISHED' && e.code === 'Enter')) {
+          resetRace();
+        }
+      });
+
+      // Main Loop
+      function loop(now) {
+        requestAnimationFrame(loop);
+
+        const dt = lastFrameTime ? Math.min(50, now - lastFrameTime) : 16;
+        lastFrameTime = now;
+
+        update(dt);
+        render();
+      }
+
+      function update(dt) {
+        if (state === 'READY') {
+          readyCountdown--;
+          if (readyCountdown <= 0) {
+            state = 'RUNNING';
+          }
+          return;
+        }
+
+        if (state === 'RUNNING') {
+          raceTimeMs += dt;
+          timeText.textContent = `${(raceTimeMs / 1000).toFixed(2)}S`;
+
+          // CPU AI Runner simulation
+          cpu.speed = 9.8 + Math.sin(raceTimeMs * 0.002) * 1.5;
+          cpu.x += cpu.speed;
+
+          // CPU Jumps over hurdles automatically with high accuracy
+          for (let h of hurdles) {
+            if (!cpu.isJumping && Math.abs(h.x - cpu.x) < 45 && !h.knockedCpu) {
+              if (Math.random() < 0.88) {
+                cpu.isJumping = true;
+                cpu.vy = -10.5;
+              } else {
+                // CPU trips
+                h.knockedCpu = true;
+                cpu.speed = 2;
+              }
+            }
+          }
+
+          if (cpu.isJumping) {
+            cpu.vy += 0.65;
+            cpu.y += cpu.vy;
+            if (cpu.y >= cpu.baseY) {
+              cpu.y = cpu.baseY;
+              cpu.vy = 0;
+              cpu.isJumping = false;
+            }
+          }
+
+          // Player Physics
+          if (player.knockTimer > 0) {
+            player.knockTimer--;
+            player.speed = 0;
+          } else {
+            // Natural track drag decay
+            player.speed *= 0.965;
+            player.x += player.speed;
+          }
+
+          // Player Jumping physics
+          if (player.isJumping) {
+            player.vy += 0.65;
+            player.y += player.vy;
+            if (player.y >= player.baseY) {
+              player.y = player.baseY;
+              player.vy = 0;
+              player.isJumping = false;
+            }
+          }
+
+          // Hurdle collision check
+          for (let h of hurdles) {
+            if (!h.knockedPlayer && Math.abs(player.x - h.x) < 18) {
+              // If player is not jumping high enough: TRIP AND SMASH HURDLE!
+              if (player.y > player.baseY - 26) {
+                h.knockedPlayer = true;
+                player.knockTimer = 35; // Stumble pause
+                player.speed = 0;
+                player.y = player.baseY;
+                player.isJumping = false;
+              }
+            }
+          }
+
+          // Running leg animation
+          if (player.speed > 0.5) {
+            player.legFrame = (Math.floor(raceTimeMs / 70) % 4);
+          }
+          if (cpu.speed > 0.5) {
+            cpu.legFrame = (Math.floor(raceTimeMs / 75) % 4);
+          }
+
+          // Camera follows player smoothly
+          cameraX = Math.max(0, player.x - 220);
+
+          // Finish Line Trigger (at TRACK_LENGTH)
+          if (player.x >= TRACK_LENGTH) {
+            state = 'FINISHED';
+            const finalSec = raceTimeMs / 1000;
+
+            // Save High Score (lowest time)
+            if (bestTimeSec === 0 || finalSec < bestTimeSec) {
+              bestTimeSec = finalSec;
+              localStorage.setItem('trackField_bestTime', bestTimeSec);
+              recordText.textContent = `${bestTimeSec.toFixed(2)}S`;
+            }
+          }
+        }
+      }
+
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 1. Draw Stadium Grandstands (Spectators)
+        drawGrandstands();
+
+        // 2. Draw Stadium Brick Barrier Wall
+        ctx.fillStyle = '#b71c1c';
+        ctx.fillRect(0, 140, canvas.width, 24);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '10px "Press Start 2P", monospace';
+        ctx.fillText('1983 TRACK & FIELD OLYMPICS', 160 - (cameraX * 0.3) % 400, 156);
+
+        // 3. Draw Red Synthetic Tartan Running Track
+        ctx.fillStyle = '#b23b23';
+        ctx.fillRect(0, 164, canvas.width, 216);
+
+        // Track White Lane Dividers
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 215, canvas.width, 3);
+        ctx.fillRect(0, 280, canvas.width, 3);
+        ctx.fillRect(0, 345, canvas.width, 3);
+
+        // Meter Distance Markers along the bottom grass
+        ctx.fillStyle = '#2e7d32';
+        ctx.fillRect(0, 350, canvas.width, 30);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '9px "Press Start 2P", monospace';
+        for (let m = 20; m <= 110; m += 10) {
+          const markX = (m * 21.8) - cameraX;
+          if (markX >= -50 && markX <= 800) {
+            ctx.fillText(`${m}M`, markX, 368);
+          }
+        }
+
+        // 4. Draw Hurdles
+        for (let h of hurdles) {
+          const sx = h.x - cameraX;
+          if (sx > -40 && sx < 800) {
+            // Player Lane Hurdle
+            drawHurdle(sx, player.baseY + 12, h.knockedPlayer);
+            // CPU Lane Hurdle
+            drawHurdle(sx, cpu.baseY + 12, h.knockedCpu);
+          }
+        }
+
+        // 5. Draw Finish Line Banner (at TRACK_LENGTH)
+        const finishScreenX = TRACK_LENGTH - cameraX;
+        if (finishScreenX > -50 && finishScreenX < 820) {
+          // Chequered finish line tape
+          ctx.fillStyle = '#ffd700';
+          ctx.fillRect(finishScreenX, 165, 8, 185);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = '14px "Press Start 2P", monospace';
+          ctx.fillText('FINISH', finishScreenX - 35, 195);
+        }
+
+        // 6. Draw Athletes (Retro 8-Bit Pixel Runners)
+        // CPU Athlete (Blue Team)
+        drawRunner(cpu.x - cameraX, cpu.y, '#00b0ff', '#ffffff', cpu.legFrame, cpu.isJumping, false);
+
+        // Player Athlete (Red/Gold Team)
+        drawRunner(player.x - cameraX, player.y, '#ff3d00', '#ffd600', player.legFrame, player.isJumping, player.knockTimer > 0);
+
+        // 7. Ready / Finished Overlays
+        if (state === 'READY') {
+          ctx.fillStyle = 'rgba(0,0,0,0.6)';
+          ctx.fillRect(0, 80, canvas.width, 80);
+          ctx.fillStyle = '#ffe600';
+          ctx.font = '18px "Press Start 2P", monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(readyCountdown > 40 ? 'ON YOUR MARKS...' : 'SET... BANG! 🔫', canvas.width / 2, 128);
+          ctx.textAlign = 'start';
+        } else if (state === 'FINISHED') {
+          ctx.fillStyle = 'rgba(0,0,0,0.8)';
+          ctx.fillRect(0, 60, canvas.width, 140);
+          ctx.fillStyle = '#00e5ff';
+          ctx.font = '20px "Press Start 2P", monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText('EVENT FINISHED! 🏅', canvas.width / 2, 105);
+          ctx.fillStyle = '#ffd700';
+          ctx.font = '14px "Press Start 2P", monospace';
+          ctx.fillText(`FINAL TIME: ${(raceTimeMs / 1000).toFixed(2)} SECONDS`, canvas.width / 2, 140);
+          ctx.fillStyle = '#fff';
+          ctx.font = '10px "Press Start 2P", monospace';
+          ctx.fillText('PRESS SPACE OR CLICK TO RUN AGAIN', canvas.width / 2, 175);
+          ctx.textAlign = 'start';
+        }
+      }
+
+      function drawGrandstands() {
+        // Pixelated crowd cheering in rows
+        const crowdColors = ['#e91e63', '#9c27b0', '#2196f3', '#4caf50', '#ffeb3b', '#ff9800'];
+        for (let row = 0; row < 5; row++) {
+          const y = 20 + row * 24;
+          ctx.fillStyle = row % 2 === 0 ? '#1b1b2f' : '#27273f';
+          ctx.fillRect(0, y, canvas.width, 22);
+
+          for (let col = 0; col < 32; col++) {
+            const x = (col * 26) - (cameraX * 0.15) % 26;
+            ctx.fillStyle = crowdColors[(col + row) % crowdColors.length];
+            ctx.fillRect(x, y + 2, 10, 10);
+            ctx.fillStyle = '#ffd180';
+            ctx.fillRect(x + 2, y - 4, 6, 6); // Faces
+          }
+        }
+      }
+
+      function drawHurdle(x, y, knocked) {
+        if (!knocked) {
+          // Upright Olympic Hurdle (White & Black bars)
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(x, y - 28, 6, 32);
+          ctx.fillStyle = '#000000';
+          ctx.fillRect(x, y - 28, 6, 6);
+          ctx.fillRect(x, y - 16, 6, 6);
+          // Legs
+          ctx.fillStyle = '#cccccc';
+          ctx.fillRect(x - 6, y + 2, 18, 3);
+        } else {
+          // Smashed tipped over hurdle
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(x - 10, y, 28, 5);
+          ctx.fillStyle = '#000000';
+          ctx.fillRect(x - 5, y, 6, 5);
+        }
+      }
+
+      function drawRunner(x, y, shirtColor, shortsColor, legFrame, isJumping, isTripped) {
+        if (isTripped) {
+          // Comical retro faceplant on track
+          ctx.fillStyle = '#ffd180';
+          ctx.fillRect(x + 18, y + 10, 8, 8); // Head
+          ctx.fillStyle = shirtColor;
+          ctx.fillRect(x, y + 12, 18, 8); // Body
+          ctx.fillStyle = shortsColor;
+          ctx.fillRect(x - 12, y + 14, 12, 6); // Legs flat
+          return;
+        }
+
+        // Head & Hair
+        ctx.fillStyle = '#3e2723';
+        ctx.fillRect(x + 2, y - 26, 12, 5);
+        ctx.fillStyle = '#ffd180';
+        ctx.fillRect(x + 3, y - 22, 10, 8);
+
+        // Jersey Torso
+        ctx.fillStyle = shirtColor;
+        ctx.fillRect(x, y - 14, 14, 14);
+
+        // Shorts
+        ctx.fillStyle = shortsColor;
+        ctx.fillRect(x + 1, y, 12, 8);
+
+        // Animated Running Legs
+        ctx.fillStyle = '#ffd180';
+        if (isJumping) {
+          // Hurdle jump split pose!
+          ctx.fillRect(x + 12, y + 6, 16, 4); // Front leg stretched forward
+          ctx.fillRect(x - 14, y + 6, 14, 4); // Back leg trailing
+        } else {
+          // 4-frame running sprint cycle
+          if (legFrame === 0) {
+            ctx.fillRect(x + 2, y + 8, 4, 14);
+            ctx.fillRect(x + 8, y + 8, 4, 8);
+          } else if (legFrame === 1) {
+            ctx.fillRect(x - 2, y + 8, 5, 12);
+            ctx.fillRect(x + 10, y + 8, 5, 12);
+          } else if (legFrame === 2) {
+            ctx.fillRect(x + 2, y + 8, 4, 8);
+            ctx.fillRect(x + 8, y + 8, 4, 14);
+          } else {
+            ctx.fillRect(x + 1, y + 6, 10, 10);
+          }
+        }
+      }
+
+      requestAnimationFrame(loop);
+
+    })();
+  </script>
+</body>
+</html>

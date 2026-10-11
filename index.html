@@ -417,6 +417,20 @@
         </p>
         <span class="card-play-btn">PLAY NOW 🦖</span>
       </a>
+
+      <!-- Game 9: Retro Track & Field 1983 (Nintendo / Konami Olympics) -->
+      <a href="track-and-field/index.html" class="game-card">
+        <div class="card-icon">🏃‍♂️</div>
+        <h2 class="card-title">TRACK & FIELD</h2>
+        <div class="card-tags">
+          <span class="tag">1983 OLYMPICS</span>
+          <span class="tag">NES CLASSIC</span>
+        </div>
+        <p class="card-desc">
+          The iconic retro Olympic button masher! Alternate run buttons frantically to sprint the 110m hurdles, jump obstacles, and race the clock for gold!
+        </p>
+        <span class="card-play-btn">PLAY NOW 🏃‍♂️</span>
+      </a>
     </div>
 
     <!-- Hall of Fame Arcade Leaderboard Section -->
@@ -496,6 +510,15 @@
           <div class="lb-info">
             <span class="lb-name">Dino Runner</span>
             <span class="lb-score" id="lbDino">--</span>
+          </div>
+        </a>
+
+        <!-- 9. Track & Field (Olympics) -->
+        <a href="track-and-field/index.html" class="lb-card">
+          <div class="lb-icon">🏃‍♂️</div>
+          <div class="lb-info">
+            <span class="lb-name">Track & Field</span>
+            <span class="lb-score" id="lbTrack">--</span>
           </div>
         </a>
       </div>
@@ -598,6 +621,17 @@
           lbDinoElem.textContent = 'NO RECORD YET';
           lbDinoElem.classList.add('empty');
         }
+
+        // 9. Track & Field
+        const trackBest = localStorage.getItem('trackField_bestTime');
+        const lbTrackElem = document.getElementById('lbTrack');
+        if (trackBest && parseFloat(trackBest) > 0) {
+          lbTrackElem.textContent = `${parseFloat(trackBest).toFixed(2)}s Record`;
+          lbTrackElem.classList.remove('empty');
+        } else {
+          lbTrackElem.textContent = 'NO RECORD YET';
+          lbTrackElem.classList.add('empty');
+        }
       }
 
       loadLeaderboard();
@@ -613,6 +647,7 @@
           localStorage.removeItem('sodaTapper_highScore');
           localStorage.removeItem('hungryHippos_bestScore');
           localStorage.removeItem('dinoRunner_highScore');
+          localStorage.removeItem('trackField_bestTime');
           loadLeaderboard();
         }
       });

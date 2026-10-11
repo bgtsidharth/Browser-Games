@@ -49,6 +49,12 @@ Tribute to Google Chrome's famous "No Internet" offline dinosaur game!
 - **Features:** High score saving via `localStorage`, ducking hitbox mechanics, and smooth mobile touch controls.
 - **Controls:** <kbd>Space</kbd> or <kbd>▲</kbd> to jump, <kbd>▼</kbd> to duck, or on-screen touch buttons.
 
+### 9. 🏃‍♂️ [Retro Track & Field 1983 (Olympics)](track-and-field/index.html)
+Tribute to Konami & Nintendo's legendary 1983 Olympic arcade button masher!
+- **Mechanics:** 110-Meter Hurdles Olympic event! Frantically alternate your left and right running buttons to accelerate your athlete down the tartan track, jump over hurdles with precise timing, and beat the world record clock.
+- **Features:** Alternating-button sprint physics, stumble recovery penalties, CPU competitor lane AI, cheering stadium grandstand crowd, and persistent personal record timing saved in `localStorage`.
+- **Controls:** <kbd>Z</kbd> / <kbd>X</kbd> (or <kbd>◄</kbd> / <kbd>►</kbd>) to alternate sprint strides, <kbd>Space</kbd> to jump hurdles, or on-screen arcade buttons.
+
 ---
 
 ## 🚀 How to Play Online Instantly (GitHub Pages)
@@ -67,6 +73,7 @@ Play all games directly in your browser without downloading anything!
    - 🍺 **Soda Tapper:** [https://bgtsidharth.github.io/Browser-Games/soda-tapper/](https://bgtsidharth.github.io/Browser-Games/soda-tapper/)  
    - 🦛 **Hungry Hippos:** [https://bgtsidharth.github.io/Browser-Games/hungry-hippos/](https://bgtsidharth.github.io/Browser-Games/hungry-hippos/)  
    - 🦖 **Dino Runner:** [https://bgtsidharth.github.io/Browser-Games/dino-runner/](https://bgtsidharth.github.io/Browser-Games/dino-runner/)  
+   - 🏃‍♂️ **Track & Field (Olympics):** [https://bgtsidharth.github.io/Browser-Games/track-and-field/](https://bgtsidharth.github.io/Browser-Games/track-and-field/)  
 
 ---
 
