@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Water Ring Toss - Handheld Nostalgia Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --case-color-1: #ff5f8f;
+      --case-color-2: #ff3366;
+      --case-edge: #d81e5b;
+      --case-highlight: #ff94b8;
+      --bg-gradient: radial-gradient(circle at 50% 30%, #202b48 0%, #0d1222 100%);
+      --water-top: rgba(140, 230, 255, 0.45);
+      --water-bot: rgba(30, 144, 255, 0.65);
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fredoka', 'Nunito', sans-serif;
+      overflow: hidden;
+      touch-action: manipulation;
+      color: #fff;
+    }
+
+    /* Ambient background floating bubbles */
+    .bg-bubble-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .ambient-bubble {
+      position: absolute;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4), rgba(120, 200, 255, 0.1));
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 50%;
+      animation: floatAmbient linear infinite;
+    }
+
+    @keyframes floatAmbient {
+      0% { transform: translateY(110vh) scale(0.8); opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.6; }
+      100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
+    }
+
+    /* Top Controls Bar */
+    .top-bar {
+      position: absolute;
+      top: 14px;
+      z-index: 30;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      background: rgba(18, 25, 45, 0.75);
+      backdrop-filter: blur(8px);
+      padding: 8px 18px;
+      border-radius: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .top-bar button, .theme-select {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .top-bar button:hover, .theme-select:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .top-bar button:active {
+      transform: translateY(1px);
+    }
+
+    /* Main Handheld Device Wrapper */
+    .device-container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.2s ease-out;
+      transform-origin: center center;
+    }
+
+    /* Phone / Toy Frame */
+    .toy-casing {
+      position: relative;
+      width: 350px;
+      height: 640px;
+      background: linear-gradient(145deg, var(--case-highlight) 0%, var(--case-color-1) 35%, var(--case-color-2) 80%, var(--case-edge) 100%);
+      border-radius: 54px;
+      padding: 22px 20px 26px 20px;
+      box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.65),
+        0 8px 20px rgba(0, 0, 0, 0.35),
+        inset 0 4px 6px rgba(255, 255, 255, 0.7),
+        inset 0 -8px 12px rgba(0, 0, 0, 0.3),
+        inset 4px 0 8px rgba(255, 255, 255, 0.3),
+        inset -4px 0 8px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      user-select: none;
+    }
+
+    /* Top Earpiece / Speaker bar & Camera */
+    .top-speaker-notch {
+      width: 100%;
+      height: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .speaker-grille {
+      width: 58px;
+      height: 7px;
+      background: #111;
+      border-radius: 10px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.4);
+    }
+
+    .toy-camera-lens {
+      width: 9px;
+      height: 9px;
+      background: radial-gradient(circle at 35% 35%, #5588cc, #0a1122 80%);
+      border-radius: 50%;
+      box-shadow: inset 0 1px 1px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.3);
+    }
+
+    /* Screen / Liquid Chamber Bezel */
+    .screen-bezel {
+      position: relative;
+      width: 310px;
+      height: 450px;
+      background: #0f172a;
+      border-radius: 28px;
+      padding: 6px;
+      box-shadow:
+        inset 0 4px 8px rgba(0, 0, 0, 0.7),
+        inset 0 -2px 5px rgba(255, 255, 255, 0.2),
+        0 2px 4px rgba(255, 255, 255, 0.3);
+      overflow: hidden;
+    }
+
+    /* Inner Transparent Tank */
+    .water-tank {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 22px;
+      overflow: hidden;
+      background: #1e3a5f;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Canvas for fluid, rings, bubbles, and posts */
+    #gameCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5;
+    }
+
+    /* Glare and Reflection Overlay */
+    .glass-glare {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+      border-radius: 22px;
+      background: linear-gradient(
+        130deg,
+        rgba(255, 255, 255, 0.38) 0%,
+        rgba(255, 255, 255, 0.12) 22%,
+        rgba(255, 255, 255, 0) 42%,
+        rgba(255, 255, 255, 0) 70%,
+        rgba(255, 255, 255, 0.08) 85%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.2);
+    }
+
+    /* Score Badge Overlay in Water Tank */
+    .hud-badge {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 12;
+      background: rgba(10, 25, 47, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(4px);
+      padding: 4px 14px;
+      border-radius: 16px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #e2f1ff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      pointer-events: none;
+    }
+
+    .hud-badge .star-icon {
+      color: #ffd166;
+    }
+
+    /* Bottom Controller Area (Buttons) */
+    .controller-area {
+      position: relative;
+      width: 100%;
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 18px 0 18px;
+    }
+
+    /* Decorative Phone Home Pill or Branding */
+    .brand-mark {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.65rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.55);
+      text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+    }
+
+    /* Squishy Rubber Push Buttons */
+    .pump-button-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pump-button {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      cursor: pointer;
+      outline: none;
+      border: none;
+      background: radial-gradient(circle at 35% 30%, #ffef9e, #f9a03f 65%, #c8631b 100%);
+      box-shadow:
+        0 10px 0 #9e460b,
+        0 14px 16px rgba(0, 0, 0, 0.5),
+        inset 0 3px 6px rgba(255, 255, 255, 0.8),
+        inset 0 -4px 6px rgba(0, 0, 0, 0.3);
+      transition: all 0.08s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .pump-button::before {
+      content: '';
+      position: absolute;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #fff7cc, #fca944 80%);
+      box-shadow: inset 0 2px 4px rgba(255,255,255,0.7), 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .pump-button::after {
+      content: '💨';
+      position: relative;
+      font-size: 1.4rem;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.3));
+      transform: scaleY(-1);
+    }
+
+    .pump-button:active, .pump-button.pressed {
+      transform: translateY(7px);
+      box-shadow:
+        0 3px 0 #9e460b,
+        0 6px 8px rgba(0, 0, 0, 0.5),
+        inset 0 1px 3px rgba(255, 255, 255, 0.6),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .button-key-hint {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.75);
+      background: rgba(0, 0, 0, 0.25);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    /* Bottom Decorative Mic holes */
+    .bottom-mic-holes {
+      position: absolute;
+      bottom: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 5px;
+    }
+
+    .mic-dot {
+      width: 4px;
+      height: 4px;
+      background: #111;
+      border-radius: 50%;
+      box-shadow: inset 0 1px 1px rgba(0,0,0,0.8), 0 0.5px 0.5px rgba(255,255,255,0.3);
+    }
+
+    /* Tilt / Shake Button in Center of controller */
+    .center-control {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tilt-button {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      color: #fff;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      transition: all 0.15s ease;
+    }
+
+    .tilt-button:active {
+      transform: scale(0.92);
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    /* Win Modal */
+    .win-modal {
+      position: absolute;
+      inset: 0;
+      z-index: 50;
+      background: rgba(8, 15, 30, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      border-radius: 28px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform: scale(0.85);
+    }
+
+    .win-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+
+    .win-badge-icon {
+      font-size: 4rem;
+      margin-bottom: 8px;
+      animation: bounce 1s infinite alternate;
+    }
+
+    @keyframes bounce {
+      from { transform: translateY(0) scale(1); }
+      to { transform: translateY(-10px) scale(1.1); }
+    }
+
+    .win-modal h2 {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #ffd166;
+      text-shadow: 0 2px 10px rgba(255, 209, 102, 0.5);
+      margin-bottom: 6px;
+    }
+
+    .win-modal p {
+      font-size: 0.95rem;
+      color: #cbd5e1;
+      margin-bottom: 18px;
+    }
+
+    .win-modal button {
+      background: linear-gradient(135deg, #06d6a0, #118ab2);
+      color: #fff;
+      border: none;
+      padding: 10px 24px;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(6, 214, 160, 0.4);
+      transition: transform 0.15s ease;
+    }
+
+    .win-modal button:hover {
+      transform: scale(1.05);
+    }
+
+    /* Help & Controls instruction footer */
+    .controls-footer {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.7);
+      max-width: 420px;
+      line-height: 1.5;
+    }
+
+    .controls-footer kbd {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-family: inherit;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* Responsive adjustments */
+    @media (max-height: 720px) {
+      .toy-casing {
+        transform: scale(0.85);
+        transform-origin: center center;
+      }
+      .controls-footer {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Ambient Bubbles -->
+  <div class="bg-bubble-container" id="ambientBubbles"></div>
+
+  <!-- Top Tool Bar -->
+  <div class="top-bar">
+    <button id="soundToggleBtn" title="Toggle Sound">
+      <span id="soundIcon">🔊</span> Sound
+    </button>
+    <button id="resetBtn" title="Restart and scatter rings">
+      🔄 Shake / Reset
+    </button>
+    <select class="theme-select" id="themeSelect" title="Device Skin">
+      <option value="pink">💖 Pink Phone</option>
+      <option value="cyan">🌊 Ocean Aqua</option>
+      <option value="purple">🔮 Retro Lilac</option>
+      <option value="yellow">⭐ Sunshine Yellow</option>
+      <option value="arcade">👾 Cyber Neon</option>
+    </select>
+  </div>
+
+  <!-- Main Handheld Device -->
+  <div class="device-container" id="deviceContainer">
+    <div class="toy-casing" id="toyCasing">
+      
+      <!-- Top Speaker & Selfie Lens -->
+      <div class="top-speaker-notch">
+        <div class="toy-camera-lens"></div>
+        <div class="speaker-grille"></div>
+      </div>
+
+      <!-- Water Tank Screen -->
+      <div class="screen-bezel">
+        <div class="water-tank" id="waterTank">
+          <!-- Canvas for game elements -->
+          <canvas id="gameCanvas" width="298" height="438"></canvas>
+          
+          <!-- Reflection & Water Shine -->
+          <div class="glass-glare"></div>
+
+          <!-- HUD Score -->
+          <div class="hud-badge">
+            <span class="star-icon">★</span>
+            <span id="hudScore">Hooked: 0 / 12</span>
+          </div>
+
+          <!-- Victory Popup Inside the Chamber -->
+          <div class="win-modal" id="winModal">
+            <div class="win-badge-icon">🎉</div>
+            <h2>YOU DID IT!</h2>
+            <p id="winStatsText">All 12 rings landed on the posts!</p>
+            <button id="playAgainBtn">Play Again</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controller / Pump Buttons -->
+      <div class="controller-area">
+        <div class="brand-mark">AQUA TOSS 3000</div>
+
+        <!-- Left Pump Button -->
+        <div class="pump-button-wrapper">
+          <button class="pump-button" id="btnLeft" title="Left Jet Pump" aria-label="Pump Left"></button>
+          <span class="button-key-hint">A / ◄</span>
+        </div>
+
+        <!-- Center Tilt Button -->
+        <div class="center-control">
+          <button class="tilt-button" id="btnTilt" title="Tilt Toy (or press T / Space)" aria-label="Tilt Device">📳</button>
+          <span class="button-key-hint">TILT (T)</span>
+        </div>
+
+        <!-- Right Pump Button -->
+        <div class="pump-button-wrapper">
+          <button class="pump-button" id="btnRight" title="Right Jet Pump" aria-label="Pump Right"></button>
+          <span class="button-key-hint">D / ►</span>
+        </div>
+      </div>
+
+      <!-- Bottom Mic Holes -->
+      <div class="bottom-mic-holes">
+        <div class="mic-dot"></div>
+        <div class="mic-dot"></div>
+        <div class="mic-dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footnote Controls -->
+  <div class="controls-footer">
+    Press <kbd>A</kbd> or <kbd>Left Arrow</kbd> for Left Jet &bull;
+    <kbd>D</kbd> or <kbd>Right Arrow</kbd> for Right Jet &bull;
+    <kbd>T</kbd> to tilt &bull;
+    Tap or hold buttons to pump water!
+  </div>
+
+  <script>
+    /* ==========================================================================
+       SOUND SYNTHESIZER (Web Audio API - Realistic Aquatic & Plastic SFX)
+       ========================================================================== */
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      // Water pump swoosh sound with bubbly texture
+      playPump() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        
+        // 1. Noise burst for water rush
+        const bufferSize = this.ctx.sampleRate * 0.22;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const output = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          output[i] = (Math.random() * 2 - 1) * 0.4;
+        }
+
+        const whiteNoise = this.ctx.createBufferSource();
+        whiteNoise.buffer = buffer;
+
+        // Bandpass filter to simulate water whoosh
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(320, now);
+        filter.frequency.exponentialRampToValueAtTime(1100, now + 0.12);
+        filter.frequency.exponentialRampToValueAtTime(250, now + 0.22);
+        filter.Q.setValueAtTime(3.5, now);
+
+        const gainNode = this.ctx.createGain();
+        gainNode.gain.setValueAtTime(0.01, now);
+        gainNode.gain.linearRampToValueAtTime(0.35, now + 0.04);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+
+        whiteNoise.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(this.ctx.destination);
+        whiteNoise.start(now);
+
+        // 2. Low-frequency squish thud
+        const osc = this.ctx.createOscillator();
+        const oscGain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(160, now);
+        osc.frequency.exponentialRampToValueAtTime(45, now + 0.15);
+
+        oscGain.gain.setValueAtTime(0.3, now);
+        oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+        osc.connect(oscGain);
+        oscGain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.15);
+      }
+
+      // Small plastic clinking sound when ring hits peg or hook
+      playClink(pitch = 1.0) {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1200 * pitch, now);
+        osc.frequency.exponentialRampToValueAtTime(600 * pitch, now + 0.06);
+
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.06);
+      }
+
+      // Score / ring landed triumph note
+      playScoreNote(score) {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const baseFreqs = [523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 987.77, 1046.50, 1174.66, 1318.51, 1396.91, 1567.98];
+        const freq = baseFreqs[(score - 1) % baseFreqs.length] || 880;
+        const now = this.ctx.currentTime;
+
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now);
+
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.28);
+      }
+
+      // Fanfare on all rings hooked
+      playVictory() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, i) => {
+          setTimeout(() => {
+            if (!this.ctx) return;
+            const now = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now);
+            gain.gain.setValueAtTime(0.25, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.45);
+          }, i * 130);
+        });
+      }
+    }
+
+    const sound = new SoundEngine();
+
+    /* ==========================================================================
+       THEME CONFIGURATION
+       ========================================================================== */
+    const THEMES = {
+      pink: {
+        case1: '#ff5f8f', case2: '#ff3366', edge: '#d81e5b', highlight: '#ff94b8',
+        waterTop: 'rgba(140, 230, 255, 0.45)', waterBot: 'rgba(30, 144, 255, 0.65)',
+        bg: 'radial-gradient(circle at 50% 30%, #202b48 0%, #0d1222 100%)',
+        tankBackdrop: '#1b3b6f'
+      },
+      cyan: {
+        case1: '#00c6ff', case2: '#0072ff', edge: '#0048aa', highlight: '#7fe3ff',
+        waterTop: 'rgba(120, 255, 230, 0.45)', waterBot: 'rgba(0, 150, 200, 0.65)',
+        bg: 'radial-gradient(circle at 50% 30%, #153744 0%, #071720 100%)',
+        tankBackdrop: '#0c3d4a'
+      },
+      purple: {
+        case1: '#c471ed', case2: '#8e44ad', edge: '#5b1f77', highlight: '#dfa6f7',
+        waterTop: 'rgba(180, 210, 255, 0.45)', waterBot: 'rgba(60, 100, 230, 0.65)',
+        bg: 'radial-gradient(circle at 50% 30%, #291b3b 0%, #120a1c 100%)',
+        tankBackdrop: '#2c1e4a'
+      },
+      yellow: {
+        case1: '#ffda36', case2: '#ff9800', edge: '#cc6a00', highlight: '#ffe882',
+        waterTop: 'rgba(140, 240, 255, 0.45)', waterBot: 'rgba(0, 160, 230, 0.65)',
+        bg: 'radial-gradient(circle at 50% 30%, #3a3219 0%, #141108 100%)',
+        tankBackdrop: '#1a3c5a'
+      },
+      arcade: {
+        case1: '#111827', case2: '#1f2937', edge: '#030712', highlight: '#374151',
+        waterTop: 'rgba(0, 255, 200, 0.4)', waterBot: 'rgba(138, 43, 226, 0.65)',
+        bg: 'radial-gradient(circle at 50% 30%, #17112c 0%, #080512 100%)',
+        tankBackdrop: '#130d2a'
+      }
+    };
+
+    function applyTheme(name) {
+      const theme = THEMES[name] || THEMES.pink;
+      const root = document.documentElement;
+      root.style.setProperty('--case-color-1', theme.case1);
+      root.style.setProperty('--case-color-2', theme.case2);
+      root.style.setProperty('--case-edge', theme.edge);
+      root.style.setProperty('--case-highlight', theme.highlight);
+      root.style.setProperty('--water-top', theme.waterTop);
+      root.style.setProperty('--water-bot', theme.waterBot);
+      root.style.setProperty('--bg-gradient', theme.bg);
+      currentBackdrop = theme.tankBackdrop;
+    }
+
+    let currentBackdrop = THEMES.pink.tankBackdrop;
+
+    /* ==========================================================================
+       GAME ENGINE & HYDRODYNAMICS SIMULATION
+       ========================================================================== */
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const hudScore = document.getElementById('hudScore');
+    const winModal = document.getElementById('winModal');
+
+    const WIDTH = canvas.width;
+    const HEIGHT = canvas.height;
+
+    // Physical Target Posts (Left & Right Pegs) - Pointed conical tips for easy ring entry
+    const PEGS = [
+      {
+        id: 0,
+        x: 100,
+        topY: 145,
+        baseY: 345,
+        poleRadius: 3.5,
+        tipHeight: 14,
+        captureRadius: 18, // Generous conical guide capture
+        color: '#ffc83b',
+        stroke: '#d48806',
+        hookedRings: []
+      },
+      {
+        id: 1,
+        x: 198,
+        topY: 145,
+        baseY: 345,
+        poleRadius: 3.5,
+        tipHeight: 14,
+        captureRadius: 18,
+        color: '#ffc83b',
+        stroke: '#d48806',
+        hookedRings: []
+      }
+    ];
+
+    // Nozzles placed in bottom corners shooting upward along the tank walls
+    const NOZZLES = [
+      { x: 38, y: HEIGHT - 16, dirX: 0.15, dirY: -1 }, // Left nozzle shoots along left wall
+      { x: WIDTH - 38, y: HEIGHT - 16, dirX: -0.15, dirY: -1 } // Right nozzle shoots along right wall
+    ];
+
+    // Vibrant 3D Plastic Ring Palettes (Subsurface translucency, tubular lighting & specular highlights)
+    const RING_PALETTE = [
+      {
+        name: 'Coral Red',
+        main: '#ff3366',
+        dark: '#99002e',
+        light: '#ff7092',
+        innerWall: '#7a0025',
+        rim: '#ff9ebb',
+        specular: 'rgba(255, 255, 255, 0.9)'
+      },
+      {
+        name: 'Electric Amber',
+        main: '#ff9e00',
+        dark: '#b36200',
+        light: '#ffc44d',
+        innerWall: '#8a4b00',
+        rim: '#ffe399',
+        specular: 'rgba(255, 255, 255, 0.92)'
+      },
+      {
+        name: 'Mint Emerald',
+        main: '#06d6a0',
+        dark: '#036b50',
+        light: '#5af5cb',
+        innerWall: '#024d3a',
+        rim: '#a8ffea',
+        specular: 'rgba(255, 255, 255, 0.9)'
+      },
+      {
+        name: 'Ocean Cyan',
+        main: '#00b4d8',
+        dark: '#005f73',
+        light: '#62d8f0',
+        innerWall: '#004757',
+        rim: '#a6efff',
+        specular: 'rgba(255, 255, 255, 0.92)'
+      },
+      {
+        name: 'Neon Violet',
+        main: '#9d4edd',
+        dark: '#5a189a',
+        light: '#c77dff',
+        innerWall: '#3c096c',
+        rim: '#e0aaff',
+        specular: 'rgba(255, 255, 255, 0.9)'
+      },
+      {
+        name: 'Hot Bubblegum',
+        main: '#ff5c8d',
+        dark: '#b5174f',
+        light: '#ff8fab',
+        innerWall: '#800f35',
+        rim: '#ffc2d1',
+        specular: 'rgba(255, 255, 255, 0.9)'
+      }
+    ];
+
+    // Ring Class with True 3D Toroidal Physics and Multi-Pass Shading
+    class Ring {
+      constructor(id, x, y, palette) {
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.prevY = y;
+        this.prevX = x;
+        this.vx = (Math.random() - 0.5) * 1.5;
+        this.vy = Math.random() * -1;
+        
+        // 3D Torus Dimensions: Major Radius R, Tube Radius r
+        this.majorR = 12.5; // Distance from donut center to tube core
+        this.tubeR = 3.8;   // Radius of the round tubular cross-section
+        this.outerRadius = this.majorR + this.tubeR; // ~16.3px
+        this.innerRadius = this.majorR - this.tubeR; // ~8.7px
+
+        // 3D Euler Angles: roll (in-plane spin), pitch (tilt inclination towards viewer)
+        this.roll = Math.random() * Math.PI * 2;
+        this.vRoll = (Math.random() - 0.5) * 0.05;
+        this.pitch = 0.55 + Math.random() * 0.25; // 3D perspective foreshortening factor (0.35 to 0.85)
+        this.vPitch = (Math.random() - 0.5) * 0.02;
+
+        this.palette = palette;
+
+        // Hooked state
+        this.hookedPeg = null; // Peg reference once threaded
+        this.stackIndex = 0;   // Stack position from base
+        this.justHooked = false;
+      }
+
+      update(tiltX, activeJets) {
+        this.prevX = this.x;
+        this.prevY = this.y;
+
+        // -------------------------------------------------------------
+        // STATE 1: THREADED ONTO A ROD (CYLINDRICAL AXIAL CONSTRAINT)
+        // -------------------------------------------------------------
+        if (this.hookedPeg !== null) {
+          const peg = this.hookedPeg;
+          const stackSpacing = 8.0;
+          const targetY = peg.baseY - (this.stackIndex * stackSpacing) - 6;
+
+          // Rod constraints: ring hole surrounds the rod shaft (|x - peg.x| <= 5.2px)
+          const rattleLimit = 5.0;
+          this.vx += (peg.x - this.x) * 0.25;
+          this.vx *= 0.75;
+          this.x += this.vx;
+          this.x = Math.max(peg.x - rattleLimit, Math.min(peg.x + rattleLimit, this.x));
+
+          // Downward gravity along the rod with fluid drag
+          this.vy += 0.18;
+          this.vy *= 0.88;
+
+          // Water jet pushes from beneath can slide ring UP the rod
+          activeJets.forEach((jet, idx) => {
+            if (jet.active && jet.impulse > 0.05) {
+              const dx = this.x - NOZZLES[idx].x;
+              const dy = NOZZLES[idx].y - this.y;
+              if (Math.abs(dx) < 65 && dy > 0) {
+                const upForce = (1 - dy / 440) * jet.impulse * 2.8;
+                this.vy -= upForce;
+              }
+            }
+          });
+
+          this.y += this.vy;
+
+          // Check if ring slides off top of rod!
+          if (this.y < peg.topY - 4) {
+            this.unhook();
+            this.vy = -Math.abs(this.vy) * 0.6;
+            this.vx = (Math.random() - 0.5) * 3;
+            sound.playClink(1.4);
+            return;
+          }
+
+          // Rest at stack height
+          if (this.y >= targetY) {
+            this.y = targetY;
+            this.vy = 0;
+            if (this.justHooked) {
+              this.justHooked = false;
+              sound.playClink(1.1 + this.stackIndex * 0.08);
+            }
+          }
+
+          // Natural resting perspective
+          this.roll += (0 - this.roll) * 0.12;
+          this.pitch += (0.44 - this.pitch) * 0.10;
+          return;
+        }
+
+        // -------------------------------------------------------------
+        // STATE 2: FREE-FLOATING IN WATER (BUOYANT HYDRODYNAMICS)
+        // -------------------------------------------------------------
+        
+        // 1. Gentle Buoyant Sinking (Net weight in water is very small)
+        const effectiveGravity = 0.065;
+        this.vy += effectiveGravity;
+
+        // 2. Lateral tilt from device tilt / accelerometer
+        this.vx += tiltX * 0.40;
+
+        // 3. Fluid Viscous Drag (Quadratic & linear water resistance)
+        this.vx *= 0.955;
+        this.vy *= 0.945;
+        this.vRoll *= 0.92;
+        this.vPitch *= 0.90;
+
+        // 4. Hydrodynamic Flutter (Falling-leaf oscillation in liquid)
+        const tiltSway = Math.sin(this.roll);
+        this.vx += -tiltSway * Math.abs(this.vy) * 0.12;
+        this.vRoll += (this.vx * 0.02) + Math.cos(this.y * 0.05 + this.id) * 0.004;
+        this.pitch += Math.sin(this.y * 0.06 + this.id) * 0.008;
+
+        // 5. Water Circulation & Bellows Jet Streams:
+        activeJets.forEach((jet, idx) => {
+          if (jet.active && jet.impulse > 0.02) {
+            const nozzle = NOZZLES[idx];
+            const dx = this.x - nozzle.x;
+            const dy = nozzle.y - this.y;
+
+            if (dy > 0 && dy < 420) {
+              // Direct vertical column along the outer wall
+              const inOuterColumn = (idx === 0 && this.x < 118) || (idx === 1 && this.x > WIDTH - 118);
+              if (inOuterColumn) {
+                const columnPower = (1 - (dy / 450)) * jet.impulse;
+                this.vy -= columnPower * 4.6;
+                this.vx += (idx === 0 ? 0.35 : -0.35) * columnPower * 2.2;
+                this.vRoll += (Math.random() - 0.5) * 0.16;
+                this.vPitch += (Math.random() - 0.5) * 0.10;
+              }
+
+              // Top fountain arc: water curling over towards center rods
+              if (this.y < 160) {
+                if (idx === 0 && this.x < 165) {
+                  this.vx += 1.6 * jet.impulse;
+                  this.vy += 0.35 * jet.impulse;
+                } else if (idx === 1 && this.x > 133) {
+                  this.vx -= 1.6 * jet.impulse;
+                  this.vy += 0.35 * jet.impulse;
+                }
+              }
+
+              // Central suction downdraft: circulating fluid brings rings down over rods
+              if (this.y >= 90 && this.y <= 250 && this.x >= 75 && this.x <= 225) {
+                this.vy += 0.28 * jet.impulse;
+              }
+            }
+          }
+        });
+
+        // Terminal velocity limits in water
+        this.vx = Math.max(-6.0, Math.min(6.0, this.vx));
+        this.vy = Math.max(-8.5, Math.min(2.8, this.vy));
+
+        // Position & Angle update
+        this.x += this.vx;
+        this.y += this.vy;
+        this.roll += this.vRoll;
+        this.pitch += this.vPitch;
+
+        // Realistic perspective pitch bounds
+        this.pitch = Math.max(0.32, Math.min(0.82, this.pitch));
+
+        // Tank Outer Boundaries
+        const margin = this.outerRadius + 1;
+        if (this.x < margin) {
+          this.x = margin;
+          this.vx = Math.abs(this.vx) * 0.45;
+          sound.playClink(0.9);
+        } else if (this.x > WIDTH - margin) {
+          this.x = WIDTH - margin;
+          this.vx = -Math.abs(this.vx) * 0.45;
+          sound.playClink(0.9);
+        }
+
+        // Top water surface meniscus
+        const waterTop = 32;
+        if (this.y < waterTop + margin) {
+          this.y = waterTop + margin;
+          this.vy = Math.abs(this.vy) * 0.20;
+          this.vx += (WIDTH / 2 - this.x) * 0.04;
+        }
+
+        // Tank bottom floor & ramp
+        const floor = HEIGHT - 22;
+        if (this.y > floor) {
+          this.y = floor;
+          this.vy *= -0.20;
+          this.vx *= 0.82;
+          if (this.x < WIDTH / 2) this.vx -= 0.12;
+          else this.vx += 0.12;
+          if (Math.abs(this.vy) > 0.5) sound.playClink(0.85);
+        }
+
+        // -------------------------------------------------------------
+        // SOLID ROD RIGID-BODY COLLISION & TIP HOOKING DETECTION
+        // -------------------------------------------------------------
+        this.handleRodPhysics();
+      }
+
+      handleRodPhysics() {
+        if (this.hookedPeg !== null) return;
+
+        PEGS.forEach(peg => {
+          const horizDist = Math.abs(this.x - peg.x);
+          const collisionDist = this.outerRadius + peg.poleRadius - 1.5; // ~18.5px
+          const holeCaptureDist = 7.2; // Rod tip (3.5px) easily enters 8.7px inner hole
+
+          // 1. TIP HOOKING CHECK (When ring passes downward through the top tip)
+          const atTipLevel = (this.prevY <= peg.topY + 3 && this.y >= peg.topY - 4 && this.vy > 0);
+          const nearTip = (this.y >= peg.topY - 6 && this.y <= peg.topY + 12 && this.vy >= -0.2);
+
+          if (atTipLevel || nearTip) {
+            if (horizDist <= holeCaptureDist) {
+              // ROD TIP ENTERS HOLE -> SUCCESSFUL HOOK!
+              this.hook(peg);
+              return;
+            } else if (horizDist < collisionDist) {
+              // SOLID PLASTIC DONUT RIM HITS POINTY TIP -> DEFLECTION!
+              this.vy = -Math.abs(this.vy) * 0.45;
+              const sign = (this.x < peg.x ? -1 : 1);
+              this.vx = sign * (Math.abs(this.vx) * 0.5 + 1.2);
+              this.x = peg.x + sign * (collisionDist + 0.5);
+              sound.playClink(1.3);
+              return;
+            }
+          }
+
+          // 2. SOLID ROD SHAFT COLLISION (Ring cannot penetrate rod from outside)
+          if (this.y > peg.topY && this.y < peg.baseY) {
+            if (horizDist < collisionDist) {
+              // Elastic bounce off solid rod shaft!
+              const sign = (this.x < peg.x ? -1 : 1);
+              this.x = peg.x + sign * collisionDist;
+              this.vx = sign * (Math.abs(this.vx) * 0.4 + 0.8);
+              sound.playClink(0.95);
+            }
+          }
+        });
+      }
+
+      hook(peg) {
+        this.hookedPeg = peg;
+        this.stackIndex = peg.hookedRings.length;
+        peg.hookedRings.push(this);
+        this.justHooked = true;
+        this.vx = 0;
+        this.vy = Math.max(0.6, this.vy);
+        this.x = peg.x;
+
+        const totalHooked = PEGS[0].hookedRings.length + PEGS[1].hookedRings.length;
+        sound.playScoreNote(totalHooked);
+        checkWinCondition();
+      }
+
+      unhook() {
+        if (!this.hookedPeg) return;
+        const index = this.hookedPeg.hookedRings.indexOf(this);
+        if (index !== -1) {
+          this.hookedPeg.hookedRings.splice(index, 1);
+        }
+        this.hookedPeg = null;
+        updateScoreHUD();
+      }
+
+      // ===============================================================
+      // 3D TOROIDAL RENDERING (SHADOW, BACK HALF, FRONT HALF, HIGHLIGHTS)
+      // ===============================================================
+
+      // 1. Cast Dynamic Ambient Drop Shadow on the Tank Backplate
+      drawDropShadow(ctx) {
+        ctx.save();
+        const k = this.pitch;
+        const outerRX = this.majorR + this.tubeR + 1.5;
+        const outerRY = (this.majorR * k) + this.tubeR + 1;
+        const innerRX = Math.max(2, this.majorR - this.tubeR - 1);
+        const innerRY = Math.max(1, (this.majorR * k) - this.tubeR);
+
+        // Shadow offset down-right into the tank depth
+        const shadowOffsetX = 3.5;
+        const shadowOffsetY = 6.5;
+
+        ctx.translate(this.x + shadowOffsetX, this.y + shadowOffsetY);
+        ctx.rotate(this.roll * 0.25);
+
+        ctx.beginPath();
+        ctx.ellipse(0, 0, outerRX, outerRY, 0, 0, Math.PI * 2);
+        ctx.ellipse(0, 0, innerRX, innerRY, 0, 0, Math.PI * 2, true);
+
+        ctx.fillStyle = 'rgba(6, 18, 38, 0.38)';
+        ctx.fill('evenodd');
+        ctx.restore();
+      }
+
+      // 2. Draw Back Half of Torus (Top arch dipping away into water + inner hole rear wall)
+      drawBackHalf(ctx) {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.roll * 0.25);
+
+        const k = this.pitch;
+        const R = this.majorR;
+        const r = this.tubeR;
+
+        const outerRX = R + r;
+        const outerRY = R * k + r;
+        const innerRX = Math.max(1.5, R - r);
+        const innerRY = Math.max(0.5, R * k - r);
+
+        // A. Shaded Rear Inner Hole Wall (visible through hole as inside cylindrical plastic surface)
+        ctx.beginPath();
+        ctx.ellipse(0, -r * 0.3, innerRX, innerRY + r * 0.5, 0, 0, Math.PI, false);
+        ctx.ellipse(0, 0, innerRX, innerRY, 0, Math.PI, 0, true);
+        ctx.fillStyle = this.palette.innerWall;
+        ctx.fill();
+
+        // B. Back Arch of the Torus (from PI to 2*PI in local space)
+        ctx.beginPath();
+        ctx.ellipse(0, 0, outerRX, outerRY, 0, Math.PI, Math.PI * 2, false);
+        ctx.ellipse(0, 0, innerRX, innerRY, 0, Math.PI * 2, Math.PI, true);
+        ctx.closePath();
+
+        const backGrad = ctx.createLinearGradient(0, -outerRY, 0, 0);
+        backGrad.addColorStop(0, this.palette.dark);
+        backGrad.addColorStop(0.6, this.palette.main);
+        backGrad.addColorStop(1, this.palette.dark);
+        ctx.fillStyle = backGrad;
+        ctx.fill();
+
+        // Subtle rear rim definition
+        ctx.strokeStyle = this.palette.innerWall;
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+
+        ctx.restore();
+      }
+
+      // 3. Draw Front Half of Torus (Bottom arch curving forward with tubular volume & specular glints)
+      drawFrontHalf(ctx) {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.roll * 0.25);
+
+        const k = this.pitch;
+        const R = this.majorR;
+        const r = this.tubeR;
+
+        const outerRX = R + r;
+        const outerRY = R * k + r;
+        const innerRX = Math.max(1.5, R - r);
+        const innerRY = Math.max(0.5, R * k - r);
+
+        // A. Front Arch of the Torus (from 0 to PI in local space)
+        ctx.beginPath();
+        ctx.ellipse(0, 0, outerRX, outerRY, 0, 0, Math.PI, false);
+        ctx.ellipse(0, 0, innerRX, innerRY, 0, Math.PI, 0, true);
+        ctx.closePath();
+
+        // 3D Cylindrical cross-sectional gradient:
+        // Highlights the curved crest of the tube facing the camera
+        const frontGrad = ctx.createLinearGradient(0, 0, 0, outerRY);
+        frontGrad.addColorStop(0, this.palette.light);
+        frontGrad.addColorStop(0.35, this.palette.main);
+        frontGrad.addColorStop(0.85, this.palette.dark);
+        frontGrad.addColorStop(1, this.palette.innerWall);
+
+        ctx.fillStyle = frontGrad;
+        ctx.fill();
+
+        // B. Tubular 3D Specular Highlight Ridge (Glossy curved reflection on the tube's crest)
+        ctx.beginPath();
+        const crestRX = R + r * 0.2;
+        const crestRY = R * k + r * 0.3;
+        ctx.ellipse(0, 0, crestRX, crestRY, 0, 0.15 * Math.PI, 0.85 * Math.PI, false);
+        ctx.lineWidth = 1.8;
+        ctx.strokeStyle = this.palette.specular;
+        ctx.stroke();
+
+        // C. Secondary glossy glint (top left corner specular gleam)
+        ctx.beginPath();
+        ctx.ellipse(-outerRX * 0.22, -outerRY * 0.35, outerRX * 0.55, outerRY * 0.28, -0.15, Math.PI * 0.8, Math.PI * 1.5, false);
+        ctx.lineWidth = 1.4;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+        ctx.stroke();
+
+        // D. Clear Mold Plastic Rim Sheen (Thin subtle translucent border)
+        ctx.beginPath();
+        ctx.ellipse(0, 0, outerRX, outerRY, 0, 0, Math.PI, false);
+        ctx.lineWidth = 0.9;
+        ctx.strokeStyle = this.palette.rim;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.ellipse(0, 0, innerRX, innerRY, 0, 0, Math.PI, false);
+        ctx.lineWidth = 0.8;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+        ctx.stroke();
+
+        ctx.restore();
+      }
+
+      // Draw Complete Free Ring (Shadow -> Back Half -> Front Half)
+      draw(ctx) {
+        this.drawDropShadow(ctx);
+        this.drawBackHalf(ctx);
+        this.drawFrontHalf(ctx);
+      }
+    }
+
+    // Bubble Particle Class
+    class Bubble {
+      constructor(x, y, vx, vy, size) {
+        this.x = x;
+        this.y = y;
+        this.vx = vx;
+        this.vy = vy;
+        this.size = size;
+        this.alpha = 0.85;
+        this.wobbleSpeed = 0.05 + Math.random() * 0.08;
+        this.wobblePhase = Math.random() * Math.PI * 2;
+      }
+
+      update() {
+        this.wobblePhase += this.wobbleSpeed;
+        this.x += this.vx + Math.sin(this.wobblePhase) * 0.4;
+        this.y += this.vy;
+        this.vy -= 0.08; // Buoyancy upward
+        this.alpha -= 0.004;
+      }
+
+      draw(ctx) {
+        if (this.y < 30 || this.alpha <= 0) return;
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+
+        ctx.fillStyle = `rgba(220, 245, 255, ${this.alpha * 0.35})`;
+        ctx.fill();
+
+        ctx.strokeStyle = `rgba(255, 255, 255, ${this.alpha * 0.75})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Glistening reflection dot
+        ctx.beginPath();
+        ctx.arc(this.x - this.size * 0.3, this.y - this.size * 0.3, this.size * 0.25, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha * 0.9})`;
+        ctx.fill();
+
+        ctx.restore();
+      }
+    }
+
+    // Water Surface Wave Class
+    class WaterSurface {
+      constructor(y) {
+        this.baseY = y;
+        this.time = 0;
+      }
+
+      update() {
+        this.time += 0.04;
+      }
+
+      draw(ctx) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(0, this.baseY);
+
+        for (let x = 0; x <= WIDTH; x += 8) {
+          const waveY = this.baseY + Math.sin(x * 0.04 + this.time) * 2.5 + Math.cos(x * 0.02 - this.time * 0.6) * 1.5;
+          ctx.lineTo(x, waveY);
+        }
+
+        ctx.lineTo(WIDTH, HEIGHT);
+        ctx.lineTo(0, HEIGHT);
+        ctx.closePath();
+
+        const grad = ctx.createLinearGradient(0, this.baseY, 0, HEIGHT);
+        grad.addColorStop(0, 'rgba(120, 220, 255, 0.25)');
+        grad.addColorStop(0.3, 'rgba(40, 140, 240, 0.38)');
+        grad.addColorStop(1, 'rgba(10, 60, 160, 0.55)');
+
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        // Water surface line highlight
+        ctx.beginPath();
+        for (let x = 0; x <= WIDTH; x += 8) {
+          const waveY = this.baseY + Math.sin(x * 0.04 + this.time) * 2.5 + Math.cos(x * 0.02 - this.time * 0.6) * 1.5;
+          if (x === 0) ctx.moveTo(x, waveY);
+          else ctx.lineTo(x, waveY);
+        }
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+        ctx.lineWidth = 1.8;
+        ctx.stroke();
+
+        ctx.restore();
+      }
+    }
+
+    /* ==========================================================================
+       GAME STATE & INITIALIZATION
+       ========================================================================== */
+    const TOTAL_RINGS = 12;
+    let rings = [];
+    let bubbles = [];
+    let waterSurface = new WaterSurface(34);
+    let deviceTilt = 0; // -1 to 1
+    let isGameOver = false;
+
+    // Pump jet states with physical impulse values
+    const jets = [
+      { id: 0, x: NOZZLES[0].x, y: NOZZLES[0].y, dirX: 0.15, dirY: -1, active: false, impulse: 0 },
+      { id: 1, x: NOZZLES[1].x, y: NOZZLES[1].y, dirX: -0.15, dirY: -1, active: false, impulse: 0 }
+    ];
+
+    function createRings() {
+      rings = [];
+      PEGS.forEach(peg => peg.hookedRings = []);
+
+      for (let i = 0; i < TOTAL_RINGS; i++) {
+        // Disperse rings across the bottom
+        const x = 45 + (i % 6) * 38 + (Math.random() - 0.5) * 14;
+        const y = HEIGHT - 32 - Math.floor(i / 6) * 18;
+        const palette = RING_PALETTE[i % RING_PALETTE.length];
+        rings.push(new Ring(i, x, y, palette));
+      }
+      updateScoreHUD();
+    }
+
+    function updateScoreHUD() {
+      const total = PEGS[0].hookedRings.length + PEGS[1].hookedRings.length;
+      hudScore.textContent = `Hooked: ${total} / ${TOTAL_RINGS}`;
+    }
+
+    function checkWinCondition() {
+      updateScoreHUD();
+      const total = PEGS[0].hookedRings.length + PEGS[1].hookedRings.length;
+      if (total >= TOTAL_RINGS && !isGameOver) {
+        isGameOver = true;
+        sound.playVictory();
+        setTimeout(() => {
+          winModal.classList.add('active');
+        }, 500);
+      }
+    }
+
+    function resetGame() {
+      winModal.classList.remove('active');
+      isGameOver = false;
+      sound.playPump();
+
+      // Shake animation on device
+      const casing = document.getElementById('toyCasing');
+      casing.style.transition = 'transform 0.08s ease';
+      casing.style.transform = 'rotate(-5deg) scale(0.98)';
+      setTimeout(() => {
+        casing.style.transform = 'rotate(5deg) scale(1.01)';
+        setTimeout(() => {
+          casing.style.transform = 'rotate(0deg) scale(1)';
+        }, 80);
+      }, 80);
+
+      createRings();
+
+      // Scatter rings with an initial upward fluid burst
+      rings.forEach(r => {
+        r.unhook();
+        r.vy = -3.5 - Math.random() * 4.5;
+        r.vx = (Math.random() - 0.5) * 5.5;
+      });
+
+      // Spawn burst of bubbles
+      for (let i = 0; i < 40; i++) {
+        spawnBubble(WIDTH * Math.random(), HEIGHT - 30, (Math.random() - 0.5) * 2, -2 - Math.random() * 4, 3 + Math.random() * 4);
+      }
+    }
+
+    function spawnBubble(x, y, vx, vy, size) {
+      if (bubbles.length < 180) {
+        bubbles.push(new Bubble(x, y, vx, vy, size));
+      }
+    }
+
+    // Trigger pump jet with physical bellows impulse
+    function triggerJet(index, active) {
+      const jet = jets[index];
+
+      if (active) {
+        if (!jet.active || jet.impulse < 0.2) {
+          jet.impulse = 1.0;
+          sound.playPump();
+
+          // Spawn rapid bubble column burst
+          const nozzle = NOZZLES[index];
+          for (let i = 0; i < 12; i++) {
+            const spreadX = (Math.random() - 0.5) * 12 + jet.dirX * 5;
+            const speedY = -4.8 - Math.random() * 6.5;
+            const size = 2.5 + Math.random() * 4.5;
+            spawnBubble(nozzle.x + (Math.random() - 0.5) * 8, nozzle.y, spreadX, speedY, size);
+          }
+        }
+        jet.active = true;
+      } else {
+        jet.active = false;
+        jet.impulse = 0;
+      }
+    }
+
+    // Physical Ring-to-Ring Collisions (Elastic separation and momentum exchange)
+    function resolveRingCollisions() {
+      const freeRings = rings.filter(r => r.hookedPeg === null);
+      for (let i = 0; i < freeRings.length; i++) {
+        for (let j = i + 1; j < freeRings.length; j++) {
+          const r1 = freeRings[i];
+          const r2 = freeRings[j];
+          const dx = r2.x - r1.x;
+          const dy = r2.y - r1.y;
+          const distSq = dx * dx + dy * dy;
+          const minDist = 26.5; // Outer diameter contact distance
+          if (distSq < minDist * minDist && distSq > 0.01) {
+            const dist = Math.sqrt(distSq);
+            const overlap = (minDist - dist) * 0.5;
+            const nx = dx / dist;
+            const ny = dy / dist;
+            // Separate overlapping rings
+            r1.x -= nx * overlap;
+            r1.y -= ny * overlap;
+            r2.x += nx * overlap;
+            r2.y += ny * overlap;
+
+            // Elastic bounce exchange
+            const dvx = r1.vx - r2.vx;
+            const dvy = r1.vy - r2.vy;
+            const dot = dvx * nx + dvy * ny;
+            if (dot > 0) {
+              r1.vx -= nx * dot * 0.55;
+              r1.vy -= ny * dot * 0.55;
+              r2.vx += nx * dot * 0.55;
+              r2.vy += ny * dot * 0.55;
+            }
+          }
+        }
+      }
+    }
+
+    /* ==========================================================================
+       RENDER LOOP WITH REALISTIC 3D ROD THREADING
+       ========================================================================== */
+    function drawRods(ctx) {
+      PEGS.forEach(peg => {
+        ctx.save();
+        
+        // Base plate pedestal
+        ctx.beginPath();
+        ctx.ellipse(peg.x, peg.baseY + 4, 16, 5, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#b8860b';
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.ellipse(peg.x, peg.baseY, 14, 4.5, 0, 0, Math.PI * 2);
+        ctx.fillStyle = peg.color;
+        ctx.fill();
+
+        // Vertical Rod Shaft
+        ctx.beginPath();
+        ctx.moveTo(peg.x - peg.poleRadius, peg.baseY);
+        ctx.lineTo(peg.x - peg.poleRadius, peg.topY);
+        ctx.lineTo(peg.x + peg.poleRadius, peg.topY);
+        ctx.lineTo(peg.x + peg.poleRadius, peg.baseY);
+        ctx.closePath();
+
+        const poleGrad = ctx.createLinearGradient(peg.x - peg.poleRadius, 0, peg.x + peg.poleRadius, 0);
+        poleGrad.addColorStop(0, '#e6b800');
+        poleGrad.addColorStop(0.35, '#fff4b8');
+        poleGrad.addColorStop(1, '#b38600');
+        ctx.fillStyle = poleGrad;
+        ctx.fill();
+
+        ctx.strokeStyle = peg.stroke;
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+
+        // Conical Tapered Tip (Smooth entry guide for rings)
+        ctx.beginPath();
+        ctx.moveTo(peg.x - peg.poleRadius, peg.topY);
+        ctx.lineTo(peg.x, peg.topY - peg.tipHeight);
+        ctx.lineTo(peg.x + peg.poleRadius, peg.topY);
+        ctx.closePath();
+
+        const tipGrad = ctx.createLinearGradient(peg.x - peg.poleRadius, 0, peg.x + peg.poleRadius, 0);
+        tipGrad.addColorStop(0, '#ffd700');
+        tipGrad.addColorStop(0.5, '#ffffff');
+        tipGrad.addColorStop(1, '#b38600');
+        ctx.fillStyle = tipGrad;
+        ctx.fill();
+        ctx.stroke();
+
+        // Tiny smooth ball on tip
+        ctx.beginPath();
+        ctx.arc(peg.x, peg.topY - peg.tipHeight, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#fffbe6';
+        ctx.fill();
+
+        ctx.restore();
+      });
+    }
+
+    // Draw the rod front segment passing THROUGH the center hole of hooked rings
+    // This gives an unmistakable, physically convincing 3D "threaded through the ring" look!
+    function drawRodFrontPass(ctx, peg, ring) {
+      ctx.save();
+      const h = 10;
+      ctx.beginPath();
+      ctx.rect(peg.x - peg.poleRadius, ring.y - h / 2, peg.poleRadius * 2, h);
+      
+      const poleGrad = ctx.createLinearGradient(peg.x - peg.poleRadius, 0, peg.x + peg.poleRadius, 0);
+      poleGrad.addColorStop(0, '#e6b800');
+      poleGrad.addColorStop(0.35, '#fff4b8');
+      poleGrad.addColorStop(1, '#b38600');
+      ctx.fillStyle = poleGrad;
+      ctx.fill();
+
+      ctx.strokeStyle = peg.stroke;
+      ctx.lineWidth = 0.8;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawNozzles(ctx) {
+      NOZZLES.forEach((nozzle, i) => {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(nozzle.x, nozzle.y + 4, 14, Math.PI, 0);
+        ctx.fillStyle = '#f39c12';
+        ctx.fill();
+
+        // Nozzle tip angled slightly towards tank center
+        ctx.beginPath();
+        ctx.rect(nozzle.x - 6, nozzle.y - 4, 12, 6);
+        ctx.fillStyle = '#e67e22';
+        ctx.fill();
+
+        // Hole
+        ctx.beginPath();
+        ctx.ellipse(nozzle.x, nozzle.y - 4, 4.5, 2, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#111';
+        ctx.fill();
+        ctx.restore();
+      });
+    }
+
+    function loop() {
+      // Clear
+      ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+      // Tank background
+      ctx.fillStyle = currentBackdrop;
+      ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+      // Light caustics
+      const gradLight = ctx.createLinearGradient(0, 0, WIDTH, 0);
+      gradLight.addColorStop(0, 'rgba(255,255,255,0.02)');
+      gradLight.addColorStop(0.3, 'rgba(255,255,255,0.08)');
+      gradLight.addColorStop(0.5, 'rgba(255,255,255,0.02)');
+      gradLight.addColorStop(0.7, 'rgba(255,255,255,0.08)');
+      gradLight.addColorStop(1, 'rgba(255,255,255,0.02)');
+      ctx.fillStyle = gradLight;
+      ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+      // STEP 1: Render All Dynamic 3D Ring Drop Shadows on Tank Backplate
+      rings.forEach(ring => {
+        ring.drawDropShadow(ctx);
+      });
+
+      // STEP 2: Draw Rods & Nozzles
+      drawRods(ctx);
+      drawNozzles(ctx);
+
+      // Water surface wave animation
+      waterSurface.update();
+      waterSurface.draw(ctx);
+
+      // Jet continuous bubble emission while button is held, and decay impulse like a real rubber bulb
+      jets.forEach((jet, index) => {
+        if (jet.active) {
+          jet.impulse *= 0.91; // Physical bellows volume decay
+          if (Math.random() < 0.7 && jet.impulse > 0.05) {
+            const nozzle = NOZZLES[index];
+            spawnBubble(
+              nozzle.x + (Math.random() - 0.5) * 8,
+              nozzle.y - 4,
+              (Math.random() - 0.5) * 3 + jet.dirX * 3,
+              -4.5 - Math.random() * 4,
+              2 + Math.random() * 3.5
+            );
+          }
+        }
+      });
+
+      // Update & Draw Bubbles
+      for (let i = bubbles.length - 1; i >= 0; i--) {
+        const b = bubbles[i];
+        b.update();
+        b.draw(ctx);
+        if (b.y < 28 || b.alpha <= 0) {
+          bubbles.splice(i, 1);
+        }
+      }
+
+      // Update All Rings Physics
+      rings.forEach(ring => {
+        ring.update(deviceTilt, jets);
+      });
+
+      // Resolve Real Physical Ring-to-Ring Collisions
+      resolveRingCollisions();
+
+      // STEP 3: Render Free-Floating Rings (Sorted by Y for depth layering)
+      const freeRings = rings.filter(r => r.hookedPeg === null).sort((a, b) => a.y - b.y);
+      freeRings.forEach(ring => {
+        ring.drawBackHalf(ctx);
+        ring.drawFrontHalf(ctx);
+      });
+
+      // STEP 4: Render Hooked Rings Interlocked with Rods (Bottom to Top)
+      PEGS.forEach(peg => {
+        const hooked = peg.hookedRings.slice().sort((a, b) => a.stackIndex - b.stackIndex);
+        hooked.forEach(ring => {
+          // A. Back half of the ring sits BEHIND the rod
+          ring.drawBackHalf(ctx);
+
+          // B. Rod shaft passes directly THROUGH the ring hole
+          drawRodFrontPass(ctx, peg, ring);
+
+          // C. Front half of the ring sits IN FRONT OF the rod
+          ring.drawFrontHalf(ctx);
+
+          // D. Contact shadow cast from the front rim onto the rod & stacked ring below
+          ctx.save();
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.28)';
+          ctx.fillRect(peg.x - peg.poleRadius, ring.y + 2, peg.poleRadius * 2, 4);
+          ctx.restore();
+        });
+      });
+
+      // Ease device tilt back to center
+      deviceTilt *= 0.92;
+
+      requestAnimationFrame(loop);
+    }
+
+    /* ==========================================================================
+       USER INTERACTION & INPUT CONTROLS
+       ========================================================================== */
+    const btnLeft = document.getElementById('btnLeft');
+    const btnRight = document.getElementById('btnRight');
+    const btnTilt = document.getElementById('btnTilt');
+    const resetBtn = document.getElementById('resetBtn');
+    const playAgainBtn = document.getElementById('playAgainBtn');
+    const soundToggleBtn = document.getElementById('soundToggleBtn');
+    const soundIcon = document.getElementById('soundIcon');
+    const themeSelect = document.getElementById('themeSelect');
+    const deviceContainer = document.getElementById('deviceContainer');
+
+    // Button event listeners with tactile animation
+    function bindPumpButton(button, jetIndex) {
+      const start = (e) => {
+        e.preventDefault();
+        button.classList.add('pressed');
+        triggerJet(jetIndex, true);
+      };
+
+      const end = (e) => {
+        e.preventDefault();
+        button.classList.remove('pressed');
+        triggerJet(jetIndex, false);
+      };
+
+      button.addEventListener('mousedown', start);
+      window.addEventListener('mouseup', end);
+
+      button.addEventListener('touchstart', start, { passive: false });
+      window.addEventListener('touchend', end);
+      window.addEventListener('touchcancel', end);
+    }
+
+    bindPumpButton(btnLeft, 0);
+    bindPumpButton(btnRight, 1);
+
+    // Tilt Action
+    function applyTilt(direction = 1) {
+      deviceTilt = direction * 0.9;
+      deviceContainer.style.transform = `rotate(${direction * 3.5}deg)`;
+      setTimeout(() => {
+        deviceContainer.style.transform = 'rotate(0deg)';
+      }, 160);
+    }
+
+    btnTilt.addEventListener('click', () => {
+      applyTilt(Math.random() > 0.5 ? 1 : -1);
+    });
+
+    // Reset & Play Again
+    resetBtn.addEventListener('click', resetGame);
+    playAgainBtn.addEventListener('click', resetGame);
+
+    // Sound toggle
+    soundToggleBtn.addEventListener('click', () => {
+      sound.muted = !sound.muted;
+      soundIcon.textContent = sound.muted ? '🔇' : '🔊';
+    });
+
+    // Theme Selector
+    themeSelect.addEventListener('change', (e) => {
+      applyTheme(e.target.value);
+    });
+
+    // Keyboard controls
+    const keysDown = {};
+    window.addEventListener('keydown', (e) => {
+      if (e.repeat) return;
+      keysDown[e.code] = true;
+
+      if (e.code === 'KeyA' || e.code === 'ArrowLeft') {
+        btnLeft.classList.add('pressed');
+        triggerJet(0, true);
+      }
+      if (e.code === 'KeyD' || e.code === 'ArrowRight') {
+        btnRight.classList.add('pressed');
+        triggerJet(1, true);
+      }
+      if (e.code === 'KeyT' || e.code === 'Space') {
+        applyTilt(Math.random() > 0.5 ? 1 : -1);
+      }
+      if (e.code === 'KeyR') {
+        resetGame();
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      keysDown[e.code] = false;
+
+      if (e.code === 'KeyA' || e.code === 'ArrowLeft') {
+        btnLeft.classList.remove('pressed');
+        triggerJet(0, false);
+      }
+      if (e.code === 'KeyD' || e.code === 'ArrowRight') {
+        btnRight.classList.remove('pressed');
+        triggerJet(1, false);
+      }
+    });
+
+    // Mobile Device Orientation / Gyroscope (if supported on mobile browser)
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener('deviceorientation', (e) => {
+        if (e.gamma !== null) {
+          // gamma is left-to-right tilt in degrees (-90 to 90)
+          deviceTilt = Math.max(-1, Math.min(1, e.gamma / 30));
+        }
+      });
+    }
+
+    // Ambient floating background bubbles generator
+    const ambientContainer = document.getElementById('ambientBubbles');
+    for (let i = 0; i < 18; i++) {
+      const bubble = document.createElement('div');
+      bubble.className = 'ambient-bubble';
+      const size = 12 + Math.random() * 32;
+      bubble.style.width = `${size}px`;
+      bubble.style.height = `${size}px`;
+      bubble.style.left = `${Math.random() * 100}vw`;
+      bubble.style.animationDuration = `${8 + Math.random() * 12}s`;
+      bubble.style.animationDelay = `${Math.random() * 8}s`;
+      ambientContainer.appendChild(bubble);
+    }
+
+    // Start Game
+    applyTheme('pink');
+    createRings();
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
