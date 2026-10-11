@@ -182,6 +182,108 @@
       color: #111;
     }
 
+    /* Leaderboard Styling */
+    .leaderboard-section {
+      width: 100%;
+      background: rgba(18, 12, 38, 0.85);
+      border: 3px solid #00f3ff;
+      border-radius: 24px;
+      padding: 28px 24px;
+      margin-bottom: 45px;
+      box-shadow: 0 10px 30px rgba(0, 243, 255, 0.25), inset 0 0 30px rgba(0, 243, 255, 0.05);
+      backdrop-filter: blur(12px);
+    }
+
+    .leaderboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .leaderboard-title {
+      font-family: 'Bungee', cursive;
+      font-size: clamp(20px, 4vw, 28px);
+      color: #ffe600;
+      text-shadow: 2px 2px 0 #ff0055;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-reset-scores {
+      background: rgba(255, 0, 85, 0.2);
+      border: 1px solid #ff0055;
+      color: #ff6699;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-reset-scores:hover {
+      background: #ff0055;
+      color: #fff;
+    }
+
+    .leaderboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .lb-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 2px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: transform 0.2s, border-color 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .lb-card:hover {
+      transform: translateY(-3px);
+      border-color: #ffe600;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .lb-icon {
+      font-size: 32px;
+    }
+
+    .lb-info {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      text-align: left;
+    }
+
+    .lb-name {
+      font-size: 13px;
+      color: #bbb;
+      margin-bottom: 4px;
+    }
+
+    .lb-score {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 14px;
+      color: #00f3ff;
+      text-shadow: 0 0 8px rgba(0, 243, 255, 0.6);
+    }
+
+    .lb-score.empty {
+      color: #666;
+      font-size: 10px;
+    }
+
     .footer-note {
       font-size: 13px;
       color: #6d678a;
@@ -317,10 +419,204 @@
       </a>
     </div>
 
+    <!-- Hall of Fame Arcade Leaderboard Section -->
+    <section class="leaderboard-section">
+      <div class="leaderboard-header">
+        <h2 class="leaderboard-title">🏆 ARCADE HALL OF FAME LEADERBOARD</h2>
+        <button class="btn-reset-scores" id="btnResetAllScores" title="Clear all local high scores">RESET RECORDS ⚠️</button>
+      </div>
+
+      <div class="leaderboard-grid">
+        <!-- 1. Water Ring Toss -->
+        <a href="water-ring-toss/index.html" class="lb-card">
+          <div class="lb-icon">🌊</div>
+          <div class="lb-info">
+            <span class="lb-name">Water Ring Toss</span>
+            <span class="lb-score" id="lbRingToss">--</span>
+          </div>
+        </a>
+
+        <!-- 2. Bishi Bashi -->
+        <a href="bishi-bashi/index.html" class="lb-card">
+          <div class="lb-icon">🚀</div>
+          <div class="lb-info">
+            <span class="lb-name">Soda Rocket</span>
+            <span class="lb-score" id="lbBishiBashi">--</span>
+          </div>
+        </a>
+
+        <!-- 3. Crocodile Dentist -->
+        <a href="crocodile-dentist/index.html" class="lb-card">
+          <div class="lb-icon">🐊</div>
+          <div class="lb-info">
+            <span class="lb-name">Croc Dentist</span>
+            <span class="lb-score" id="lbCrocDentist">--</span>
+          </div>
+        </a>
+
+        <!-- 4. Nu, Pogodi! -->
+        <a href="nu-pogodi/index.html" class="lb-card">
+          <div class="lb-icon">🐺</div>
+          <div class="lb-info">
+            <span class="lb-name">Nu, Pogodi!</span>
+            <span class="lb-score" id="lbNuPogodi">--</span>
+          </div>
+        </a>
+
+        <!-- 5. Desktop Destroyer -->
+        <a href="desktop-destroyer/index.html" class="lb-card">
+          <div class="lb-icon">🔨</div>
+          <div class="lb-info">
+            <span class="lb-name">Desktop Destroyer</span>
+            <span class="lb-score" id="lbDestroyer">--</span>
+          </div>
+        </a>
+
+        <!-- 6. Soda Tapper -->
+        <a href="soda-tapper/index.html" class="lb-card">
+          <div class="lb-icon">🍺</div>
+          <div class="lb-info">
+            <span class="lb-name">Soda Tapper</span>
+            <span class="lb-score" id="lbSodaTapper">--</span>
+          </div>
+        </a>
+
+        <!-- 7. Hungry Hippos -->
+        <a href="hungry-hippos/index.html" class="lb-card">
+          <div class="lb-icon">🦛</div>
+          <div class="lb-info">
+            <span class="lb-name">Hungry Hippos</span>
+            <span class="lb-score" id="lbHippos">--</span>
+          </div>
+        </a>
+
+        <!-- 8. Dino Runner -->
+        <a href="dino-runner/index.html" class="lb-card">
+          <div class="lb-icon">🦖</div>
+          <div class="lb-info">
+            <span class="lb-name">Dino Runner</span>
+            <span class="lb-score" id="lbDino">--</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
     <p class="footer-note">
       Created by <a href="https://github.com/bgtsidharth/Browser-Games">@bgtsidharth</a> • Completely silent & safe for any environment
     </p>
   </div>
 
+  <script>
+    (function() {
+      'use strict';
+
+      function loadLeaderboard() {
+        // 1. Water Ring Toss
+        const ringScore = localStorage.getItem('waterRingToss_bestScore');
+        const lbRing = document.getElementById('lbRingToss');
+        if (ringScore && parseInt(ringScore, 10) > 0) {
+          lbRing.textContent = `${ringScore} / 12 Rings`;
+          lbRing.classList.remove('empty');
+        } else {
+          lbRing.textContent = 'NO RECORD YET';
+          lbRing.classList.add('empty');
+        }
+
+        // 2. Bishi Bashi
+        const bishiAlt = localStorage.getItem('bishiBashi_bestAltitude');
+        const lbBishi = document.getElementById('lbBishiBashi');
+        if (bishiAlt && parseInt(bishiAlt, 10) > 0) {
+          lbBishi.textContent = `${parseInt(bishiAlt, 10).toLocaleString()} km`;
+          lbBishi.classList.remove('empty');
+        } else {
+          lbBishi.textContent = 'NO RECORD YET';
+          lbBishi.classList.add('empty');
+        }
+
+        // 3. Crocodile Dentist
+        const crocStreak = localStorage.getItem('crocDentist_bestStreak');
+        const lbCroc = document.getElementById('lbCrocDentist');
+        if (crocStreak && parseInt(crocStreak, 10) > 0) {
+          lbCroc.textContent = `${crocStreak} Teeth Streak`;
+          lbCroc.classList.remove('empty');
+        } else {
+          lbCroc.textContent = 'NO RECORD YET';
+          lbCroc.classList.add('empty');
+        }
+
+        // 4. Nu Pogodi
+        const nuScore = localStorage.getItem('nuPogodi_highScore');
+        const lbNu = document.getElementById('lbNuPogodi');
+        if (nuScore && parseInt(nuScore, 10) > 0) {
+          lbNu.textContent = `${nuScore} Eggs`;
+          lbNu.classList.remove('empty');
+        } else {
+          lbNu.textContent = 'NO RECORD YET';
+          lbNu.classList.add('empty');
+        }
+
+        // 5. Desktop Destroyer
+        const destroyHits = localStorage.getItem('desktopDestroyer_bestHits');
+        const lbDestroy = document.getElementById('lbDestroyer');
+        if (destroyHits && parseInt(destroyHits, 10) > 0) {
+          lbDestroy.textContent = `${destroyHits} Hits`;
+          lbDestroy.classList.remove('empty');
+        } else {
+          lbDestroy.textContent = 'NO RECORD YET';
+          lbDestroy.classList.add('empty');
+        }
+
+        // 6. Soda Tapper
+        const tapperScore = localStorage.getItem('sodaTapper_highScore');
+        const lbTapper = document.getElementById('lbSodaTapper');
+        if (tapperScore && parseInt(tapperScore, 10) > 0) {
+          lbTapper.textContent = `${tapperScore} Pts`;
+          lbTapper.classList.remove('empty');
+        } else {
+          lbTapper.textContent = 'NO RECORD YET';
+          lbTapper.classList.add('empty');
+        }
+
+        // 7. Hungry Hippos
+        const hippoScore = localStorage.getItem('hungryHippos_bestScore');
+        const lbHippo = document.getElementById('lbHippos');
+        if (hippoScore && parseInt(hippoScore, 10) > 0) {
+          lbHippo.textContent = `${hippoScore} Marbles`;
+          lbHippo.classList.remove('empty');
+        } else {
+          lbHippo.textContent = 'NO RECORD YET';
+          lbHippo.classList.add('empty');
+        }
+
+        // 8. Dino Runner
+        const dinoScore = localStorage.getItem('dinoRunner_highScore');
+        const lbDinoElem = document.getElementById('lbDino');
+        if (dinoScore && parseInt(dinoScore, 10) > 0) {
+          lbDinoElem.textContent = `${dinoScore} Pts`;
+          lbDinoElem.classList.remove('empty');
+        } else {
+          lbDinoElem.textContent = 'NO RECORD YET';
+          lbDinoElem.classList.add('empty');
+        }
+      }
+
+      loadLeaderboard();
+
+      // Reset button
+      document.getElementById('btnResetAllScores').addEventListener('click', () => {
+        if (confirm('Are you sure you want to reset all saved high scores on this device?')) {
+          localStorage.removeItem('waterRingToss_bestScore');
+          localStorage.removeItem('bishiBashi_bestAltitude');
+          localStorage.removeItem('crocDentist_bestStreak');
+          localStorage.removeItem('nuPogodi_highScore');
+          localStorage.removeItem('desktopDestroyer_bestHits');
+          localStorage.removeItem('sodaTapper_highScore');
+          localStorage.removeItem('hungryHippos_bestScore');
+          localStorage.removeItem('dinoRunner_highScore');
+          loadLeaderboard();
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
