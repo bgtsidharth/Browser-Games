@@ -250,7 +250,7 @@
       }
 
       function jump() {
-        if (!isPlaying) {
+        if (!isPlaying || isGameOver) {
           resetGame();
           return;
         }
@@ -261,7 +261,7 @@
       }
 
       function duck(active) {
-        if (!isPlaying) return;
+        if (!isPlaying || isGameOver) return;
         dino.isDucking = active;
         if (active) {
           dino.h = 24;
@@ -275,17 +275,17 @@
 
       // Input Listeners
       window.addEventListener('keydown', (e) => {
-        if (e.code === 'Space' || e.code === 'ArrowUp') {
+        if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW' || (isGameOver && e.code === 'Enter')) {
           e.preventDefault();
           jump();
-        } else if (e.code === 'ArrowDown') {
+        } else if (e.code === 'ArrowDown' || e.code === 'KeyS') {
           e.preventDefault();
           duck(true);
         }
       });
 
       window.addEventListener('keyup', (e) => {
-        if (e.code === 'ArrowDown') {
+        if (e.code === 'ArrowDown' || e.code === 'KeyS') {
           duck(false);
         }
       });
@@ -293,6 +293,14 @@
       canvas.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         jump();
+      });
+
+      // Also allow clicking anywhere on the game container or pressing buttons to restart
+      document.querySelector('.runner-wrap').addEventListener('pointerdown', (e) => {
+        if (isGameOver) {
+          e.preventDefault();
+          resetGame();
+        }
       });
 
       btnJump.addEventListener('pointerdown', (e) => { e.preventDefault(); jump(); });
