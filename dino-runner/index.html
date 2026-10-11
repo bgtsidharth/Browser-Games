@@ -193,7 +193,8 @@
       let hiScore = parseInt(localStorage.getItem('dinoRunner_highScore') || '0', 10);
       hiScoreText.textContent = hiScore.toString().padStart(5, '0');
 
-      let speed = 7.5;
+      const START_SPEED = 4.2;
+      let speed = START_SPEED;
       let isPlaying = false;
       let isGameOver = false;
       let frameCount = 0;
@@ -206,8 +207,8 @@
         w: 40,
         h: 44,
         vy: 0,
-        gravity: 0.72,
-        jumpPower: -13.2,
+        gravity: 0.62,
+        jumpPower: -11.8,
         isGrounded: true,
         isDucking: false,
         legFrame: 0
@@ -220,9 +221,9 @@
 
       function initHorizon() {
         clouds = [
-          { x: 200, y: 50, speed: 1 },
-          { x: 500, y: 70, speed: 0.8 },
-          { x: 750, y: 40, speed: 1.1 }
+          { x: 200, y: 50, speed: 0.8 },
+          { x: 500, y: 70, speed: 0.6 },
+          { x: 750, y: 40, speed: 0.9 }
         ];
         horizonBumps = [];
         for (let i = 0; i < 760; i += 30) {
@@ -234,7 +235,7 @@
 
       function resetGame() {
         score = 0;
-        speed = 7.5;
+        speed = START_SPEED;
         dino.y = GROUND_Y - 44;
         dino.vy = 0;
         dino.isGrounded = true;
@@ -346,9 +347,9 @@
             hiScoreText.textContent = hiScore.toString().padStart(5, '0');
           }
 
-          // Gradual speed acceleration
-          if (score % 100 === 0 && speed < 16) {
-            speed += 0.35;
+          // Gradual speed acceleration: smoothly picks up pace as you progress
+          if (score % 75 === 0 && speed < 14) {
+            speed += 0.28;
           }
 
           // Day / Night cycle every 500 points
@@ -370,7 +371,7 @@
           }
         }
 
-        dino.legFrame = (Math.floor(frameCount / 4) % 2);
+        dino.legFrame = (Math.floor(frameCount / 5) % 2);
 
         // Move Horizon & Clouds
         for (let c of clouds) {
@@ -383,9 +384,10 @@
           if (b.x < -20) b.x = 760;
         }
 
-        // Spawn obstacles with randomized gaps
+        // Spawn obstacles with comfortable gaps that scale with speed
+        const minGap = 240 + speed * 12;
         const lastObstacle = obstacles[obstacles.length - 1];
-        if (!lastObstacle || (760 - lastObstacle.x > Math.random() * 220 + 260)) {
+        if (!lastObstacle || (760 - lastObstacle.x > Math.random() * 180 + minGap)) {
           spawnObstacle();
         }
 
