@@ -294,6 +294,23 @@
       color: #00f3ff;
       text-decoration: none;
     }
+
+    .arcade-tools { width: 100%; display: flex; align-items: center; gap: 12px; margin: -12px 0 20px; flex-wrap: wrap; }
+    .game-search { flex: 1 1 260px; min-width: 0; border: 2px solid rgba(0,243,255,.45); border-radius: 999px; background: rgba(18,12,38,.9); color: #fff; font: 15px 'Fredoka One',cursive,sans-serif; padding: 13px 18px; outline: none; }
+    .game-search:focus { border-color: #00f3ff; box-shadow: 0 0 18px rgba(0,243,255,.25); }
+    .tool-btn { border: 2px solid rgba(0,243,255,.55); border-radius: 999px; background: rgba(0,243,255,.1); color: #fff; font: 12px 'Press Start 2P',monospace; padding: 13px 16px; min-height: 46px; cursor: pointer; transition: background .2s,transform .2s; }
+    .tool-btn:hover { background: rgba(0,243,255,.24); transform: translateY(-2px); }
+    .tool-btn[aria-pressed="true"] { background: #00b9c4; border-color: #7cfcff; }
+    .game-search:focus-visible,.tool-btn:focus-visible,.favorite-btn:focus-visible,.game-card:focus-visible,.lb-card:focus-visible,.btn-reset-scores:focus-visible { outline: 3px solid #ffe600; outline-offset: 4px; }
+    .game-card { padding-top: 34px; }
+    .game-card-wrap { position: relative; display: flex; min-width: 0; }
+    .game-card-wrap > .game-card { width: 100%; }
+    .favorite-btn { position: absolute; top: 10px; right: 12px; z-index: 1; width: 42px; height: 42px; border: 1px solid rgba(255,255,255,.25); border-radius: 50%; background: rgba(5,2,10,.68); color: #b8b3db; font-size: 22px; cursor: pointer; }
+    .favorite-btn[aria-pressed="true"] { color: #ffe600; border-color: #ffe600; }
+    .games-empty { display: none; color: #b8b3db; padding: 24px; grid-column: 1 / -1; }
+    .games-empty.visible { display: block; }
+    @media (max-width: 560px) { .arcade-tools { align-items: stretch; } .tool-btn { flex: 1; font-size: 9px; padding-inline: 10px; } }
+    @media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
   </style>
 </head>
 <body>
@@ -304,6 +321,13 @@
     <p class="hub-subtitle">
       Zero installation. Pure HTML5 Canvas & Physics simulations. Completely silent and 100% free to play right in your browser!
     </p>
+
+    <div class="arcade-tools" role="search">
+      <input class="game-search" id="gameSearch" type="search" placeholder="Find a game…  (press /)" aria-label="Search arcade games">
+      <button class="tool-btn" id="favoritesFilter" type="button" aria-pressed="false">☆ FAVORITES</button>
+      <button class="tool-btn" id="randomGame" type="button">🎲 SURPRISE ME</button>
+    </div>
+    <p id="gameResults" class="footer-note" aria-live="polite" style="width:100%;text-align:left;margin:-8px 0 14px"></p>
 
     <div class="games-grid">
       <!-- Game 1: Water Ring Toss -->
@@ -431,6 +455,7 @@
         </p>
         <span class="card-play-btn">PLAY NOW 🏃‍♂️</span>
       </a>
+      <p class="games-empty" id="gamesEmpty">No games match that search. Try another title or clear the search.</p>
     </div>
 
     <!-- Hall of Fame Arcade Leaderboard Section -->
@@ -532,6 +557,91 @@
   <script>
     (function() {
       'use strict';
+
+      const gameCards = Array.from(document.querySelectorAll('.games-grid .game-card'));
+      const gameSearch = document.getElementById('gameSearch');
+      const favoritesFilter = document.getElementById('favoritesFilter');
+      const gameResults = document.getElementById('gameResults');
+      const gamesEmpty = document.getElementById('gamesEmpty');
+      const favoriteKey = 'retroArcade_favorites';
+      let savedFavorites = [];
+      try { savedFavorites = JSON.parse(localStorage.getItem(favoriteKey) || '[]'); } catch (_) { savedFavorites = []; }
+      const favorites = new Set(Array.isArray(savedFavorites) ? savedFavorites : []);
+      let showFavorites = false;
+
+      gameCards.forEach((card) => {
+        const gameId = card.getAttribute('href');
+        const favorite = document.createElement('button');
+        favorite.type = 'button';
+        favorite.className = 'favorite-btn';
+        favorite.setAttribute('aria-label', 'Add to favorites');
+        favorite.setAttribute('aria-pressed', String(favorites.has(gameId)));
+        favorite.textContent = favorites.has(gameId) ? '★' : '☆';
+        favorite.addEventListener('click', (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          if (favorites.has(gameId)) favorites.delete(gameId); else favorites.add(gameId);
+          localStorage.setItem(favoriteKey, JSON.stringify(Array.from(favorites)));
+          favorite.setAttribute('aria-pressed', String(favorites.has(gameId)));
+          favorite.setAttribute('aria-label', favorites.has(gameId) ? 'Remove from favorites' : 'Add to favorites');
+          favorite.textContent = favorites.has(gameId) ? '★' : '☆';
+          filterGames();
+        });
+        favorite.setAttribute('aria-label', favorites.has(gameId) ? 'Remove from favorites' : 'Add to favorites');
+        const wrapper = document.createElement('div');
+        wrapper.className = 'game-card-wrap';
+        card.before(wrapper);
+        wrapper.append(card, favorite);
+        card.addEventListener('click', () => localStorage.setItem('retroArcade_lastPlayed', gameId));
+      });
+
+      function filterGames() {
+        const query = gameSearch.value.trim().toLocaleLowerCase();
+        let shown = 0;
+        gameCards.forEach((card) => {
+          const isFavorite = favorites.has(card.getAttribute('href'));
+          const matches = card.textContent.toLocaleLowerCase().includes(query) && (!showFavorites || isFavorite);
+          card.parentElement.hidden = !matches;
+          if (matches) shown++;
+        });
+        gamesEmpty.classList.toggle('visible', shown === 0);
+        gameResults.textContent = showFavorites
+          ? `${shown} favorite ${shown === 1 ? 'game' : 'games'}`
+          : `${shown} ${shown === 1 ? 'game' : 'games'}${query ? ' found' : ' ready to play'}`;
+      }
+
+      gameSearch.addEventListener('input', filterGames);
+      favoritesFilter.addEventListener('click', () => {
+        showFavorites = !showFavorites;
+        favoritesFilter.setAttribute('aria-pressed', String(showFavorites));
+        favoritesFilter.textContent = showFavorites ? '★ ALL GAMES' : '☆ FAVORITES';
+        filterGames();
+      });
+      document.getElementById('randomGame').addEventListener('click', () => {
+        const choices = gameCards.filter((card) => !card.parentElement.hidden);
+        if (choices.length) window.location.href = choices[Math.floor(Math.random() * choices.length)].getAttribute('href');
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === '/' && !event.ctrlKey && !event.metaKey && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+          event.preventDefault();
+          gameSearch.focus();
+        }
+        if (event.key === 'Escape' && document.activeElement === gameSearch) {
+          gameSearch.value = '';
+          filterGames();
+          gameSearch.blur();
+        }
+      });
+      const lastPlayed = localStorage.getItem('retroArcade_lastPlayed');
+      if (gameCards.some((card) => card.getAttribute('href') === lastPlayed)) {
+        const continueLink = document.createElement('a');
+        continueLink.className = 'tool-btn';
+        continueLink.href = lastPlayed;
+        continueLink.textContent = '▶ CONTINUE LAST GAME';
+        continueLink.addEventListener('click', () => localStorage.setItem('retroArcade_lastPlayed', lastPlayed));
+        document.querySelector('.arcade-tools').appendChild(continueLink);
+      }
+      filterGames();
 
       function loadLeaderboard() {
         // 1. Water Ring Toss
@@ -655,3 +765,4 @@
   </script>
 </body>
 </html>
+
