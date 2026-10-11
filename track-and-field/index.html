@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Retro Track & Field 1984 (Hyper Olympic) 🏃‍♂️🏅</title>
+  <title>Track & Field 1984 (Hyper Olympic) - NES Edition 🏃‍♂️🏅</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Bungee&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
@@ -17,7 +17,7 @@
     }
 
     body {
-      background: #111;
+      background: #000;
       color: #fff;
       font-family: 'Press Start 2P', monospace;
       min-height: 100vh;
@@ -26,125 +26,111 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      padding: 10px;
+      padding: 6px;
     }
 
-    /* Top Navigation */
+    /* Top Nav */
     .top-nav {
       position: absolute;
-      top: 14px;
-      left: 18px;
+      top: 10px;
+      left: 14px;
       z-index: 100;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .nav-btn {
-      background: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: #ffd700;
-      padding: 6px 14px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-family: inherit;
+      background: #222;
+      border: 2px solid #555;
+      color: #f7d51d;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 10px;
       text-decoration: none;
-      transition: all 0.2s;
+      font-family: inherit;
+      transition: all 0.15s;
     }
 
     .nav-btn:hover {
-      background: #ffd700;
-      color: #111;
+      background: #f7d51d;
+      color: #000;
+      border-color: #fff;
     }
 
-    /* Main NES Arcade Frame */
-    .arcade-wrapper {
+    /* NES TV / Arcade Outer Frame */
+    .nes-frame {
       position: relative;
       width: 100%;
-      max-width: 840px;
-      background: #2b2b2b;
-      border: 8px solid #555;
-      border-radius: 20px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+      max-width: 800px;
+      background: #181818;
+      border: 6px solid #444;
+      border-radius: 8px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.9);
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 16px;
+      padding: 10px;
     }
 
-    /* Olympic Event Tabs */
-    .event-tabs {
+    /* Event Selection Bar */
+    .event-selector {
       display: flex;
       width: 100%;
-      max-width: 780px;
+      max-width: 768px;
       justify-content: center;
-      gap: 10px;
-      margin-bottom: 12px;
+      gap: 8px;
+      margin-bottom: 8px;
     }
 
-    .tab-btn {
-      background: rgba(255, 255, 255, 0.1);
-      border: 2px solid #777;
-      border-radius: 8px;
-      color: #aaa;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 10px;
-      padding: 8px 14px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .tab-btn:hover {
-      color: #fff;
-      border-color: #ffd700;
-    }
-
-    .tab-btn.active {
-      background: #b71c1c;
-      color: #ffd700;
-      border-color: #ffd700;
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-    }
-
-    .olympic-header {
-      width: 100%;
-      max-width: 780px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11px;
-      color: #ffe600;
-      margin-bottom: 10px;
-      padding: 0 8px;
-    }
-
-    #gameCanvas {
-      width: 100%;
-      max-width: 780px;
-      height: 380px;
+    .event-btn {
       background: #000;
+      border: 2px solid #666;
+      color: #aaa;
+      font-family: inherit;
+      font-size: 9px;
+      padding: 6px 12px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .event-btn.active {
+      background: #b51a00;
+      border-color: #fce453;
+      color: #fce453;
+      box-shadow: 0 0 8px rgba(252, 228, 83, 0.4);
+    }
+
+    /* Pure 4:3 Pixel Aspect Ratio Canvas (256x224 scaled to 768x448) */
+    #nesCanvas {
+      width: 100%;
+      max-width: 768px;
+      height: 448px;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
       border: 4px solid #fff;
       display: block;
+      background: #000;
       cursor: pointer;
     }
 
-    /* Arcade Physical Push Buttons (Run 1, Action, Run 2) */
-    .olympic-console {
+    /* NES Controller / Button Console */
+    .nes-controller {
       width: 100%;
-      max-width: 780px;
+      max-width: 768px;
       display: flex;
       justify-content: space-around;
       align-items: center;
-      margin-top: 14px;
-      gap: 14px;
+      margin-top: 10px;
+      gap: 12px;
     }
 
-    .console-btn {
+    .ctrl-btn {
       flex: 1;
-      height: 64px;
-      border-radius: 14px;
-      border: 4px solid #fff;
-      font-family: 'Press Start 2P', monospace;
+      height: 54px;
+      border-radius: 6px;
+      border: 3px solid #eee;
+      font-family: inherit;
       font-size: 11px;
       color: #fff;
       cursor: pointer;
@@ -153,33 +139,34 @@
       align-items: center;
       justify-content: center;
       gap: 4px;
-      transition: transform 0.05s, box-shadow 0.05s;
+      transition: transform 0.04s, box-shadow 0.04s;
     }
 
-    .btn-run {
-      background: linear-gradient(180deg, #ff3366, #b3002d);
-      box-shadow: 0 6px 0 #66001a;
+    .btn-run-left, .btn-run-right {
+      background: #b51a00;
+      box-shadow: 0 4px 0 #5b0000;
+    }
+    .btn-run-left:active, .btn-run-left.pressed,
+    .btn-run-right:active, .btn-run-right.pressed {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #5b0000;
+      filter: brightness(1.2);
     }
 
-    .btn-run:active, .btn-run.pressed {
-      transform: translateY(4px);
-      box-shadow: 0 2px 0 #66001a;
+    .btn-action-jump {
+      background: #0078f8;
+      box-shadow: 0 4px 0 #003680;
     }
-
-    .btn-action {
-      background: linear-gradient(180deg, #00d2ff, #007799);
-      box-shadow: 0 6px 0 #004455;
-    }
-
-    .btn-action:active, .btn-action.pressed {
-      transform: translateY(4px);
-      box-shadow: 0 2px 0 #004455;
+    .btn-action-jump:active, .btn-action-jump.pressed {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #003680;
+      filter: brightness(1.2);
     }
 
     .controls-hint {
-      margin-top: 14px;
-      font-size: 9px;
-      color: #aaa;
+      margin-top: 8px;
+      font-size: 8px;
+      color: #888;
       text-align: center;
       line-height: 1.6;
     }
@@ -191,66 +178,73 @@
     <a href="../index.html" class="nav-btn">🎮 All Games</a>
   </nav>
 
-  <main class="arcade-wrapper">
-    <!-- Olympic Event Tabs -->
-    <div class="event-tabs">
-      <button class="tab-btn active" data-event="hurdles">🏃 110M HURDLES</button>
-      <button class="tab-btn" data-event="longjump">👟 LONG JUMP</button>
-      <button class="tab-btn" data-event="javelin">🎯 JAVELIN THROW</button>
+  <main class="nes-frame">
+    <!-- Event Tabs -->
+    <div class="event-selector">
+      <button class="event-btn active" data-event="hurdles">110M HURDLES</button>
+      <button class="event-btn" data-event="longjump">LONG JUMP</button>
+      <button class="event-btn" data-event="javelin">JAVELIN THROW</button>
     </div>
 
-    <div class="olympic-header">
-      <div id="eventTitle">EVENT: 110M HURDLES</div>
-      <div>RECORD: <span id="recordText">14.50S</span></div>
-      <div id="currentStat">TIME: <span id="statValue" style="color: #00e5ff;">0.00S</span></div>
-    </div>
+    <!-- 256x224 Native NES Resolution Canvas -->
+    <canvas id="nesCanvas" width="256" height="224"></canvas>
 
-    <canvas id="gameCanvas" width="780" height="380"></canvas>
-
-    <div class="olympic-console">
-      <button class="console-btn btn-run" id="btnRun1">
-        <span>RUN L</span>
-        <span style="font-size: 8px; color: #ffd700;">[ Z / ◄ ]</span>
+    <!-- Arcade Controller Panel -->
+    <div class="nes-controller">
+      <button class="ctrl-btn btn-run-left" id="btnRun1">
+        <span>RUN 1</span>
+        <span style="font-size: 8px; color: #fce453;">[ Z / ◄ ]</span>
       </button>
 
-      <button class="console-btn btn-action" id="btnAction">
-        <span id="actionBtnLabel">JUMP</span>
-        <span style="font-size: 8px; color: #ffd700;">[ SPACE ]</span>
+      <button class="ctrl-btn btn-action-jump" id="btnJump">
+        <span id="actionLabel">JUMP</span>
+        <span style="font-size: 8px; color: #fce453;">[ SPACE ]</span>
       </button>
 
-      <button class="console-btn btn-run" id="btnRun2">
-        <span>RUN R</span>
-        <span style="font-size: 8px; color: #ffd700;">[ X / ► ]</span>
+      <button class="ctrl-btn btn-run-right" id="btnRun2">
+        <span>RUN 2</span>
+        <span style="font-size: 8px; color: #fce453;">[ X / ► ]</span>
       </button>
     </div>
 
-    <p class="controls-hint" id="controlsHint">
-      ALTERNATE <kbd>Z</kbd> & <kbd>X</kbd> (or <kbd>◄</kbd> & <kbd>►</kbd>) RAPIDLY TO SPRINT &bull; PRESS <kbd>SPACE</kbd> TO JUMP!
+    <p class="controls-hint" id="hintText">
+      ALTERNATE [ Z ] AND [ X ] AS FAST AS POSSIBLE &bull; PRESS [ SPACE ] TO JUMP / SET ANGLE
     </p>
   </main>
 
   <script>
-    /* Retro Track & Field 1984 (Hyper Olympic) - Complete 3-Event Olympic Arcade */
+    /* Track & Field 1984 NES Edition - 100% Authentic NES Palette & Pixel Engine */
     (function () {
       'use strict';
 
-      const canvas = document.getElementById('gameCanvas');
+      const canvas = document.getElementById('nesCanvas');
       const ctx = canvas.getContext('2d');
-      const eventTitle = document.getElementById('eventTitle');
-      const recordText = document.getElementById('recordText');
-      const currentStat = document.getElementById('currentStat');
-      const statValue = document.getElementById('statValue');
-      const actionBtnLabel = document.getElementById('actionBtnLabel');
-      const controlsHint = document.getElementById('controlsHint');
+      ctx.imageSmoothingEnabled = false;
 
-      const btnRun1 = document.getElementById('btnRun1');
-      const btnRun2 = document.getElementById('btnRun2');
-      const btnAction = document.getElementById('btnAction');
-      const tabs = document.querySelectorAll('.tab-btn');
+      // Authentic NES Color Palette
+      const NES = {
+        BLACK: '#000000',
+        WHITE: '#fcfcfc',
+        GRAY_DARK: '#747474',
+        GRAY_LIGHT: '#bcbcbc',
+        SKY_BLUE: '#3cbcfc',
+        TARTAN_RED: '#b51a00',
+        TARTAN_LINE: '#fcfcfc',
+        SAND_YELLOW: '#e4a010',
+        GRASS_GREEN: '#00a800',
+        GRASS_DARK: '#006800',
+        GOLD_YELLOW: '#fce453',
+        SKIN_PEACH: '#fc9838',
+        HAIR_BROWN: '#503000',
+        P1_JERSEY: '#6b3df5', // Iconic NES Purple/Blue uniform
+        P1_STRIPE: '#fcfcfc',
+        CPU_JERSEY: '#0078f8',
+        BARRIER_BLUE: '#0040a8'
+      };
 
       let currentEvent = 'hurdles'; // 'hurdles' | 'longjump' | 'javelin'
 
-      // Records in localStorage
+      // Records
       function getRecords() {
         return {
           hurdles: parseFloat(localStorage.getItem('trackField_bestHurdles') || '0'),
@@ -259,49 +253,43 @@
         };
       }
 
-      function updateRecordDisplay() {
-        const records = getRecords();
-        if (currentEvent === 'hurdles') {
-          eventTitle.textContent = 'EVENT: 110M HURDLES';
-          actionBtnLabel.textContent = 'JUMP';
-          controlsHint.innerHTML = 'ALTERNATE <kbd>Z</kbd> & <kbd>X</kbd> TO SPRINT &bull; PRESS <kbd>SPACE</kbd> TO CLEAR HURDLES!';
-          recordText.textContent = records.hurdles > 0 ? `${records.hurdles.toFixed(2)}S` : 'NONE';
-        } else if (currentEvent === 'longjump') {
-          eventTitle.textContent = 'EVENT: LONG JUMP';
-          actionBtnLabel.textContent = 'JUMP (HOLD)';
-          controlsHint.innerHTML = 'SPRINT TO THE FOUL LINE &bull; HOLD <kbd>SPACE</kbd> TO SET 45° ANGLE & RELEASE TO LEAP!';
-          recordText.textContent = records.longjump > 0 ? `${records.longjump.toFixed(2)}M` : 'NONE';
-        } else if (currentEvent === 'javelin') {
-          eventTitle.textContent = 'EVENT: JAVELIN THROW';
-          actionBtnLabel.textContent = 'THROW (HOLD)';
-          controlsHint.innerHTML = 'SPRINT TO THE SCRATCH LINE &bull; HOLD <kbd>SPACE</kbd> FOR 42° TRAJECTORY & LAUNCH!';
-          recordText.textContent = records.javelin > 0 ? `${records.javelin.toFixed(2)}M` : 'NONE';
-        }
-      }
+      // Event Switcher
+      const eventButtons = document.querySelectorAll('.event-btn');
+      const actionLabel = document.getElementById('actionLabel');
+      const hintText = document.getElementById('hintText');
 
-      // Event Switching
-      tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-          tabs.forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          currentEvent = tab.dataset.event;
-          updateRecordDisplay();
+      eventButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          eventButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentEvent = btn.dataset.event;
+
+          if (currentEvent === 'hurdles') {
+            actionLabel.textContent = 'JUMP';
+            hintText.innerHTML = 'ALTERNATE [ Z ] AND [ X ] TO SPRINT &bull; PRESS [ SPACE ] TO CLEAR HURDLES';
+          } else if (currentEvent === 'longjump') {
+            actionLabel.textContent = 'LEAP';
+            hintText.innerHTML = 'SPRINT TO THE FOUL LINE &bull; HOLD [ SPACE ] FOR 45° AND RELEASE TO LEAP';
+          } else if (currentEvent === 'javelin') {
+            actionLabel.textContent = 'THROW';
+            hintText.innerHTML = 'SPRINT TO SCRATCH LINE &bull; HOLD [ SPACE ] FOR 42° TRAJECTORY & RELEASE';
+          }
           resetEvent();
         });
       });
 
-      // State
-      let state = 'READY'; // 'READY' | 'RUNNING' | 'ACTION' | 'FINISHED'
+      // Game States
+      let state = 'READY'; // 'READY', 'RUNNING', 'ACTION', 'FINISHED'
       let countdown = 80;
       let timerMs = 0;
-      let lastTime = 0;
       let cameraX = 0;
+      let lastTime = 0;
 
-      // Athlete Object
-      const athlete = {
-        x: 60,
-        y: 270,
-        baseY: 270,
+      // P1 Athlete
+      const p1 = {
+        x: 30,
+        y: 146,
+        baseY: 146,
         speed: 0,
         vx: 0,
         vy: 0,
@@ -310,12 +298,23 @@
         lastFoot: null,
         knockTimer: 0,
         legFrame: 0,
-        distanceMeters: 0,
+        distanceM: 0,
         isFoul: false
       };
 
-      // Projectile (Javelin / In-Flight Jumper)
-      const projectile = {
+      // CPU Athlete (Lane 2 in Hurdles)
+      const cpu = {
+        x: 30,
+        y: 196,
+        baseY: 196,
+        speed: 0,
+        vy: 0,
+        legFrame: 0,
+        isJumping: false
+      };
+
+      // In-flight projectile (Javelin)
+      const javelin = {
         x: 0,
         y: 0,
         vx: 0,
@@ -325,10 +324,14 @@
         landed: false
       };
 
-      // Hurdles (Event 1)
+      // 10 Hurdles for Lane 1 & Lane 2
       const hurdles = [];
       for (let i = 0; i < 9; i++) {
-        hurdles.push({ x: 340 + i * 220, knocked: false });
+        hurdles.push({
+          x: 200 + i * 140,
+          knockedP1: false,
+          knockedCpu: false
+        });
       }
 
       function resetEvent() {
@@ -337,34 +340,42 @@
         timerMs = 0;
         cameraX = 0;
 
-        athlete.x = 60;
-        athlete.y = 270;
-        athlete.speed = 0;
-        athlete.vx = 0;
-        athlete.vy = 0;
-        athlete.angleDeg = 0;
-        athlete.isHoldingAction = false;
-        athlete.knockTimer = 0;
-        athlete.lastFoot = null;
-        athlete.distanceMeters = 0;
-        athlete.isFoul = false;
+        p1.x = 30;
+        p1.y = currentEvent === 'hurdles' ? 146 : 166;
+        p1.baseY = p1.y;
+        p1.speed = 0;
+        p1.vx = 0;
+        p1.vy = 0;
+        p1.angleDeg = 0;
+        p1.isHoldingAction = false;
+        p1.knockTimer = 0;
+        p1.lastFoot = null;
+        p1.distanceM = 0;
+        p1.isFoul = false;
 
-        projectile.active = false;
-        projectile.landed = false;
+        cpu.x = 30;
+        cpu.speed = 0;
+        cpu.vy = 0;
+        cpu.isJumping = false;
 
-        hurdles.forEach(h => h.knocked = false);
-        statValue.textContent = currentEvent === 'hurdles' ? '0.00S' : '0.00M';
+        javelin.active = false;
+        javelin.landed = false;
+
+        hurdles.forEach(h => {
+          h.knockedP1 = false;
+          h.knockedCpu = false;
+        });
       }
 
+      // Input Mechanics
       function handleRun(foot) {
         if (state === 'READY' || state === 'FINISHED') return;
-
-        if (athlete.knockTimer <= 0) {
-          if (athlete.lastFoot !== foot) {
-            athlete.speed = Math.min(14.5, athlete.speed + 1.25);
-            athlete.lastFoot = foot;
+        if (p1.knockTimer <= 0) {
+          if (p1.lastFoot !== foot) {
+            p1.speed = Math.min(6.2, p1.speed + 0.58);
+            p1.lastFoot = foot;
           } else {
-            athlete.speed = Math.max(1, athlete.speed * 0.82); // Stumble penalty
+            p1.speed = Math.max(0.5, p1.speed * 0.85); // Stumble
           }
         }
       }
@@ -374,67 +385,60 @@
           resetEvent();
           return;
         }
-
         if (state !== 'RUNNING') return;
 
         if (currentEvent === 'hurdles') {
-          // Standard Hurdle Jump
-          if (athlete.y >= athlete.baseY && athlete.speed > 1.5) {
-            athlete.vy = -10.5;
+          if (p1.y >= p1.baseY && p1.speed > 0.8) {
+            p1.vy = -5.4;
           }
         } else if (currentEvent === 'longjump' || currentEvent === 'javelin') {
-          // Start Angle Charging
-          athlete.isHoldingAction = true;
+          p1.isHoldingAction = true;
         }
       }
 
       function handleActionRelease() {
-        if (!athlete.isHoldingAction || state !== 'RUNNING') return;
-        athlete.isHoldingAction = false;
+        if (!p1.isHoldingAction || state !== 'RUNNING') return;
+        p1.isHoldingAction = false;
 
         if (currentEvent === 'longjump') {
-          // Long Jump Leap!
-          const foulLine = 580;
-          if (athlete.x > foulLine) {
-            athlete.isFoul = true;
-          }
+          const foulLine = 360;
+          if (p1.x > foulLine) p1.isFoul = true;
 
           state = 'ACTION';
-          const launchAngle = Math.min(65, Math.max(25, athlete.angleDeg || 45));
-          const rad = (launchAngle * Math.PI) / 180;
-          athlete.vx = athlete.speed * Math.cos(rad) * 1.05;
-          athlete.vy = -athlete.speed * Math.sin(rad) * 1.25;
+          const angle = Math.min(65, Math.max(25, p1.angleDeg || 45));
+          const rad = (angle * Math.PI) / 180;
+          p1.vx = p1.speed * Math.cos(rad) * 1.05;
+          p1.vy = -p1.speed * Math.sin(rad) * 1.15;
 
         } else if (currentEvent === 'javelin') {
-          // Javelin Release Throw!
-          const scratchLine = 600;
-          if (athlete.x > scratchLine) {
-            athlete.isFoul = true;
-          }
+          const scratchLine = 370;
+          if (p1.x > scratchLine) p1.isFoul = true;
 
           state = 'ACTION';
-          projectile.active = true;
-          projectile.x = athlete.x + 15;
-          projectile.y = athlete.y - 12;
-          const throwAngle = Math.min(65, Math.max(20, athlete.angleDeg || 42));
-          const rad = (throwAngle * Math.PI) / 180;
-          projectile.vx = athlete.speed * Math.cos(rad) * 1.5;
-          projectile.vy = -athlete.speed * Math.sin(rad) * 1.6;
-          projectile.angleDeg = throwAngle;
-
-          athlete.speed = 0; // Athlete halts at scratch line
+          javelin.active = true;
+          javelin.x = p1.x + 8;
+          javelin.y = p1.y - 8;
+          const angle = Math.min(65, Math.max(20, p1.angleDeg || 42));
+          const rad = (angle * Math.PI) / 180;
+          javelin.vx = p1.speed * Math.cos(rad) * 1.45;
+          javelin.vy = -p1.speed * Math.sin(rad) * 1.45;
+          javelin.angleDeg = angle;
+          p1.speed = 0;
         }
       }
 
-      // Input Event Handlers
+      // Input Event Listeners
+      const btnRun1 = document.getElementById('btnRun1');
+      const btnRun2 = document.getElementById('btnRun2');
+      const btnJump = document.getElementById('btnJump');
+
       btnRun1.addEventListener('pointerdown', (e) => { e.preventDefault(); handleRun(1); });
       btnRun2.addEventListener('pointerdown', (e) => { e.preventDefault(); handleRun(2); });
-      btnAction.addEventListener('pointerdown', (e) => { e.preventDefault(); handleActionPress(); });
+      btnJump.addEventListener('pointerdown', (e) => { e.preventDefault(); handleActionPress(); });
       window.addEventListener('pointerup', () => { handleActionRelease(); });
 
       window.addEventListener('keydown', (e) => {
         if (e.repeat) return;
-
         if (e.code === 'KeyZ' || e.code === 'ArrowLeft') {
           btnRun1.classList.add('pressed');
           setTimeout(() => btnRun1.classList.remove('pressed'), 80);
@@ -445,7 +449,7 @@
           handleRun(2);
         } else if (e.code === 'Space' || e.code === 'ArrowUp') {
           e.preventDefault();
-          btnAction.classList.add('pressed');
+          btnJump.classList.add('pressed');
           handleActionPress();
         } else if (e.code === 'KeyR' || (state === 'FINISHED' && e.code === 'Enter')) {
           resetEvent();
@@ -454,9 +458,13 @@
 
       window.addEventListener('keyup', (e) => {
         if (e.code === 'Space' || e.code === 'ArrowUp') {
-          btnAction.classList.remove('pressed');
+          btnJump.classList.remove('pressed');
           handleActionRelease();
         }
+      });
+
+      canvas.addEventListener('pointerdown', () => {
+        if (state === 'FINISHED') resetEvent();
       });
 
       // Main Loop
@@ -472,462 +480,555 @@
       function update(dt) {
         if (state === 'READY') {
           countdown--;
-          if (countdown <= 0) {
-            state = 'RUNNING';
-          }
+          if (countdown <= 0) state = 'RUNNING';
           return;
         }
 
-        // ==========================
-        // 1. EVENT: 110M HURDLES
-        // ==========================
+        // --- 110M HURDLES ---
         if (currentEvent === 'hurdles') {
           if (state === 'RUNNING') {
             timerMs += dt;
-            statValue.textContent = `${(timerMs / 1000).toFixed(2)}S`;
 
-            if (athlete.knockTimer > 0) {
-              athlete.knockTimer--;
-              athlete.speed = 0;
+            // P1 Physics
+            if (p1.knockTimer > 0) {
+              p1.knockTimer--;
+              p1.speed = 0;
             } else {
-              athlete.speed *= 0.965;
-              athlete.x += athlete.speed;
+              p1.speed *= 0.97;
+              p1.x += p1.speed;
             }
 
-            // Jump gravity
-            if (athlete.y < athlete.baseY || athlete.vy < 0) {
-              athlete.vy += 0.65;
-              athlete.y += athlete.vy;
-              if (athlete.y >= athlete.baseY) {
-                athlete.y = athlete.baseY;
-                athlete.vy = 0;
+            if (p1.y < p1.baseY || p1.vy < 0) {
+              p1.vy += 0.36; // Gravity
+              p1.y += p1.vy;
+              if (p1.y >= p1.baseY) {
+                p1.y = p1.baseY;
+                p1.vy = 0;
               }
             }
 
-            // Hurdle collisions
+            // CPU AI
+            cpu.speed = 4.2 + Math.sin(timerMs * 0.003) * 0.8;
+            cpu.x += cpu.speed;
             for (let h of hurdles) {
-              if (!h.knocked && Math.abs(athlete.x - h.x) < 18) {
-                if (athlete.y > athlete.baseY - 26) {
-                  h.knocked = true;
-                  athlete.knockTimer = 35;
-                  athlete.speed = 0;
-                  athlete.y = athlete.baseY;
+              if (!cpu.isJumping && Math.abs(h.x - cpu.x) < 25 && !h.knockedCpu) {
+                if (Math.random() < 0.9) {
+                  cpu.isJumping = true;
+                  cpu.vy = -5.4;
+                } else {
+                  h.knockedCpu = true;
+                  cpu.speed = 1.0;
+                }
+              }
+            }
+            if (cpu.isJumping) {
+              cpu.vy += 0.36;
+              cpu.y += cpu.vy;
+              if (cpu.y >= cpu.baseY) {
+                cpu.y = cpu.baseY;
+                cpu.vy = 0;
+                cpu.isJumping = false;
+              }
+            }
+
+            // Hurdle Collision for P1
+            for (let h of hurdles) {
+              if (!h.knockedP1 && Math.abs(p1.x - h.x) < 12) {
+                if (p1.y > p1.baseY - 16) {
+                  h.knockedP1 = true;
+                  p1.knockTimer = 30;
+                  p1.speed = 0;
+                  p1.y = p1.baseY;
                 }
               }
             }
 
-            if (athlete.speed > 0.5) {
-              athlete.legFrame = (Math.floor(timerMs / 70) % 4);
-            }
+            if (p1.speed > 0.3) p1.legFrame = Math.floor(timerMs / 80) % 4;
+            if (cpu.speed > 0.3) cpu.legFrame = Math.floor(timerMs / 85) % 4;
 
-            cameraX = Math.max(0, athlete.x - 220);
+            cameraX = Math.max(0, p1.x - 70);
 
-            // Finish line at 2400
-            if (athlete.x >= 2400) {
+            // Finish at 1450 px
+            if (p1.x >= 1450) {
               state = 'FINISHED';
               const finalSec = timerMs / 1000;
               const rec = getRecords();
               if (rec.hurdles === 0 || finalSec < rec.hurdles) {
                 localStorage.setItem('trackField_bestHurdles', finalSec);
-                // Also update generic hub score
                 localStorage.setItem('trackField_bestTime', finalSec);
-                updateRecordDisplay();
               }
             }
           }
         }
 
-        // ==========================
-        // 2. EVENT: LONG JUMP
-        // ==========================
+        // --- LONG JUMP ---
         else if (currentEvent === 'longjump') {
-          const foulLine = 580;
-
+          const foulLine = 360;
           if (state === 'RUNNING') {
-            athlete.speed *= 0.985;
-            athlete.x += athlete.speed;
-
-            if (athlete.isHoldingAction) {
-              athlete.angleDeg = (athlete.angleDeg + 3) % 90;
-            }
-
-            if (athlete.speed > 0.5) {
-              athlete.legFrame = (Math.floor(athlete.x / 14) % 4);
-            }
-
-            // Auto-foul if running completely past takeoff board without jumping
-            if (athlete.x > foulLine + 60) {
-              athlete.isFoul = true;
+            p1.speed *= 0.985;
+            p1.x += p1.speed;
+            if (p1.isHoldingAction) p1.angleDeg = (p1.angleDeg + 2.8) % 90;
+            if (p1.speed > 0.3) p1.legFrame = Math.floor(p1.x / 10) % 4;
+            if (p1.x > foulLine + 30) {
+              p1.isFoul = true;
               state = 'FINISHED';
             }
           } else if (state === 'ACTION') {
-            // In Flight
-            athlete.x += athlete.vx;
-            athlete.vy += 0.58; // Gravity
-            athlete.y += athlete.vy;
-
-            // Landing in the sand pit
-            if (athlete.y >= athlete.baseY) {
-              athlete.y = athlete.baseY;
+            p1.x += p1.vx;
+            p1.vy += 0.32;
+            p1.y += p1.vy;
+            if (p1.y >= p1.baseY) {
+              p1.y = p1.baseY;
               state = 'FINISHED';
-
-              if (!athlete.isFoul) {
-                // Calculate distance in meters (pixels to meters scale)
-                const distancePx = Math.max(0, athlete.x - foulLine);
-                const meters = 6.20 + (distancePx / 48);
-                athlete.distanceMeters = Math.min(9.10, meters);
-                statValue.textContent = `${athlete.distanceMeters.toFixed(2)}M`;
-
+              if (!p1.isFoul) {
+                const distPx = Math.max(0, p1.x - foulLine);
+                p1.distanceM = Math.min(8.95, 5.80 + distPx / 28);
                 const rec = getRecords();
-                if (athlete.distanceMeters > rec.longjump) {
-                  localStorage.setItem('trackField_bestLongJump', athlete.distanceMeters);
-                  updateRecordDisplay();
+                if (p1.distanceM > rec.longjump) {
+                  localStorage.setItem('trackField_bestLongJump', p1.distanceM);
                 }
               }
             }
           }
-          cameraX = Math.max(0, athlete.x - 240);
+          cameraX = Math.max(0, p1.x - 80);
         }
 
-        // ==========================
-        // 3. EVENT: JAVELIN THROW
-        // ==========================
+        // --- JAVELIN THROW ---
         else if (currentEvent === 'javelin') {
-          const scratchLine = 600;
-
+          const scratchLine = 370;
           if (state === 'RUNNING') {
-            athlete.speed *= 0.985;
-            athlete.x += athlete.speed;
-
-            if (athlete.isHoldingAction) {
-              athlete.angleDeg = (athlete.angleDeg + 2.5) % 85;
-            }
-
-            if (athlete.speed > 0.5) {
-              athlete.legFrame = (Math.floor(athlete.x / 14) % 4);
-            }
-
-            // Auto-foul if passing scratch line without throwing
-            if (athlete.x > scratchLine + 40) {
-              athlete.isFoul = true;
+            p1.speed *= 0.985;
+            p1.x += p1.speed;
+            if (p1.isHoldingAction) p1.angleDeg = (p1.angleDeg + 2.5) % 85;
+            if (p1.speed > 0.3) p1.legFrame = Math.floor(p1.x / 10) % 4;
+            if (p1.x > scratchLine + 25) {
+              p1.isFoul = true;
               state = 'FINISHED';
             }
           } else if (state === 'ACTION') {
-            // Javelin in Flight
-            projectile.x += projectile.vx;
-            projectile.vy += 0.52; // Javelin gravity
-            projectile.y += projectile.vy;
+            javelin.x += javelin.vx;
+            javelin.vy += 0.28;
+            javelin.y += javelin.vy;
+            javelin.angleDeg = (Math.atan2(javelin.vy, javelin.vx) * 180) / Math.PI;
 
-            // Trajectory tilt follows velocity vector
-            projectile.angleDeg = (Math.atan2(projectile.vy, projectile.vx) * 180) / Math.PI;
-
-            // Landing on the field
-            if (projectile.y >= athlete.baseY + 12) {
-              projectile.y = athlete.baseY + 12;
-              projectile.active = false;
-              projectile.landed = true;
+            if (javelin.y >= p1.baseY + 8) {
+              javelin.y = p1.baseY + 8;
+              javelin.active = false;
+              javelin.landed = true;
               state = 'FINISHED';
-
-              if (!athlete.isFoul) {
-                const distancePx = Math.max(0, projectile.x - scratchLine);
-                const meters = 52.0 + (distancePx / 22);
-                athlete.distanceMeters = Math.min(104.8, meters);
-                statValue.textContent = `${athlete.distanceMeters.toFixed(2)}M`;
-
+              if (!p1.isFoul) {
+                const distPx = Math.max(0, javelin.x - scratchLine);
+                p1.distanceM = Math.min(98.8, 48.0 + distPx / 12);
                 const rec = getRecords();
-                if (athlete.distanceMeters > rec.javelin) {
-                  localStorage.setItem('trackField_bestJavelin', athlete.distanceMeters);
-                  updateRecordDisplay();
+                if (p1.distanceM > rec.javelin) {
+                  localStorage.setItem('trackField_bestJavelin', p1.distanceM);
                 }
               }
             }
-            cameraX = Math.max(0, projectile.x - 300);
+            cameraX = Math.max(0, javelin.x - 120);
           }
         }
       }
 
+      // =========================================================================
+      // NES VISUAL RENDERING ENGINE
+      // =========================================================================
       function render() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // 1. Stadium Crowd & Banners
-        drawGrandstands();
+        // 1. Top Black Letterbox Area for NES Scoreboard
+        ctx.fillStyle = NES.BLACK;
+        ctx.fillRect(0, 0, canvas.width, 42);
 
-        // 2. Track & Field Environment
+        drawNESScoreboard();
+
+        // 2. Stadium Crowd (Iconic repetitive 8-bit spectators in stands)
+        drawNESGrandstands();
+
+        // 3. Stadium Wall Barrier with classic Blue Logo Stripe
+        ctx.fillStyle = NES.BARRIER_BLUE;
+        ctx.fillRect(0, 96, canvas.width, 16);
+        ctx.fillStyle = NES.WHITE;
+        ctx.font = '8px "Press Start 2P", monospace';
+        ctx.fillText('KONAMI HYPER OLYMPIC', 10 - (cameraX * 0.2) % 180, 108);
+
+        // 4. Tartan Track or Field
         if (currentEvent === 'hurdles') {
-          drawHurdlesEnvironment();
+          drawNESHurdlesTrack();
         } else if (currentEvent === 'longjump') {
-          drawLongJumpEnvironment();
+          drawNESLongJumpField();
         } else if (currentEvent === 'javelin') {
-          drawJavelinEnvironment();
+          drawNESJavelinField();
         }
 
-        // 3. Overlays & HUD Prompts
+        // 5. NES Speed Gauge / Power Meter (Bottom Left)
+        drawNESSpeedMeter();
+
+        // 6. Overlays
         if (state === 'READY') {
-          ctx.fillStyle = 'rgba(0,0,0,0.6)';
-          ctx.fillRect(0, 80, canvas.width, 80);
-          ctx.fillStyle = '#ffe600';
-          ctx.font = '16px "Press Start 2P", monospace';
+          ctx.fillStyle = NES.BLACK;
+          ctx.fillRect(40, 115, 176, 26);
+          ctx.strokeStyle = NES.WHITE;
+          ctx.lineWidth = 1;
+          ctx.strokeRect(40, 115, 176, 26);
+          ctx.fillStyle = NES.GOLD_YELLOW;
+          ctx.font = '8px "Press Start 2P", monospace';
           ctx.textAlign = 'center';
-          ctx.fillText(countdown > 35 ? 'ON YOUR MARKS...' : 'SET... GO! 🏃‍♂️', canvas.width / 2, 128);
+          ctx.fillText(countdown > 35 ? 'ON YOUR MARKS...' : 'SET... BANG! 🔫', 128, 131);
           ctx.textAlign = 'start';
         } else if (state === 'FINISHED') {
-          ctx.fillStyle = 'rgba(0,0,0,0.85)';
-          ctx.fillRect(0, 60, canvas.width, 140);
+          ctx.fillStyle = NES.BLACK;
+          ctx.fillRect(30, 90, 196, 50);
+          ctx.strokeStyle = NES.WHITE;
+          ctx.lineWidth = 1;
+          ctx.strokeRect(30, 90, 196, 50);
           ctx.textAlign = 'center';
 
-          if (athlete.isFoul) {
+          if (p1.isFoul) {
             ctx.fillStyle = '#ff1744';
-            ctx.font = '22px "Press Start 2P", monospace';
-            ctx.fillText('FOUL! ❌', canvas.width / 2, 115);
-            ctx.fillStyle = '#fff';
-            ctx.font = '11px "Press Start 2P", monospace';
-            ctx.fillText('CROSSED THE FOUL LINE BEFORE ACTION', canvas.width / 2, 145);
+            ctx.font = '10px "Press Start 2P", monospace';
+            ctx.fillText('FOUL! ❌', 128, 110);
+            ctx.fillStyle = NES.WHITE;
+            ctx.font = '7px "Press Start 2P", monospace';
+            ctx.fillText('CROSSED LINE BEFORE LEAP', 128, 128);
           } else {
-            ctx.fillStyle = '#00e5ff';
-            ctx.font = '20px "Press Start 2P", monospace';
-            ctx.fillText('RECORD ATTEMPT COMPLETE! 🏅', canvas.width / 2, 105);
-            ctx.fillStyle = '#ffd700';
-            ctx.font = '14px "Press Start 2P", monospace';
-
+            ctx.fillStyle = NES.GOLD_YELLOW;
+            ctx.font = '9px "Press Start 2P", monospace';
+            ctx.fillText('EVENT COMPLETE! 🏅', 128, 108);
+            ctx.fillStyle = NES.WHITE;
+            ctx.font = '8px "Press Start 2P", monospace';
             if (currentEvent === 'hurdles') {
-              ctx.fillText(`TIME: ${(timerMs / 1000).toFixed(2)} SECONDS`, canvas.width / 2, 140);
+              ctx.fillText(`TIME: ${(timerMs / 1000).toFixed(2)} SEC`, 128, 122);
             } else {
-              ctx.fillText(`DISTANCE: ${athlete.distanceMeters.toFixed(2)} METERS`, canvas.width / 2, 140);
+              ctx.fillText(`RECORD: ${p1.distanceM.toFixed(2)} M`, 128, 122);
             }
           }
-
-          ctx.fillStyle = '#fff';
-          ctx.font = '10px "Press Start 2P", monospace';
-          ctx.fillText('PRESS SPACE OR CLICK TO TRY AGAIN', canvas.width / 2, 175);
           ctx.textAlign = 'start';
         }
 
-        // Angle meter UI while charging jump or throw
-        if (athlete.isHoldingAction && state === 'RUNNING') {
-          drawAngleGauge(athlete.x - cameraX + 10, athlete.y - 45, athlete.angleDeg);
+        // Angle Indicator
+        if (p1.isHoldingAction && state === 'RUNNING') {
+          ctx.fillStyle = NES.BLACK;
+          ctx.fillRect(p1.x - cameraX + 4, p1.y - 28, 30, 12);
+          ctx.fillStyle = NES.GOLD_YELLOW;
+          ctx.font = '7px "Press Start 2P", monospace';
+          ctx.fillText(`${Math.floor(p1.angleDeg)}°`, p1.x - cameraX + 6, p1.y - 19);
         }
       }
 
-      function drawGrandstands() {
-        const crowdColors = ['#e91e63', '#9c27b0', '#2196f3', '#4caf50', '#ffeb3b', '#ff9800'];
-        for (let row = 0; row < 5; row++) {
-          const y = 20 + row * 24;
-          ctx.fillStyle = row % 2 === 0 ? '#1b1b2f' : '#27273f';
-          ctx.fillRect(0, y, canvas.width, 22);
+      // --- NES SCOREBOARD HEADER ---
+      function drawNESScoreboard() {
+        ctx.fillStyle = NES.WHITE;
+        ctx.font = '8px "Press Start 2P", monospace';
 
-          for (let col = 0; col < 32; col++) {
-            const x = (col * 26) - (cameraX * 0.15) % 26;
-            ctx.fillStyle = crowdColors[(col + row) % crowdColors.length];
-            ctx.fillRect(x, y + 2, 10, 10);
-            ctx.fillStyle = '#ffd180';
-            ctx.fillRect(x + 2, y - 4, 6, 6);
+        const recs = getRecords();
+
+        // Row 1: Player & High Score
+        ctx.fillText('1P', 8, 14);
+        ctx.fillText('RECORD', 84, 14);
+        ctx.fillText('TIME', 196, 14);
+
+        // Row 2: Values in Gold / Sky Blue
+        ctx.fillStyle = NES.GOLD_YELLOW;
+        if (currentEvent === 'hurdles') {
+          const curTime = (timerMs / 1000).toFixed(2);
+          ctx.fillText(`${curTime}S`, 8, 28);
+          ctx.fillText(recs.hurdles > 0 ? `${recs.hurdles.toFixed(2)}S` : '14.50S', 84, 28);
+          ctx.fillStyle = NES.SKY_BLUE;
+          ctx.fillText(`${curTime}S`, 196, 28);
+        } else if (currentEvent === 'longjump') {
+          ctx.fillText(`${p1.distanceM.toFixed(2)}M`, 8, 28);
+          ctx.fillText(recs.longjump > 0 ? `${recs.longjump.toFixed(2)}M` : '8.50M', 84, 28);
+          ctx.fillStyle = NES.SKY_BLUE;
+          ctx.fillText('QUAL: 7.5M', 160, 28);
+        } else if (currentEvent === 'javelin') {
+          ctx.fillText(`${p1.distanceM.toFixed(2)}M`, 8, 28);
+          ctx.fillText(recs.javelin > 0 ? `${recs.javelin.toFixed(2)}M` : '85.0M', 84, 28);
+          ctx.fillStyle = NES.SKY_BLUE;
+          ctx.fillText('QUAL: 70.0M', 152, 28);
+        }
+
+        // NES White separating line
+        ctx.fillStyle = NES.WHITE;
+        ctx.fillRect(0, 36, canvas.width, 2);
+      }
+
+      // --- NES SPECTATOR STANDS ---
+      function drawNESGrandstands() {
+        // Flat sky or stands backdrop
+        ctx.fillStyle = '#1c1c1c';
+        ctx.fillRect(0, 38, canvas.width, 58);
+
+        // Rows of 8-bit spectators
+        const spectatorShirts = ['#d82800', '#0078f8', '#00a800', '#fce453', '#ffffff', '#800080'];
+        for (let row = 0; row < 4; row++) {
+          const y = 42 + row * 13;
+          // Bench row line
+          ctx.fillStyle = '#404040';
+          ctx.fillRect(0, y + 10, canvas.width, 3);
+
+          for (let col = 0; col < 22; col++) {
+            const x = (col * 14) - (cameraX * 0.15) % 14;
+            const color = spectatorShirts[(col + row * 3) % spectatorShirts.length];
+
+            // Head (Peach)
+            ctx.fillStyle = NES.SKIN_PEACH;
+            ctx.fillRect(x + 2, y, 4, 4);
+            // Hair
+            ctx.fillStyle = NES.HAIR_BROWN;
+            ctx.fillRect(x + 2, y, 4, 1);
+            // Shirt
+            ctx.fillStyle = color;
+            ctx.fillRect(x + 1, y + 4, 6, 6);
           }
         }
-
-        // Stadium Barrier Banner
-        ctx.fillStyle = '#b71c1c';
-        ctx.fillRect(0, 140, canvas.width, 24);
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '10px "Press Start 2P", monospace';
-        ctx.fillText('KONAMI • 1984 HYPER OLYMPIC GAMES', 120 - (cameraX * 0.25) % 450, 156);
       }
 
-      function drawHurdlesEnvironment() {
-        // Red synthetic track
-        ctx.fillStyle = '#b23b23';
-        ctx.fillRect(0, 164, canvas.width, 216);
+      // --- 110M HURDLES TRACK ---
+      function drawNESHurdlesTrack() {
+        // Red tartan track surface
+        ctx.fillStyle = NES.TARTAN_RED;
+        ctx.fillRect(0, 112, canvas.width, 112);
 
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 240, canvas.width, 3);
-        ctx.fillRect(0, 315, canvas.width, 3);
+        // White Lane Stripes
+        ctx.fillStyle = NES.TARTAN_LINE;
+        ctx.fillRect(0, 112, canvas.width, 2);
+        ctx.fillRect(0, 162, canvas.width, 2);
+        ctx.fillRect(0, 212, canvas.width, 2);
 
-        // Hurdles
+        // Finish Line Tape at 1450
+        const finX = 1450 - cameraX;
+        if (finX > -20 && finX < 280) {
+          ctx.fillStyle = NES.WHITE;
+          ctx.fillRect(finX, 112, 4, 102);
+          ctx.fillStyle = NES.GOLD_YELLOW;
+          ctx.fillRect(finX + 4, 112, 4, 102);
+        }
+
+        // Draw Hurdles
         for (let h of hurdles) {
           const sx = h.x - cameraX;
-          if (sx > -40 && sx < 820) {
-            drawHurdle(sx, athlete.baseY + 12, h.knocked);
+          if (sx > -20 && sx < 276) {
+            drawNESHurdle(sx, p1.baseY + 4, h.knockedP1);
+            drawNESHurdle(sx, cpu.baseY + 4, h.knockedCpu);
           }
         }
 
-        // Finish line
-        const finX = 2400 - cameraX;
-        if (finX > -50 && finX < 850) {
-          ctx.fillStyle = '#ffd700';
-          ctx.fillRect(finX, 165, 8, 185);
-          ctx.fillStyle = '#ffffff';
-          ctx.font = '14px "Press Start 2P", monospace';
-          ctx.fillText('FINISH', finX - 35, 195);
-        }
+        // Draw CPU Runner (Blue)
+        drawNESAthlete(cpu.x - cameraX, cpu.y, NES.CPU_JERSEY, cpu.legFrame, cpu.isJumping, false);
 
-        drawRunner(athlete.x - cameraX, athlete.y, '#ff3d00', '#ffd600', athlete.legFrame, athlete.y < athlete.baseY, athlete.knockTimer > 0);
+        // Draw Player Runner (Iconic Mustache purple athlete)
+        drawNESAthlete(p1.x - cameraX, p1.y, NES.P1_JERSEY, p1.legFrame, p1.y < p1.baseY, p1.knockTimer > 0);
       }
 
-      function drawLongJumpEnvironment() {
-        // Runway track
-        ctx.fillStyle = '#b23b23';
-        ctx.fillRect(0, 164, canvas.width, 150);
+      // --- LONG JUMP SAND PIT & RUNWAY ---
+      function drawNESLongJumpField() {
+        ctx.fillStyle = NES.TARTAN_RED;
+        ctx.fillRect(0, 112, canvas.width, 112);
 
-        const foulLine = 580;
+        const foulLine = 360;
         const screenFoulX = foulLine - cameraX;
 
-        // Takeoff Board (White Wood) & Foul Plasticine Strip (Red)
-        if (screenFoulX > -50 && screenFoulX < 850) {
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(screenFoulX - 18, 255, 18, 40);
-          ctx.fillStyle = '#d50000';
-          ctx.fillRect(screenFoulX, 255, 8, 40);
+        // Takeoff Board (White) & Plasticine Indicator (Red)
+        if (screenFoulX > -30 && screenFoulX < 280) {
+          ctx.fillStyle = NES.WHITE;
+          ctx.fillRect(screenFoulX - 10, 158, 10, 24);
+          ctx.fillStyle = '#d82800';
+          ctx.fillRect(screenFoulX, 158, 4, 24);
         }
 
         // Sand Pit
-        const pitStart = screenFoulX + 8;
-        if (pitStart < 850) {
-          ctx.fillStyle = '#e6c280';
-          ctx.fillRect(Math.max(0, pitStart), 245, Math.max(0, canvas.width - pitStart), 60);
+        const pitStart = screenFoulX + 4;
+        if (pitStart < 280) {
+          ctx.fillStyle = NES.SAND_YELLOW;
+          ctx.fillRect(Math.max(0, pitStart), 154, Math.max(0, canvas.width - pitStart), 32);
 
-          // Distance meter markers along sand pit
-          ctx.fillStyle = '#333';
-          ctx.font = '9px "Press Start 2P", monospace';
+          // Distance markers
+          ctx.fillStyle = NES.BLACK;
+          ctx.font = '6px "Press Start 2P", monospace';
           for (let m = 7; m <= 9; m++) {
-            const mx = (foulLine + (m - 6.2) * 48) - cameraX;
+            const mx = (foulLine + (m - 5.8) * 28) - cameraX;
             if (mx > 0 && mx < canvas.width) {
-              ctx.fillText(`${m}M`, mx, 290);
-              ctx.fillRect(mx - 2, 250, 4, 12);
+              ctx.fillText(`${m}M`, mx, 172);
+              ctx.fillRect(mx - 1, 155, 2, 6);
             }
           }
         }
 
-        drawRunner(athlete.x - cameraX, athlete.y, '#ff3d00', '#ffd600', athlete.legFrame, state === 'ACTION', false);
+        drawNESAthlete(p1.x - cameraX, p1.y, NES.P1_JERSEY, p1.legFrame, state === 'ACTION', false);
       }
 
-      function drawJavelinEnvironment() {
-        // Red track runway up to scratch line
-        ctx.fillStyle = '#b23b23';
-        ctx.fillRect(0, 164, canvas.width, 150);
+      // --- JAVELIN THROW FIELD ---
+      function drawNESJavelinField() {
+        ctx.fillStyle = NES.TARTAN_RED;
+        ctx.fillRect(0, 112, canvas.width, 112);
 
-        const scratchLine = 600;
+        const scratchLine = 370;
         const screenScratchX = scratchLine - cameraX;
 
-        // Green Grass Field beyond scratch line
-        if (screenScratchX < 850) {
-          ctx.fillStyle = '#2e7d32';
-          ctx.fillRect(Math.max(0, screenScratchX), 164, Math.max(0, canvas.width - screenScratchX), 150);
+        // Lush Green Grass Field
+        if (screenScratchX < 280) {
+          ctx.fillStyle = NES.GRASS_GREEN;
+          ctx.fillRect(Math.max(0, screenScratchX), 112, Math.max(0, canvas.width - screenScratchX), 112);
 
-          // Scratch line arc
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(screenScratchX - 4, 230, 8, 80);
+          // White scratch arc
+          ctx.fillStyle = NES.WHITE;
+          ctx.fillRect(screenScratchX - 2, 140, 4, 52);
 
-          // Distance Arc Lines (60m, 70m, 80m, 90m, 100m)
-          ctx.fillStyle = '#ffffff';
-          ctx.font = '9px "Press Start 2P", monospace';
-          for (let m = 60; m <= 100; m += 10) {
-            const mx = (scratchLine + (m - 52) * 22) - cameraX;
+          // Distance lines
+          ctx.fillStyle = NES.WHITE;
+          ctx.font = '6px "Press Start 2P", monospace';
+          for (let m = 50; m <= 90; m += 10) {
+            const mx = (scratchLine + (m - 48) * 12) - cameraX;
             if (mx > 0 && mx < canvas.width) {
-              ctx.fillText(`${m}M`, mx, 210);
-              ctx.fillRect(mx, 220, 3, 90);
+              ctx.fillText(`${m}M`, mx, 134);
+              ctx.fillRect(mx, 138, 2, 56);
             }
           }
         }
 
-        // Draw Athlete
-        drawRunner(athlete.x - cameraX, athlete.y, '#ff3d00', '#ffd600', athlete.legFrame, false, false);
+        drawNESAthlete(p1.x - cameraX, p1.y, NES.P1_JERSEY, p1.legFrame, false, false);
 
-        // Draw Javelin Spear
-        if (projectile.active || projectile.landed) {
+        // In-flight or grounded Javelin Spear
+        if (javelin.active || javelin.landed) {
           ctx.save();
-          ctx.translate(projectile.x - cameraX, projectile.y);
-          ctx.rotate((projectile.angleDeg * Math.PI) / 180);
-
-          // Javelin Shaft (Silver & Red grip)
-          ctx.fillStyle = '#eeeeee';
-          ctx.fillRect(-24, -2, 48, 4);
-          ctx.fillStyle = '#d50000';
-          ctx.fillRect(-6, -2, 12, 4); // Grip
-          ctx.fillStyle = '#ffd700';
-          ctx.fillRect(20, -2, 6, 4); // Tip
+          ctx.translate(javelin.x - cameraX, javelin.y);
+          ctx.rotate((javelin.angleDeg * Math.PI) / 180);
+          ctx.fillStyle = NES.GRAY_LIGHT;
+          ctx.fillRect(-16, -1, 32, 2);
+          ctx.fillStyle = '#b51a00';
+          ctx.fillRect(-3, -1, 6, 2); // Red grip
+          ctx.fillStyle = NES.GOLD_YELLOW;
+          ctx.fillRect(14, -1, 3, 2); // Golden tip
           ctx.restore();
         } else if (state === 'RUNNING') {
-          // Held Javelin
+          // Held spear
           ctx.save();
-          ctx.translate(athlete.x - cameraX + 8, athlete.y - 10);
-          ctx.rotate((-20 * Math.PI) / 180);
-          ctx.fillStyle = '#eeeeee';
-          ctx.fillRect(-20, -2, 40, 3);
+          ctx.translate(p1.x - cameraX + 6, p1.y - 8);
+          ctx.rotate((-22 * Math.PI) / 180);
+          ctx.fillStyle = NES.GRAY_LIGHT;
+          ctx.fillRect(-14, -1, 28, 2);
           ctx.restore();
         }
       }
 
-      function drawAngleGauge(x, y, angle) {
-        ctx.fillStyle = 'rgba(0,0,0,0.7)';
-        ctx.fillRect(x - 10, y - 10, 60, 24);
-        ctx.fillStyle = '#00e5ff';
-        ctx.font = '10px "Press Start 2P", monospace';
-        ctx.fillText(`${Math.floor(angle)}°`, x, y + 6);
-      }
-
-      function drawHurdle(x, y, knocked) {
+      // --- AUTHENTIC 8-BIT HURDLE SPRITE ---
+      function drawNESHurdle(x, y, knocked) {
         if (!knocked) {
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(x, y - 28, 6, 32);
-          ctx.fillStyle = '#000000';
-          ctx.fillRect(x, y - 28, 6, 6);
-          ctx.fillRect(x, y - 16, 6, 6);
-          ctx.fillStyle = '#cccccc';
-          ctx.fillRect(x - 6, y + 2, 18, 3);
+          // Standing Hurdle (Black & White stripes with metal feet)
+          ctx.fillStyle = NES.WHITE;
+          ctx.fillRect(x, y - 18, 4, 18);
+          ctx.fillStyle = NES.BLACK;
+          ctx.fillRect(x, y - 18, 4, 4);
+          ctx.fillRect(x, y - 10, 4, 4);
+          // Base feet
+          ctx.fillStyle = NES.GRAY_LIGHT;
+          ctx.fillRect(x - 3, y - 1, 10, 2);
         } else {
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(x - 10, y, 28, 5);
-          ctx.fillStyle = '#000000';
-          ctx.fillRect(x - 5, y, 6, 5);
+          // Knocked over flat hurdle
+          ctx.fillStyle = NES.WHITE;
+          ctx.fillRect(x - 6, y - 2, 18, 3);
+          ctx.fillStyle = NES.BLACK;
+          ctx.fillRect(x - 2, y - 2, 4, 3);
         }
       }
 
-      function drawRunner(x, y, shirtColor, shortsColor, legFrame, isJumping, isTripped) {
+      // --- ICONIC NES ATHLETE SPRITE (WITH PURPLE SUIT & MUSTACHE) ---
+      function drawNESAthlete(x, y, jerseyColor, legFrame, isAirborne, isTripped) {
         if (isTripped) {
-          ctx.fillStyle = '#ffd180';
-          ctx.fillRect(x + 18, y + 10, 8, 8);
-          ctx.fillStyle = shirtColor;
-          ctx.fillRect(x, y + 12, 18, 8);
-          ctx.fillStyle = shortsColor;
-          ctx.fillRect(x - 12, y + 14, 12, 6);
+          // Faceplant on the ground
+          ctx.fillStyle = NES.SKIN_PEACH;
+          ctx.fillRect(x + 10, y + 2, 6, 6); // Head
+          ctx.fillStyle = jerseyColor;
+          ctx.fillRect(x, y + 4, 12, 5); // Torso
+          ctx.fillStyle = NES.WHITE;
+          ctx.fillRect(x - 8, y + 5, 8, 4); // Legs
           return;
         }
 
-        // Head & Hair
-        ctx.fillStyle = '#3e2723';
-        ctx.fillRect(x + 2, y - 26, 12, 5);
-        ctx.fillStyle = '#ffd180';
-        ctx.fillRect(x + 3, y - 22, 10, 8);
+        // 1. Hair & Headband
+        ctx.fillStyle = NES.HAIR_BROWN;
+        ctx.fillRect(x + 2, y - 20, 8, 4);
+        ctx.fillStyle = NES.WHITE;
+        ctx.fillRect(x + 2, y - 18, 8, 2); // White headband
 
-        // Jersey Torso
-        ctx.fillStyle = shirtColor;
-        ctx.fillRect(x, y - 14, 14, 14);
+        // 2. Face (Peach)
+        ctx.fillStyle = NES.SKIN_PEACH;
+        ctx.fillRect(x + 3, y - 16, 7, 6);
 
-        // Shorts
-        ctx.fillStyle = shortsColor;
-        ctx.fillRect(x + 1, y, 12, 8);
+        // 3. Iconic Mustache & Eye (Brown & Black)
+        ctx.fillStyle = NES.BLACK;
+        ctx.fillRect(x + 8, y - 15, 1, 2); // Eye
+        ctx.fillStyle = NES.HAIR_BROWN;
+        ctx.fillRect(x + 7, y - 12, 4, 2); // Mustache!
 
-        // Animated Running Legs
-        ctx.fillStyle = '#ffd180';
-        if (isJumping) {
-          ctx.fillRect(x + 12, y + 6, 16, 4);
-          ctx.fillRect(x - 14, y + 6, 14, 4);
+        // 4. Jersey (Purple/Blue with White tank stripes)
+        ctx.fillStyle = jerseyColor;
+        ctx.fillRect(x + 2, y - 10, 8, 9);
+        ctx.fillStyle = NES.WHITE;
+        ctx.fillRect(x + 3, y - 10, 2, 9); // Left stripe
+        ctx.fillRect(x + 7, y - 10, 2, 9); // Right stripe
+
+        // 5. White Running Shorts
+        ctx.fillStyle = NES.WHITE;
+        ctx.fillRect(x + 2, y - 1, 8, 5);
+
+        // 6. Animated 8-bit Running Legs & Cleats
+        ctx.fillStyle = NES.SKIN_PEACH;
+
+        if (isAirborne) {
+          // Olympic Hurdle Split Pose
+          ctx.fillRect(x + 8, y + 3, 10, 3); // Front leg
+          ctx.fillRect(x - 8, y + 3, 8, 3);  // Back leg
+          ctx.fillStyle = NES.WHITE;
+          ctx.fillRect(x + 16, y + 2, 3, 3); // Front shoe
+          ctx.fillRect(x - 9, y + 2, 3, 3);  // Back shoe
         } else {
+          // 4-frame NES sprint stride
           if (legFrame === 0) {
-            ctx.fillRect(x + 2, y + 8, 4, 14);
-            ctx.fillRect(x + 8, y + 8, 4, 8);
+            ctx.fillRect(x + 3, y + 4, 3, 9);
+            ctx.fillRect(x + 7, y + 4, 3, 6);
+            ctx.fillStyle = NES.WHITE;
+            ctx.fillRect(x + 3, y + 12, 4, 2);
+            ctx.fillRect(x + 7, y + 9, 4, 2);
           } else if (legFrame === 1) {
-            ctx.fillRect(x - 2, y + 8, 5, 12);
-            ctx.fillRect(x + 10, y + 8, 5, 12);
+            ctx.fillRect(x, y + 4, 4, 8);
+            ctx.fillRect(x + 8, y + 4, 4, 8);
+            ctx.fillStyle = NES.WHITE;
+            ctx.fillRect(x, y + 11, 4, 2);
+            ctx.fillRect(x + 8, y + 11, 4, 2);
           } else if (legFrame === 2) {
-            ctx.fillRect(x + 2, y + 8, 4, 8);
-            ctx.fillRect(x + 8, y + 8, 4, 14);
+            ctx.fillRect(x + 3, y + 4, 3, 6);
+            ctx.fillRect(x + 7, y + 4, 3, 9);
+            ctx.fillStyle = NES.WHITE;
+            ctx.fillRect(x + 3, y + 9, 4, 2);
+            ctx.fillRect(x + 7, y + 12, 4, 2);
           } else {
-            ctx.fillRect(x + 1, y + 6, 10, 10);
+            ctx.fillRect(x + 2, y + 4, 7, 7);
+            ctx.fillStyle = NES.WHITE;
+            ctx.fillRect(x + 2, y + 10, 5, 2);
           }
         }
       }
 
-      updateRecordDisplay();
+      // --- NES SPEED GAUGE ---
+      function drawNESSpeedMeter() {
+        ctx.fillStyle = NES.BLACK;
+        ctx.fillRect(8, 206, 90, 12);
+        ctx.fillStyle = NES.WHITE;
+        ctx.font = '6px "Press Start 2P", monospace';
+        ctx.fillText('SPEED', 12, 214);
+
+        // Segmented Power Bars (Red & Gold)
+        const maxBars = 10;
+        const currentBars = Math.min(maxBars, Math.floor((p1.speed / 6.2) * maxBars));
+        for (let b = 0; b < currentBars; b++) {
+          ctx.fillStyle = b < 7 ? NES.GOLD_YELLOW : '#ff1744';
+          ctx.fillRect(45 + b * 5, 208, 4, 7);
+        }
+      }
+
+      resetEvent();
       requestAnimationFrame(loop);
 
     })();
