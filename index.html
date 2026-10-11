@@ -455,6 +455,30 @@
         </p>
         <span class="card-play-btn">PLAY NOW 🏃‍♂️</span>
       </a>
+      <!-- Game 10: Pixel Snake -->
+      <a href="snake/index.html" class="game-card">
+        <div class="card-icon">🐍</div>
+        <h2 class="card-title">PIXEL SNAKE</h2>
+        <div class="card-tags"><span class="tag">ARCADE CLASSIC</span><span class="tag">HIGH SCORE</span></div>
+        <p class="card-desc">Guide the growing pixel snake to glowing fruit. One wrong turn and it's game over!</p>
+        <span class="card-play-btn">PLAY NOW 🐍</span>
+      </a>
+      <!-- Game 11: Neon Breakout -->
+      <a href="breakout/index.html" class="game-card">
+        <div class="card-icon">🧱</div>
+        <h2 class="card-title">NEON BREAKOUT</h2>
+        <div class="card-tags"><span class="tag">BRICK BREAKER</span><span class="tag">3 LEVELS</span></div>
+        <p class="card-desc">Bounce through three walls of neon bricks. Keep the ball aloft and save your lives!</p>
+        <span class="card-play-btn">PLAY NOW 🧱</span>
+      </a>
+      <!-- Game 12: Star Invaders -->
+      <a href="space-invaders/index.html" class="game-card">
+        <div class="card-icon">👾</div>
+        <h2 class="card-title">STAR INVADERS</h2>
+        <div class="card-tags"><span class="tag">SPACE SHOOTER</span><span class="tag">WAVE ATTACK</span></div>
+        <p class="card-desc">Defend the arcade from a descending pixel fleet. Dodge return fire and clear wave after wave.</p>
+        <span class="card-play-btn">PLAY NOW 👾</span>
+      </a>
       <p class="games-empty" id="gamesEmpty">No games match that search. Try another title or clear the search.</p>
     </div>
 
@@ -546,6 +570,9 @@
             <span class="lb-score" id="lbTrack">--</span>
           </div>
         </a>
+        <a href="snake/index.html" class="lb-card"><div class="lb-icon">🐍</div><div class="lb-info"><span class="lb-name">Pixel Snake</span><span class="lb-score" id="lbSnake">--</span></div></a>
+        <a href="breakout/index.html" class="lb-card"><div class="lb-icon">🧱</div><div class="lb-info"><span class="lb-name">Neon Breakout</span><span class="lb-score" id="lbBreakout">--</span></div></a>
+        <a href="space-invaders/index.html" class="lb-card"><div class="lb-icon">👾</div><div class="lb-info"><span class="lb-name">Star Invaders</span><span class="lb-score" id="lbInvaders">--</span></div></a>
       </div>
     </section>
 
@@ -742,6 +769,13 @@
           lbTrackElem.textContent = 'NO RECORD YET';
           lbTrackElem.classList.add('empty');
         }
+
+        [['lbSnake','pixelSnake_highScore','Pts'],['lbBreakout','neonBreakout_highScore','Pts'],['lbInvaders','starInvaders_highScore','Pts']].forEach(([id,key,label]) => {
+          const value = Number(localStorage.getItem(key)) || 0;
+          const element = document.getElementById(id);
+          element.textContent = value > 0 ? `${value} ${label}` : 'NO RECORD YET';
+          element.classList.toggle('empty', value <= 0);
+        });
       }
 
       loadLeaderboard();
@@ -758,6 +792,9 @@
           localStorage.removeItem('hungryHippos_bestScore');
           localStorage.removeItem('dinoRunner_highScore');
           localStorage.removeItem('trackField_bestTime');
+          localStorage.removeItem('pixelSnake_highScore');
+          localStorage.removeItem('neonBreakout_highScore');
+          localStorage.removeItem('starInvaders_highScore');
           loadLeaderboard();
         }
       });
