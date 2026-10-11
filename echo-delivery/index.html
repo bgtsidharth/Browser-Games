@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="theme-color" content="#101027">
+<title>Echo Delivery | Retro Browser Games</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#292455,#101027 70%);color:#f6f1ff;font:16px system-ui,sans-serif;display:grid;place-items:center;padding:18px}.cabinet{width:min(100%,660px);text-align:center}.home{display:inline-block;color:#b1f3ff;text-decoration:none;font-weight:750;margin-bottom:10px}.home:hover{text-decoration:underline}h1{font:clamp(23px,5vw,36px) monospace;letter-spacing:2px;color:#b1f3ff;text-shadow:3px 3px #6148b8;margin:4px 0}.sub{color:#c1bbdf;margin:0 0 14px}.hud{display:flex;justify-content:space-between;gap:8px;margin:0 0 8px;padding:0 4px;color:#ded9fa;font:700 12px monospace}.hud b{color:#ffe881;font-size:14px}.screen{position:relative;border:7px solid #4c4772;border-radius:17px;background:#11142b;box-shadow:0 18px 55px #0009,inset 0 0 0 2px #242040;overflow:hidden}canvas{width:100%;height:auto;display:block;aspect-ratio:600/540;touch-action:none}.overlay{position:absolute;inset:0;background:#101027eF;display:grid;place-items:center;padding:18px}.overlay[hidden]{display:none}.panel{max-width:450px}.panel h2{font:23px monospace;color:#ffe881;margin:0 0 10px}.panel p{line-height:1.5;color:#e2def5;margin:8px 0}.action{border:0;border-radius:9px;padding:12px 22px;background:#b1f3ff;color:#11142b;font:800 14px monospace;cursor:pointer}.action:hover{filter:brightness(1.06)}.touch{display:grid;grid-template-columns:repeat(3,58px) 1fr;gap:7px;align-items:center;margin:11px auto}.touch button{height:45px;border:1px solid #7773b6;border-radius:10px;background:#272449;color:#fff;font-size:20px;touch-action:manipulation}.touch button:active{background:#51448c}.touch #wait{font:700 11px monospace;color:#ffe881}.touch #restart{font:700 11px monospace;color:#c7c1e4}.hint{font-size:12px;color:#c8c2db;line-height:1.55;margin:8px 0}.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(max-width:440px){body{padding:10px}.hud{font-size:10px}.hud b{font-size:12px}.touch{grid-template-columns:repeat(3,48px) 1fr}.touch button{height:42px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="cabinet">
+  <a class="home" href="../index.html">← ARCADE</a>
+  <h1>ECHO DELIVERY</h1>
+  <p class="sub">Yesterday's you is today's best coworker.</p>
+  <div class="hud"><span>LEVEL <b id="level">1</b>/3</span><span>LOOP <b id="loop">1</b></span><span>TIME <b id="time">8.0</b>s</span><span>SCORE <b id="score">0</b></span><span>BEST <b id="best">0</b></span></div>
+  <div class="screen">
+    <canvas id="game" width="600" height="540" aria-label="Echo Delivery puzzle playfield" role="img" tabindex="0"></canvas>
+    <div class="overlay" id="overlay"><div class="panel"><h2 id="headline">DELIVER THROUGH TIME</h2><p id="message">Each 8-second run is recorded. When time runs out, your courier becomes an echo that repeats the route. Park an echo on a matching switch to open its gate, then pick up the parcel and deliver it.</p><p><b>Move:</b> Arrow keys / WASD · <b>Wait:</b> Space · <b>Pause:</b> P · <b>Restart level:</b> R<br>Touch players: use the arrows below. Echoes and records stay on this device.</p><button class="action" id="start">START DELIVERY</button></div></div>
+  </div>
+  <div class="touch" aria-label="Touch controls"><button data-move="up" aria-label="Move up">▲</button><button data-move="left" aria-label="Move left">◀</button><button data-move="down" aria-label="Move down">▼</button><button data-move="right" aria-label="Move right">▶</button><button id="wait">SPACE · WAIT</button><button id="restart">R · RESTART LEVEL</button></div>
+  <p class="hint">A glowing switch opens its matching gate only while a courier or echo stands on it. Pick up the yellow parcel, then reach the green mailbox. Each courier can hold a switch for the whole loop by ending there.</p>
+  <p class="sr" id="announcement" aria-live="polite"></p>
+</main>
+<script>
+(()=>{'use strict';
+  const canvas=document.getElementById('game'),ctx=canvas.getContext('2d'),overlay=document.getElementById('overlay'),headline=document.getElementById('headline'),message=document.getElementById('message'),startButton=document.getElementById('start'),levelText=document.getElementById('level'),loopText=document.getElementById('loop'),timeText=document.getElementById('time'),scoreText=document.getElementById('score'),bestText=document.getElementById('best'),announcement=document.getElementById('announcement');
+  const TILE=56,LEFT=20,TOP=44,COLS=10,ROWS=8,LOOP_MS=8000,MAX_ECHOES=3;
+  const levels=[
+    {name:'First Shift',start:{x:1,y:6},parcel:{x:1,y:1},mail:{x:8,y:6},bars:[{x:4,gateY:3,id:'A',plate:{x:2,y:3}}]},
+    {name:'Double Booked',start:{x:1,y:6},parcel:{x:1,y:1},mail:{x:8,y:6},bars:[{x:3,gateY:2,id:'A',plate:{x:1,y:2}},{x:6,gateY:5,id:'B',plate:{x:4,y:5}}]},
+    {name:'Triple Shift',start:{x:1,y:6},parcel:{x:1,y:1},mail:{x:9,y:6},bars:[{x:2,gateY:3,id:'A',plate:{x:1,y:3}},{x:5,gateY:5,id:'B',plate:{x:4,y:5}},{x:8,gateY:2,id:'C',plate:{x:7,y:2}}]}
+  ];
+  const colors=['#b68cff','#ff82ba','#69dfff'];
+  let levelIndex=0,loopNumber=1,score=0,best=Number(localStorage.getItem('echoDelivery_highScore'))||0,state='ready',player,echoes=[],route=[],intent=null,parcelHeld=false,elapsed=0,accumulator=0,lastFrame=0,blockedFlash=0;
+  bestText.textContent=best;
+  function level(){return levels[levelIndex]}
+  function beginLevel(){loopNumber=1;echoes=[];route=[];parcelHeld=false;elapsed=0;accumulator=0;intent=null;player={...level().start};updateHud()}
+  function startGame(){levelIndex=0;score=0;scoreText.textContent=score;beginLevel();state='playing';overlay.hidden=true;lastFrame=performance.now();canvas.focus({preventScroll:true})}
+  function updateHud(){levelText.textContent=levelIndex+1;loopText.textContent=loopNumber;timeText.textContent=Math.max(0,(LOOP_MS-elapsed)/1000).toFixed(1);scoreText.textContent=score}
+  function isOn(pos,cell){return pos.x===cell.x&&pos.y===cell.y}
+  function activeSwitches(){const active=new Set();for(const bar of level().bars){if(isOn(player,bar.plate)||echoes.some(e=>isOn(e.pos,bar.plate)))active.add(bar.id)}return active}
+  function blocked(pos){if(pos.x<0||pos.x>=COLS||pos.y<0||pos.y>=ROWS)return true;const bar=level().bars.find(b=>b.x===pos.x);if(bar&&pos.y!==bar.gateY)return true;if(bar&&pos.y===bar.gateY&&!activeSwitches().has(bar.id))return true;return false}
+  function finishLevel(){score+=Math.max(100,600-loopNumber*75);if(score>best){best=score;localStorage.setItem('echoDelivery_highScore',best);bestText.textContent=best}announcement.textContent=`Delivery complete. Score ${score}.`;if(levelIndex===levels.length-1){state='win';headline.textContent='ALL DELIVERIES MADE!';message.textContent=`You delivered through all three time loops with ${score} points. The whole team of echoes made it home.`;startButton.textContent='PLAY AGAIN';overlay.hidden=false;return}levelIndex++;beginLevel();announcement.textContent=`Level ${levelIndex+1}: ${level().name}.`;}
+  function tick(){const dx=intent?.x||0,dy=intent?.y||0;if(dx||dy){const next={x:player.x+dx,y:player.y+dy};if(!blocked(next)){player=next;blockedFlash=0}else blockedFlash=5}
+    echoes.forEach(e=>{e.pos=e.path[Math.min(e.tick,e.path.length-1)]||e.pos;e.tick++});
+    if(isOn(player,level().parcel))parcelHeld=true;
+    if(parcelHeld&&isOn(player,level().mail)){finishLevel();if(state!=='playing')return;if(levelIndex<levels.length)return}
+    route.push({x:player.x,y:player.y});elapsed+=100;if(elapsed>=LOOP_MS){endLoop();return}updateHud();
+  }
+  function endLoop(){echoes.push({path:route.map(p=>({...p})),pos:{...route[route.length-1]},tick:0,color:colors[(loopNumber-1)%colors.length]});if(echoes.length>MAX_ECHOES)echoes.shift();loopNumber++;player={...level().start};route=[];parcelHeld=false;intent=null;elapsed=0;announcement.textContent=`Loop ${loopNumber}: your earlier routes are repeating.`;updateHud()}
+  function move(name){const dirs={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}};if(state==='ready'){startGame()}if(state!=='playing')return;intent=dirs[name]||null}
+  function drawTile(x,y,color){ctx.fillStyle=color;ctx.fillRect(LEFT+x*TILE,TOP+y*TILE,TILE,TILE)}
+  function center(p){return{x:LEFT+p.x*TILE+TILE/2,y:TOP+p.y*TILE+TILE/2}}
+  function draw(){ctx.fillStyle='#11142b';ctx.fillRect(0,0,600,540);ctx.fillStyle='#a9a0d6';ctx.font='12px monospace';ctx.fillText(level().name.toUpperCase(),20,27);ctx.textAlign='right';ctx.fillText(`ECHOES ${echoes.length}/${MAX_ECHOES}`,580,27);ctx.textAlign='left';
+    for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){const checker=(x+y)%2;drawTile(x,y,checker?'#232541':'#1d203a');ctx.strokeStyle='#ffffff08';ctx.strokeRect(LEFT+x*TILE,TOP+y*TILE,TILE,TILE)}
+    level().bars.forEach(bar=>{for(let y=0;y<ROWS;y++){if(y===bar.gateY){const open=activeSwitches().has(bar.id);ctx.fillStyle=open?'#4bf0b077':'#ef6680';ctx.fillRect(LEFT+bar.x*TILE+22,TOP+y*TILE+2,12,TILE-4);ctx.fillStyle='#fff';ctx.font='bold 12px monospace';ctx.textAlign='center';ctx.fillText(bar.id,LEFT+bar.x*TILE+28,TOP+y*TILE+34);ctx.textAlign='left'}else drawTile(bar.x,y,'#484766')}});
+    level().bars.forEach(bar=>{const c=center(bar.plate);ctx.fillStyle=activeSwitches().has(bar.id)?'#43f1c4':'#e5a84f';ctx.beginPath();ctx.roundRect(c.x-16,c.y-16,32,32,7);ctx.fill();ctx.fillStyle='#18202b';ctx.font='bold 14px monospace';ctx.textAlign='center';ctx.fillText(bar.id,c.x,c.y+5);ctx.textAlign='left'});
+    const p=center(level().parcel);if(!parcelHeld){ctx.fillStyle='#ffe881';ctx.shadowColor='#ffe881';ctx.shadowBlur=12;ctx.fillRect(p.x-11,p.y-9,22,18);ctx.shadowBlur=0;ctx.fillStyle='#70531a';ctx.fillRect(p.x-3,p.y-8,3,16);ctx.fillRect(p.x-10,p.y-2,20,3)}
+    const m=center(level().mail);ctx.strokeStyle='#68f0a6';ctx.lineWidth=3;ctx.strokeRect(m.x-19,m.y-20,38,40);ctx.fillStyle='#68f0a6';ctx.fillRect(m.x-15,m.y-3,30,4);ctx.fillRect(m.x-3,m.y-18,6,15);ctx.fillStyle='#d4ffe6';ctx.font='10px monospace';ctx.textAlign='center';ctx.fillText('MAIL',m.x,m.y+34);ctx.textAlign='left';
+    echoes.forEach((echo,i)=>{const c=center(echo.pos);ctx.globalAlpha=.72;ctx.fillStyle=echo.color;ctx.beginPath();ctx.roundRect(c.x-14,c.y-18,28,36,7);ctx.fill();ctx.fillStyle='#15142b';ctx.fillRect(c.x-7,c.y-7,4,4);ctx.fillRect(c.x+4,c.y-7,4,4);ctx.globalAlpha=1;ctx.fillStyle=echo.color;ctx.font='9px monospace';ctx.textAlign='center';ctx.fillText(`E${i+1}`,c.x,c.y+30)});
+    const pc=center(player);ctx.fillStyle='#8fe7ff';ctx.beginPath();ctx.roundRect(pc.x-15,pc.y-19,30,38,8);ctx.fill();ctx.fillStyle='#172333';ctx.fillRect(pc.x-8,pc.y-7,4,4);ctx.fillRect(pc.x+4,pc.y-7,4,4);ctx.fillStyle='#ffe881';ctx.fillRect(pc.x-7,pc.y+4,14,4);if(parcelHeld){ctx.fillStyle='#ffe881';ctx.fillRect(pc.x+12,pc.y-20,12,10)}
+    if(blockedFlash>0){ctx.fillStyle='#ff8a9a';ctx.font='bold 13px monospace';ctx.fillText('GATE CLOSED',390,27);blockedFlash--}
+    ctx.textAlign='left';ctx.fillStyle='#b7b2d5';ctx.font='11px monospace';ctx.fillText(parcelHeld?'PARCEL IN HAND':'FIND THE PARCEL',20,512);if(state==='playing'&&elapsed>0)ctx.fillStyle='#ffe881';else ctx.fillStyle='#6b668a';ctx.fillRect(20,521,560,5);ctx.fillStyle='#ffe881';ctx.fillRect(20,521,560*(1-elapsed/LOOP_MS),5);
+  }
+  function frame(now){const dt=Math.min(now-lastFrame,80);lastFrame=now;if(state==='playing'){accumulator+=dt;while(accumulator>=100&&state==='playing'){tick();accumulator-=100}}draw();requestAnimationFrame(frame)}
+  window.addEventListener('keydown',e=>{const map={ArrowUp:'up',w:'up',W:'up',ArrowDown:'down',s:'down',S:'down',ArrowLeft:'left',a:'left',A:'left',ArrowRight:'right',d:'right',D:'right'};if(map[e.key]){e.preventDefault();move(map[e.key])}else if(e.key===' '){e.preventDefault();if(state==='ready')startGame();intent=null}else if(e.key==='Enter'&&(state==='ready'||state==='win'))startGame();else if((e.key==='p'||e.key==='P')&&state==='playing'){state='paused';headline.textContent='PAUSED';message.textContent='Your echoes are waiting. Press P or tap resume to continue.';startButton.textContent='RESUME';overlay.hidden=false}else if((e.key==='p'||e.key==='P')&&state==='paused'){state='playing';overlay.hidden=true;lastFrame=performance.now()}else if((e.key==='r'||e.key==='R')&&state==='playing'){beginLevel();announcement.textContent='Level restarted. Echoes cleared.'}});
+  startButton.addEventListener('click',()=>{if(state==='paused'){state='playing';overlay.hidden=true;lastFrame=performance.now()}else startGame()});
+  document.querySelectorAll('[data-move]').forEach(button=>button.addEventListener('click',()=>move(button.dataset.move)));
+  document.getElementById('wait').addEventListener('click',()=>{if(state==='ready')startGame();intent=null});
+  document.getElementById('restart').addEventListener('click',()=>{if(state==='playing'){beginLevel();announcement.textContent='Level restarted. Echoes cleared.'}});
+  canvas.addEventListener('pointerdown',e=>{const rect=canvas.getBoundingClientRect(),gx=Math.floor(((e.clientX-rect.left)/rect.width*600-LEFT)/TILE),gy=Math.floor(((e.clientY-rect.top)/rect.height*540-TOP)/TILE),dx=gx-player.x,dy=gy-player.y;if(Math.abs(dx)+Math.abs(dy)>0)move(Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up')});
+  beginLevel();requestAnimationFrame(t=>{lastFrame=t;requestAnimationFrame(frame)});
+})();
+</script>
+</body>
+</html>
+
