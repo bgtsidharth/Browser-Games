@@ -490,9 +490,6 @@
 
   <!-- Top Tool Bar -->
   <div class="top-bar">
-    <button id="soundToggleBtn" title="Toggle Sound">
-      <span id="soundIcon">🔊</span> Sound
-    </button>
     <button id="resetBtn" title="Restart and scatter rings">
       🔄 Shake / Reset
     </button>
@@ -1749,8 +1746,6 @@
     const btnTilt = document.getElementById('btnTilt');
     const resetBtn = document.getElementById('resetBtn');
     const playAgainBtn = document.getElementById('playAgainBtn');
-    const soundToggleBtn = document.getElementById('soundToggleBtn');
-    const soundIcon = document.getElementById('soundIcon');
     const themeSelect = document.getElementById('themeSelect');
     const deviceContainer = document.getElementById('deviceContainer');
 
@@ -1795,12 +1790,6 @@
     // Reset & Play Again
     resetBtn.addEventListener('click', resetGame);
     playAgainBtn.addEventListener('click', resetGame);
-
-    // Sound toggle
-    soundToggleBtn.addEventListener('click', () => {
-      sound.muted = !sound.muted;
-      soundIcon.textContent = sound.muted ? '🔇' : '🔊';
-    });
 
     // Theme Selector
     themeSelect.addEventListener('change', (e) => {
