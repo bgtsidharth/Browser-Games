@@ -55,6 +55,24 @@ Tribute to Konami & Nintendo's legendary 1983 Olympic arcade button masher!
 - **Features:** Alternating-button sprint physics, stumble recovery penalties, CPU competitor lane AI, cheering stadium grandstand crowd, and persistent personal record timing saved in `localStorage`.
 - **Controls:** <kbd>Z</kbd> / <kbd>X</kbd> (or <kbd>◄</kbd> / <kbd>►</kbd>) to alternate sprint strides, <kbd>Space</kbd> to jump hurdles, or on-screen arcade buttons.
 
+### 10. 🐍 [Pixel Snake](snake/index.html)
+The timeless grid-chasing arcade classic, reimagined in glowing green pixels.
+- **Mechanics:** Collect fruit to grow longer while the pace steadily increases. Avoid the walls and your own tail.
+- **Features:** Persistent high score, swipe gestures, touch D-pad, pause support, and responsive pixel-art playfield.
+- **Controls:** Arrow keys / <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>, swipe, or on-screen arrows. <kbd>P</kbd> pauses.
+
+### 11. 🧱 [Neon Breakout](breakout/index.html)
+Smash through rows of glowing bricks in this paddle-and-ball arcade staple.
+- **Mechanics:** Three increasingly dense levels, reinforced bricks, paddle-angle control, and three lives.
+- **Features:** Persistent high score, keyboard and touch paddle controls, launch and pause support, and bright neon cabinet styling.
+- **Controls:** <kbd>◄</kbd> / <kbd>►</kbd> or <kbd>A</kbd> / <kbd>D</kbd> to move, <kbd>Space</kbd> to launch, <kbd>P</kbd> to pause.
+
+### 12. 👾 [Star Invaders](space-invaders/index.html)
+Defend Earth from a formation of descending pixel aliens.
+- **Mechanics:** Clear advancing fleets while dodging enemy fire. Each new wave moves faster and fires more often.
+- **Features:** Persistent high score, wave counter, keyboard and mobile controls, pause support, and a starfield playfield.
+- **Controls:** <kbd>◄</kbd> / <kbd>►</kbd> or <kbd>A</kbd> / <kbd>D</kbd> to move, <kbd>Space</kbd> to fire, <kbd>P</kbd> to pause.
+
 ---
 
 ## 🚀 How to Play Online Instantly (GitHub Pages)
@@ -74,8 +92,12 @@ Play all games directly in your browser without downloading anything!
    - 🦛 **Hungry Hippos:** [https://bgtsidharth.github.io/Browser-Games/hungry-hippos/](https://bgtsidharth.github.io/Browser-Games/hungry-hippos/)  
    - 🦖 **Dino Runner:** [https://bgtsidharth.github.io/Browser-Games/dino-runner/](https://bgtsidharth.github.io/Browser-Games/dino-runner/)  
    - 🏃‍♂️ **Track & Field (Olympics):** [https://bgtsidharth.github.io/Browser-Games/track-and-field/](https://bgtsidharth.github.io/Browser-Games/track-and-field/)  
+   - 🐍 **Pixel Snake:** [https://bgtsidharth.github.io/Browser-Games/snake/](https://bgtsidharth.github.io/Browser-Games/snake/)  
+   - 🧱 **Neon Breakout:** [https://bgtsidharth.github.io/Browser-Games/breakout/](https://bgtsidharth.github.io/Browser-Games/breakout/)  
+   - 👾 **Star Invaders:** [https://bgtsidharth.github.io/Browser-Games/space-invaders/](https://bgtsidharth.github.io/Browser-Games/space-invaders/)  
 
 ---
 
 ## 🔇 Audio Policy
 All games in this repository are **100% silent** (zero Web Audio API, zero oscillator audio context) — completely safe for quiet rooms, work, or school environments.
+
