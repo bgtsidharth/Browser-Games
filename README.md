@@ -73,6 +73,12 @@ Defend Earth from a formation of descending pixel aliens.
 - **Features:** Persistent high score, wave counter, keyboard and mobile controls, pause support, and a starfield playfield.
 - **Controls:** <kbd>◄</kbd> / <kbd>►</kbd> or <kbd>A</kbd> / <kbd>D</kbd> to move, <kbd>Space</kbd> to fire, <kbd>P</kbd> to pause.
 
+### 13. 🌀 [Echo Delivery](echo-delivery/index.html)
+A time-loop delivery puzzle where your past routes become a team of couriers.
+- **Mechanics:** Every 8-second run is recorded. Echoes replay their routes and hold matching switches open while you carry a parcel through three increasingly complex levels.
+- **Features:** Up to three persistent echoes per level, touch and keyboard controls, pause/restart support, and a saved high score.
+- **Controls:** Arrow keys / <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> to move, <kbd>Space</kbd> to wait, <kbd>P</kbd> to pause, <kbd>R</kbd> to restart the level.
+
 ---
 
 ## 🚀 How to Play Online Instantly (GitHub Pages)
@@ -95,6 +101,7 @@ Play all games directly in your browser without downloading anything!
    - 🐍 **Pixel Snake:** [https://bgtsidharth.github.io/Browser-Games/snake/](https://bgtsidharth.github.io/Browser-Games/snake/)  
    - 🧱 **Neon Breakout:** [https://bgtsidharth.github.io/Browser-Games/breakout/](https://bgtsidharth.github.io/Browser-Games/breakout/)  
    - 👾 **Star Invaders:** [https://bgtsidharth.github.io/Browser-Games/space-invaders/](https://bgtsidharth.github.io/Browser-Games/space-invaders/)  
+   - 🌀 **Echo Delivery:** [https://bgtsidharth.github.io/Browser-Games/echo-delivery/](https://bgtsidharth.github.io/Browser-Games/echo-delivery/)  
 
 ---
 
