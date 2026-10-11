@@ -23,12 +23,12 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 30px 20px;
+      padding: 40px 20px;
     }
 
     .hub-container {
       width: 100%;
-      max-width: 940px;
+      max-width: 1050px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -62,9 +62,9 @@
     }
 
     .hub-subtitle {
-      font-size: 17px;
+      font-size: 16px;
       color: #b8b3db;
-      max-width: 580px;
+      max-width: 650px;
       margin-bottom: 40px;
       line-height: 1.5;
     }
@@ -72,17 +72,17 @@
     /* Cards Grid */
     .games-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 28px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
       width: 100%;
-      margin-bottom: 35px;
+      margin-bottom: 40px;
     }
 
     .game-card {
       background: rgba(255, 255, 255, 0.05);
       border: 3px solid rgba(255, 255, 255, 0.15);
       border-radius: 24px;
-      padding: 28px 24px;
+      padding: 24px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -118,8 +118,8 @@
     }
 
     .card-icon {
-      font-size: 58px;
-      margin-bottom: 16px;
+      font-size: 52px;
+      margin-bottom: 14px;
       filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
       transition: transform 0.25s;
     }
@@ -130,7 +130,7 @@
 
     .card-title {
       font-family: 'Bungee', cursive;
-      font-size: 24px;
+      font-size: 20px;
       margin-bottom: 10px;
       color: #fff;
       letter-spacing: 1px;
@@ -138,16 +138,16 @@
 
     .card-tags {
       display: flex;
-      gap: 8px;
-      margin-bottom: 14px;
+      gap: 6px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
       justify-content: center;
     }
 
     .tag {
       font-family: 'Press Start 2P', monospace;
-      font-size: 9px;
-      padding: 4px 8px;
+      font-size: 8px;
+      padding: 4px 6px;
       border-radius: 6px;
       background: rgba(255, 255, 255, 0.1);
       color: #00f3ff;
@@ -155,10 +155,10 @@
     }
 
     .card-desc {
-      font-size: 14px;
+      font-size: 13px;
       color: #b0abbf;
       line-height: 1.5;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
       flex: 1;
     }
 
@@ -167,8 +167,8 @@
       background: linear-gradient(135deg, #ff0055, #ff5500);
       color: #fff;
       font-family: 'Bungee', cursive;
-      font-size: 16px;
-      padding: 12px 24px;
+      font-size: 15px;
+      padding: 10px 20px;
       border-radius: 999px;
       border: 2px solid #fff;
       box-shadow: 0 6px 15px rgba(255, 0, 85, 0.4);
@@ -200,7 +200,7 @@
     <div class="hub-badge">🕹️ RETRO NOVELTY ARCADE</div>
     <h1 class="hub-title">BROWSER GAMES</h1>
     <p class="hub-subtitle">
-      Zero installation. Pure HTML5 Canvas & Physics. 100% free to play right in your browser!
+      Zero installation. Pure HTML5 Canvas & Physics simulations. Completely silent and 100% free to play right in your browser!
     </p>
 
     <div class="games-grid">
@@ -209,13 +209,13 @@
         <div class="card-icon">🌊</div>
         <h2 class="card-title">WATER RING TOSS</h2>
         <div class="card-tags">
-          <span class="tag">BUOYANT HYDRODYNAMICS</span>
+          <span class="tag">HYDRODYNAMICS</span>
           <span class="tag">RETRO TOY</span>
         </div>
         <p class="card-desc">
           Faithful physics recreation of the vintage handheld water ring toss toy. Squeeze pneumatic buttons to shoot water jets and ring the target posts!
         </p>
-        <span class="card-play-btn">PLAY NOW 🎮</span>
+        <span class="card-play-btn">PLAY NOW 🌊</span>
       </a>
 
       <!-- Game 2: Bishi Bashi: Soda Rocket -->
@@ -224,12 +224,54 @@
         <h2 class="card-title">BISHI BASHI: SODA ROCKET</h2>
         <div class="card-tags">
           <span class="tag">BUTTON MASHER</span>
-          <span class="tag">KONAMI ARCADE TRIBUTE</span>
+          <span class="tag">KONAMI ARCADE</span>
         </div>
         <p class="card-desc">
           Insanely chaotic retro arcade button masher! Alternate Red, Green, and Blue buttons furiously to build carbonation and blast your soda can into outer space!
         </p>
         <span class="card-play-btn">PLAY NOW 🚀</span>
+      </a>
+
+      <!-- Game 3: Crocodile Dentist -->
+      <a href="crocodile-dentist/index.html" class="game-card">
+        <div class="card-icon">🐊</div>
+        <h2 class="card-title">CROCODILE DENTIST</h2>
+        <div class="card-tags">
+          <span class="tag">SUSPENSE ROULETTE</span>
+          <span class="tag">PHYSICAL TOY</span>
+        </div>
+        <p class="card-desc">
+          Suspenseful party roulette! Press down teeth one by one. Avoid the secret sore tooth or the crocodile's jaws will snap shut on your fingers!
+        </p>
+        <span class="card-play-btn">PLAY NOW 🐊</span>
+      </a>
+
+      <!-- Game 4: Nu, Pogodi! Wolf & Eggs -->
+      <a href="nu-pogodi/index.html" class="game-card">
+        <div class="card-icon">🐺</div>
+        <h2 class="card-title">NU, POGODI! (WOLF & EGGS)</h2>
+        <div class="card-tags">
+          <span class="tag">GAME & WATCH</span>
+          <span class="tag">VINTAGE LCD</span>
+        </div>
+        <p class="card-desc">
+          Iconic 1980s Soviet Elektronika / Nintendo Game & Watch LCD simulator. Guide the Wolf across 4 roost slopes catching falling eggs in his basket!
+        </p>
+        <span class="card-play-btn">PLAY NOW 🐺</span>
+      </a>
+
+      <!-- Game 5: Desktop Destroyer 98 -->
+      <a href="desktop-destroyer/index.html" class="game-card">
+        <div class="card-icon">🔨</div>
+        <h2 class="card-title">DESKTOP DESTROYER 98</h2>
+        <div class="card-tags">
+          <span class="tag">STRESS RELIEF</span>
+          <span class="tag">WIN98 NOVELTY</span>
+        </div>
+        <p class="card-desc">
+          The nostalgic 90s screen destroyer! Smash, saw, shoot, scorch, and infest a retro Windows 98 desktop with termites, then wash it clean with a sponge!
+        </p>
+        <span class="card-play-btn">PLAY NOW 🔨</span>
       </a>
     </div>
 

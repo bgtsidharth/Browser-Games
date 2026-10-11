@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Crocodile Dentist 🐊🦷</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Fredoka+One&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: #0d1f18;
+      color: #fff;
+      font-family: 'Fredoka One', cursive, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Swamp Pattern Background */
+    .swamp-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at 50% 40%, #154030 0%, #0d261d 60%, #06120e 100%);
+      z-index: 0;
+    }
+
+    /* Animated Jungle Leaves overlay */
+    .leaf-deco {
+      position: fixed;
+      pointer-events: none;
+      opacity: 0.15;
+      font-size: 80px;
+      z-index: 1;
+    }
+
+    /* Navigation header */
+    .top-nav {
+      position: absolute;
+      top: 14px;
+      left: 18px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-family: 'Fredoka One', cursive;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-btn:hover {
+      background: #00e676;
+      color: #052617;
+      border-color: #fff;
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(0, 230, 118, 0.6);
+    }
+
+    /* Main Container */
+    .toy-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 720px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .title-box {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .game-title {
+      font-family: 'Bungee', cursive;
+      font-size: clamp(26px, 5.5vw, 42px);
+      color: #00e676;
+      text-shadow:
+        3px 3px 0 #005928,
+        -2px -2px 0 #ffe600,
+        0 8px 20px rgba(0,0,0,0.8);
+      letter-spacing: 2px;
+    }
+
+    .game-sub {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(9px, 1.8vw, 12px);
+      color: #ffe600;
+      margin-top: 4px;
+      letter-spacing: 1px;
+    }
+
+    /* Score and Status Panel */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 480px;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      border: 3px solid #00e676;
+      border-radius: 16px;
+      padding: 10px 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+
+    .status-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .status-label {
+      font-size: 11px;
+      color: #aaa;
+      font-family: 'Press Start 2P', monospace;
+    }
+
+    .status-val {
+      font-family: 'Bungee', cursive;
+      font-size: 22px;
+      color: #ffe600;
+      margin-top: 2px;
+    }
+
+    /* The Physical Crocodile Toy Stage */
+    .croc-stage {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      height: 400px;
+      background: radial-gradient(circle at 50% 50%, #2e7d58 0%, #174d34 70%, #0d2e1f 100%);
+      border-radius: 36px;
+      border: 8px solid #38b000;
+      box-shadow:
+        0 15px 35px rgba(0,0,0,0.8),
+        inset 0 0 40px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: default;
+    }
+
+    /* Crocodile Toy SVG */
+    .croc-svg-container {
+      position: relative;
+      width: 380px;
+      height: 380px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Upper Jaw & Snout (moves down on snap!) */
+    #upperJawGroup {
+      transform-origin: 190px 100px;
+      transition: transform 0.08s cubic-bezier(0.6, 0.04, 0.98, 0.335);
+    }
+
+    #upperJawGroup.snapped {
+      transform: rotate(38deg) translateY(38px);
+    }
+
+    /* Eyes tracking pointer */
+    .croc-pupil {
+      transition: transform 0.05s ease;
+    }
+
+    /* Shaking animation when nervous */
+    .croc-shaking {
+      animation: crocTremble 0.08s infinite alternate;
+    }
+
+    @keyframes crocTremble {
+      0% { transform: translate(-2px, -1px); }
+      100% { transform: translate(2px, 1px); }
+    }
+
+    /* Teeth Container inside the Lower Jaw Mouth Basin */
+    .teeth-arch {
+      position: absolute;
+      top: 155px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 260px;
+      height: 120px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 15;
+    }
+
+    /* Individual Physical Tooth */
+    .tooth-btn {
+      position: absolute;
+      width: 22px;
+      height: 34px;
+      background: linear-gradient(to bottom, #ffffff 0%, #f4edd3 70%, #dfd3aa 100%);
+      border-radius: 8px 8px 4px 4px;
+      border: 2px solid #555;
+      box-shadow:
+        0 4px 6px rgba(0,0,0,0.6),
+        inset 0 -2px 4px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.15s, background 0.15s;
+      outline: none;
+    }
+
+    .tooth-btn:hover:not(.pressed) {
+      filter: brightness(1.15);
+      transform: scale(1.08) translateY(-2px);
+    }
+
+    .tooth-btn.pressed {
+      transform: translateY(16px) scale(0.92);
+      background: #735a4a;
+      border-color: #333;
+      box-shadow: inset 0 3px 6px rgba(0,0,0,0.8);
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .tooth-btn.sore-reveal {
+      background: #ff0055 !important;
+      border-color: #fff !important;
+      box-shadow: 0 0 15px #ff0055 !important;
+    }
+
+    /* JUMP SCARE SNAP BANNER */
+    .snap-banner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      font-family: 'Bungee', cursive;
+      font-size: clamp(38px, 9vw, 68px);
+      color: #ff0055;
+      text-shadow:
+        4px 4px 0 #fff,
+        -3px -3px 0 #ffe600,
+        0 10px 30px rgba(255, 0, 85, 0.9);
+      z-index: 30;
+      pointer-events: none;
+      transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      white-space: nowrap;
+    }
+
+    .snap-banner.active {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* Reset / Play Again Control */
+    .controls-panel {
+      margin-top: 18px;
+      display: flex;
+      gap: 14px;
+    }
+
+    .btn-reset {
+      background: linear-gradient(135deg, #00e676, #00b0ff);
+      color: #052617;
+      font-family: 'Bungee', cursive;
+      font-size: 18px;
+      padding: 12px 32px;
+      border-radius: 999px;
+      border: 3px solid #fff;
+      box-shadow: 0 6px 20px rgba(0, 230, 118, 0.5);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-reset:hover {
+      transform: scale(1.06);
+      box-shadow: 0 8px 28px rgba(0, 230, 118, 0.8);
+    }
+
+    .btn-reset:active {
+      transform: scale(0.96);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="swamp-bg"></div>
+  <div class="leaf-deco" style="top: 5%; left: 8%;">🌿</div>
+  <div class="leaf-deco" style="bottom: 8%; right: 10%;">🍃</div>
+  <div class="leaf-deco" style="top: 20%; right: 5%;">🌿</div>
+
+  <!-- Navigation -->
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-btn">🎮 All Games</a>
+    <a href="../water-ring-toss/index.html" class="nav-btn">🌊 Ring Toss</a>
+    <a href="../bishi-bashi/index.html" class="nav-btn">🚀 Soda Rocket</a>
+  </nav>
+
+  <main class="toy-wrapper">
+    <header class="title-box">
+      <h1 class="game-title">CROCODILE DENTIST</h1>
+      <p class="game-sub">CAREFUL! ONE RANDOM TOOTH WILL SNAP THE JAWS!</p>
+    </header>
+
+    <!-- Score HUD -->
+    <div class="status-bar">
+      <div class="status-item">
+        <span class="status-label">SAFE TEETH</span>
+        <span class="status-val" id="safeCount">0</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">TEETH LEFT</span>
+        <span class="status-val" id="remainingCount">10</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">BEST STREAK</span>
+        <span class="status-val" id="bestStreak">0</span>
+      </div>
+    </div>
+
+    <!-- Crocodile Physical Toy Arena -->
+    <section class="croc-stage" id="crocStage">
+
+      <!-- Snap Jump-Scare Alert -->
+      <div class="snap-banner" id="snapBanner">CHOMP! 🐊💥</div>
+
+      <div class="croc-svg-container" id="crocContainer">
+        <svg viewBox="0 0 380 380" width="380" height="380" id="crocBaseSvg">
+          <!-- Definitions for plastic gradients -->
+          <defs>
+            <radialGradient id="bodyGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#4caf50"/>
+              <stop offset="70%" stop-color="#2e7d32"/>
+              <stop offset="100%" stop-color="#1b5e20"/>
+            </radialGradient>
+            <radialGradient id="mouthCavity" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#800020"/>
+              <stop offset="80%" stop-color="#4a0013"/>
+              <stop offset="100%" stop-color="#26000a"/>
+            </radialGradient>
+          </defs>
+
+          <!-- Lower Jaw Base (Static) -->
+          <ellipse cx="190" cy="230" rx="150" ry="110" fill="url(#bodyGrad)" stroke="#113316" stroke-width="6"/>
+          <!-- Mouth Red Basin -->
+          <ellipse cx="190" cy="220" rx="125" ry="75" fill="url(#mouthCavity)" stroke="#30000a" stroke-width="4"/>
+          <!-- Tongue -->
+          <path d="M150 240 Q190 270 230 240 Q190 220 150 240 Z" fill="#ff4081" opacity="0.8"/>
+
+          <!-- Upper Jaw (Snapping Group) -->
+          <g id="upperJawGroup">
+            <!-- Snout Arch -->
+            <path d="M60 170 Q190 50 320 170 Q270 190 190 190 Q110 190 60 170 Z" fill="url(#bodyGrad)" stroke="#113316" stroke-width="6"/>
+            <!-- Nostrils -->
+            <circle cx="165" cy="115" r="7" fill="#0d2611"/>
+            <circle cx="215" cy="115" r="7" fill="#0d2611"/>
+            <!-- Cute Reptile Ridges / Scales -->
+            <polygon points="120,95 130,80 140,95" fill="#1b5e20"/>
+            <polygon points="180,85 190,68 200,85" fill="#1b5e20"/>
+            <polygon points="240,95 250,80 260,95" fill="#1b5e20"/>
+
+            <!-- Eyeballs -->
+            <!-- Left Eye Dome -->
+            <circle cx="125" cy="100" r="26" fill="#fff" stroke="#113316" stroke-width="5"/>
+            <circle cx="125" cy="100" r="12" fill="#ffe600" stroke="#113316" stroke-width="2"/>
+            <circle cx="125" cy="100" r="7" fill="#000" id="pupilLeft" class="croc-pupil"/>
+            <circle cx="128" cy="97" r="3" fill="#fff"/>
+
+            <!-- Right Eye Dome -->
+            <circle cx="255" cy="100" r="26" fill="#fff" stroke="#113316" stroke-width="5"/>
+            <circle cx="255" cy="100" r="12" fill="#ffe600" stroke="#113316" stroke-width="2"/>
+            <circle cx="255" cy="100" r="7" fill="#000" id="pupilRight" class="croc-pupil"/>
+            <circle cx="258" cy="97" r="3" fill="#fff"/>
+          </g>
+        </svg>
+
+        <!-- 10 Pressable Teeth Arranged in an Arch -->
+        <div class="teeth-arch" id="teethArch"></div>
+      </div>
+
+    </section>
+
+    <!-- Bottom Controls -->
+    <div class="controls-panel">
+      <button class="btn-reset" id="btnReset">OPEN JAWS / NEW GAME 🔄</button>
+    </div>
+
+  </main>
+
+  <script>
+    /* Crocodile Dentist - 100% Silent Physical Toy Simulation */
+    (function () {
+      'use strict';
+
+      const TOTAL_TEETH = 10;
+      let soreToothIndex = -1;
+      let safePressed = 0;
+      let isChomped = false;
+      let bestStreakCount = 0;
+
+      const teethArch = document.getElementById('teethArch');
+      const upperJawGroup = document.getElementById('upperJawGroup');
+      const snapBanner = document.getElementById('snapBanner');
+      const safeCount = document.getElementById('safeCount');
+      const remainingCount = document.getElementById('remainingCount');
+      const bestStreak = document.getElementById('bestStreak');
+      const btnReset = document.getElementById('btnReset');
+      const crocStage = document.getElementById('crocStage');
+      const pupilLeft = document.getElementById('pupilLeft');
+      const pupilRight = document.getElementById('pupilRight');
+
+      // Create 10 teeth along an arc
+      function generateTeeth() {
+        teethArch.innerHTML = '';
+        soreToothIndex = Math.floor(Math.random() * TOTAL_TEETH);
+        safePressed = 0;
+        isChomped = false;
+        upperJawGroup.classList.remove('snapped');
+        snapBanner.classList.remove('active');
+        crocStage.classList.remove('croc-shaking');
+
+        updateHUD();
+
+        // Semi-elliptical placement of 10 teeth
+        const centerX = 130;
+        const radiusX = 105;
+        const radiusY = 48;
+
+        for (let i = 0; i < TOTAL_TEETH; i++) {
+          const btn = document.createElement('button');
+          btn.className = 'tooth-btn';
+          btn.dataset.index = i;
+
+          // Angle from PI*0.1 to PI*0.9
+          const angle = Math.PI * (0.12 + (i / (TOTAL_TEETH - 1)) * 0.76);
+          const x = centerX - Math.cos(angle) * radiusX;
+          const y = 35 + Math.sin(angle) * radiusY;
+          const rotation = (angle - Math.PI / 2) * 50;
+
+          btn.style.left = `${x - 11}px`;
+          btn.style.top = `${y}px`;
+          btn.style.transform = `rotate(${rotation}deg)`;
+          btn.dataset.defaultRot = rotation;
+
+          btn.addEventListener('pointerdown', (e) => {
+            e.preventDefault();
+            pressTooth(i, btn);
+          });
+
+          teethArch.appendChild(btn);
+        }
+      }
+
+      function pressTooth(index, toothElement) {
+        if (isChomped || toothElement.classList.contains('pressed')) return;
+
+        if (index === soreToothIndex) {
+          // SNAP! CHOMP!
+          triggerSnap(toothElement);
+        } else {
+          // Safe tooth pushed down
+          toothElement.classList.add('pressed');
+          toothElement.style.transform = `rotate(${toothElement.dataset.defaultRot}deg) translateY(12px) scale(0.92)`;
+          safePressed++;
+          updateHUD();
+
+          // Croc eyes twitch nervously as teeth dwindle
+          nervousEyeJitter();
+
+          // If all safe teeth pushed, player wins round!
+          if (safePressed === TOTAL_TEETH - 1) {
+            triggerWin();
+          }
+        }
+      }
+
+      function triggerSnap(toothElement) {
+        isChomped = true;
+        toothElement.classList.add('sore-reveal');
+
+        // Upper jaw slams shut with extreme speed
+        upperJawGroup.classList.add('snapped');
+        crocStage.classList.add('croc-shaking');
+        snapBanner.classList.add('active');
+
+        // Eyes cross comically
+        pupilLeft.style.transform = 'translate(4px, 4px) scale(1.3)';
+        pupilRight.style.transform = 'translate(-4px, 4px) scale(1.3)';
+
+        setTimeout(() => {
+          crocStage.classList.remove('croc-shaking');
+        }, 600);
+      }
+
+      function triggerWin() {
+        snapBanner.textContent = 'YOU SURVIVED! 🏆';
+        snapBanner.style.color = '#00e676';
+        snapBanner.classList.add('active');
+      }
+
+      function updateHUD() {
+        safeCount.textContent = safePressed;
+        remainingCount.textContent = TOTAL_TEETH - safePressed;
+        if (safePressed > bestStreakCount) {
+          bestStreakCount = safePressed;
+          bestStreak.textContent = bestStreakCount;
+        }
+      }
+
+      function nervousEyeJitter() {
+        const jitterX = (Math.random() - 0.5) * 6;
+        const jitterY = (Math.random() - 0.5) * 6;
+        pupilLeft.style.transform = `translate(${jitterX}px, ${jitterY}px)`;
+        pupilRight.style.transform = `translate(${jitterX}px, ${jitterY}px)`;
+      }
+
+      // Track cursor position to make crocodile eyes subtly watch player's fingers!
+      window.addEventListener('pointermove', (e) => {
+        if (isChomped) return;
+        const rect = crocStage.getBoundingClientRect();
+        const stageCenterX = rect.left + rect.width / 2;
+        const stageCenterY = rect.top + rect.height / 2;
+
+        const deltaX = (e.clientX - stageCenterX) / rect.width;
+        const deltaY = (e.clientY - stageCenterY) / rect.height;
+
+        const maxEyeDist = 5;
+        const eyeX = Math.max(-maxEyeDist, Math.min(maxEyeDist, deltaX * maxEyeDist * 3));
+        const eyeY = Math.max(-maxEyeDist, Math.min(maxEyeDist, deltaY * maxEyeDist * 3));
+
+        pupilLeft.style.transform = `translate(${eyeX}px, ${eyeY}px)`;
+        pupilRight.style.transform = `translate(${eyeX}px, ${eyeY}px)`;
+      });
+
+      btnReset.addEventListener('click', generateTeeth);
+
+      // Start initial game
+      generateTeeth();
+
+    })();
+  </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
-# 🎮 Browser Games
+# 🎮 Retro Browser Games Arcade
 
-A curated collection of nostalgic, interactive, physics-based retro novelty games designed to run directly in any web browser with zero external dependencies.
+A curated collection of nostalgic, interactive, physics-based retro novelty games and simulations designed to run directly in any web browser with zero external dependencies and **100% silent** (no surprise sounds).
 
 ---
 
@@ -14,14 +14,35 @@ A faithful digital recreation of the iconic retro handheld water ring toss toy (
 ### 2. 🚀 [Bishi Bashi: Shake the Soda Rocket!](bishi-bashi/index.html)
 Tribute to Konami's legendary chaotic arcade party game *Bishi Bashi Special*!
 - **Mechanics:** 3 giant retro arcade buttons (Red, Green, Blue). Alternate buttons as fast as humanly possible to build carbonation pressure and launch your soda can beyond Earth's orbit!
-- **Features:** Exaggerated anime facial expressions, combo streak multipliers, dynamic pressure decay, milestone space landmarks (Airliners, ISS, satellites, Moon flyby), and flight rank evaluation (C up to SSS Galaxy Emperor).
+- **Features:** Exaggerated anime facial expressions, combo streak multipliers, dynamic pressure decay, milestone space landmarks, and flight rank evaluation (C up to SSS Galaxy Emperor).
 - **Controls:** <kbd>Z</kbd> / <kbd>1</kbd> (Red), <kbd>X</kbd> / <kbd>2</kbd> (Green), <kbd>C</kbd> / <kbd>3</kbd> (Blue), or touch/click on screen buttons.
+
+### 3. 🐊 [Crocodile Dentist](crocodile-dentist/index.html)
+The legendary physical tabletop suspense roulette toy!
+- **Mechanics:** Take turns pressing down the crocodile's 10 teeth. One randomly selected tooth is secretly sore. Press it, and the jaws slam shut in a sudden chomp!
+- **Features:** Interactive 3D SVG crocodile model with eyes that actively follow your cursor or finger, nervous tremors, and jaw slam jump-scare.
+- **Controls:** Click / tap any tooth to test your luck. Click **"Open Jaws / New Game"** to reset the sore tooth.
+
+### 4. 🐺 [Nu, Pogodi! (Wolf Catching Eggs)](nu-pogodi/index.html)
+The iconic 1980s Soviet Elektronika IM-02 / Nintendo Game & Watch handheld LCD game simulator.
+- **Mechanics:** Help the panicked cartoon Wolf catch eggs rolling down 4 hen perches into his basket before they smash on the ground.
+- **Features:** Authentic olive-green LCD screen with segmented black crystal animations, progressive speed ramps, and classic retro beige handheld plastic casing.
+- **Controls:** <kbd>Q</kbd> (Top-Left), <kbd>A</kbd> (Bottom-Left), <kbd>E</kbd> (Top-Right), <kbd>D</kbd> (Bottom-Right), or directional on-screen buttons.
+
+### 5. 🔨 [Desktop Destroyer 98](desktop-destroyer/index.html)
+The legendary 90s screen stress-relief novelty screentoy!
+- **Mechanics:** Unleash mayhem onto an authentic Windows 98 desktop with a full arsenal of destructive tools.
+- **Tools Included:**
+  - 🔨 **Hammer:** Smashes procedural spiderweb cracks into the glass screen.
+  - 🪚 **Chainsaw:** Slices chunks out of desktop windows and icons.
+  - 🔫 **Machine Gun:** Sprays bullet holes and lead dents.
+  - 🧯 **Flamethrower:** Scorches realistic char marks and smoke.
+  - 🐜 **Termites:** Spawns autonomous termites that crawl and chew away pixels.
+  - 🧼 **Sponge Washer:** Scrubs everything clean and restores the screen.
 
 ---
 
-## 🚀 How to Play
-
-### Option A: Play Online Instantly (GitHub Pages)
+## 🚀 How to Play Online Instantly (GitHub Pages)
 
 Play all games directly in your browser without downloading anything!
 
@@ -31,24 +52,11 @@ Play all games directly in your browser without downloading anything!
 2. **Direct Game Links:**  
    - 🌊 **Water Ring Toss:** [https://bgtsidharth.github.io/Browser-Games/water-ring-toss/](https://bgtsidharth.github.io/Browser-Games/water-ring-toss/)  
    - 🚀 **Bishi Bashi Soda Rocket:** [https://bgtsidharth.github.io/Browser-Games/bishi-bashi/](https://bgtsidharth.github.io/Browser-Games/bishi-bashi/)  
-
----
-
-### Option B: Play Locally on Your Computer
-
-No installation, Node.js, or server setup required!
-
-1. **Clone or Download the Repository:**
-   ```bash
-   git clone https://github.com/bgtsidharth/Browser-Games.git
-   ```
-   *(Or click **Code > Download ZIP** on GitHub and extract the archive).*
-
-2. **Launch Any Game:**
-   - Double-click **[`index.html`](index.html)** in the root folder to open the Arcade Hub.
-   - Or open **[`water-ring-toss/index.html`](water-ring-toss/index.html)** or **[`bishi-bashi/index.html`](bishi-bashi/index.html)** directly in your browser (Chrome, Edge, Firefox, Safari).
+   - 🐊 **Crocodile Dentist:** [https://bgtsidharth.github.io/Browser-Games/crocodile-dentist/](https://bgtsidharth.github.io/Browser-Games/crocodile-dentist/)  
+   - 🐺 **Nu, Pogodi! (Wolf & Eggs):** [https://bgtsidharth.github.io/Browser-Games/nu-pogodi/](https://bgtsidharth.github.io/Browser-Games/nu-pogodi/)  
+   - 🔨 **Desktop Destroyer 98:** [https://bgtsidharth.github.io/Browser-Games/desktop-destroyer/](https://bgtsidharth.github.io/Browser-Games/desktop-destroyer/)  
 
 ---
 
 ## 🔇 Audio Policy
-All games in this collection are built completely silent (zero Web Audio API or oscillator sound effects) so you can enjoy them safely in any environment without surprise noise.
+All games in this repository are **100% silent** (zero Web Audio API, zero oscillator audio context) — completely safe for quiet rooms, work, or school environments.

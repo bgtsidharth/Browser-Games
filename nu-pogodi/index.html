@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Nu, Pogodi! - Wolf Catching Eggs 🐺🥚</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: #1e1e24;
+      color: #333;
+      font-family: 'Share Tech Mono', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 10px;
+    }
+
+    /* Top Navigation */
+    .top-nav {
+      position: absolute;
+      top: 12px;
+      left: 18px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #eee;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .nav-btn:hover {
+      background: #ffcc00;
+      color: #111;
+      border-color: #fff;
+    }
+
+    /* Elektronika Handheld Shell (Classic 80s Beige Plastic) */
+    .handheld-shell {
+      position: relative;
+      width: 100%;
+      max-width: 760px;
+      height: 480px;
+      background: linear-gradient(135deg, #d3c7a6 0%, #b8aa84 50%, #9e906c 100%);
+      border-radius: 36px;
+      border: 8px solid #736746;
+      box-shadow:
+        0 20px 50px rgba(0,0,0,0.8),
+        inset 0 4px 10px rgba(255,255,255,0.6),
+        inset 0 -6px 12px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px;
+    }
+
+    /* Handheld Branding text */
+    .brand-text {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: #4a3e20;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+    }
+
+    /* Center LCD Screen */
+    .lcd-bezel {
+      flex: 1;
+      max-width: 440px;
+      height: 380px;
+      background: #2b2b2b;
+      border-radius: 18px;
+      padding: 12px;
+      box-shadow: inset 0 6px 15px rgba(0,0,0,0.9), 0 2px 4px rgba(255,255,255,0.4);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .lcd-screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: #9ab48b; /* Iconic olive-gray retro LCD color */
+      border-radius: 10px;
+      box-shadow: inset 0 0 25px rgba(0,0,0,0.25);
+      overflow: hidden;
+    }
+
+    /* Subtle LCD Pixel Scanlines overlay */
+    .lcd-screen::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.05),
+        rgba(0, 0, 0, 0.05) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+      pointer-events: none;
+    }
+
+    /* LCD Canvas for segmented graphics */
+    #lcdCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Left & Right Button Controllers */
+    .dpad-side {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      align-items: center;
+      width: 100px;
+    }
+
+    .retro-btn {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #b23b3b, #7a1515);
+      border: 3px solid #3d0707;
+      box-shadow:
+        0 6px 0 #2b0303,
+        0 8px 12px rgba(0,0,0,0.5),
+        inset 0 3px 6px rgba(255,255,255,0.4);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 24px;
+      font-weight: bold;
+      transition: transform 0.05s, box-shadow 0.05s;
+      outline: none;
+    }
+
+    .retro-btn:active, .retro-btn.pressed {
+      transform: translateY(4px);
+      box-shadow:
+        0 2px 0 #2b0303,
+        0 3px 6px rgba(0,0,0,0.5),
+        inset 0 2px 4px rgba(0,0,0,0.6);
+    }
+
+    .btn-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      color: #3b2f15;
+      margin-top: 4px;
+    }
+
+    /* Game Info HUD at Bottom */
+    .controls-hint {
+      margin-top: 16px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 11px;
+      color: #bbb;
+      text-align: center;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-btn">🎮 All Games</a>
+    <a href="../water-ring-toss/index.html" class="nav-btn">🌊 Ring Toss</a>
+    <a href="../bishi-bashi/index.html" class="nav-btn">🚀 Soda Rocket</a>
+    <a href="../crocodile-dentist/index.html" class="nav-btn">🐊 Croc Dentist</a>
+  </nav>
+
+  <!-- Elektronika Game & Watch Shell -->
+  <main class="handheld-shell">
+    <div class="brand-text">ЭЛЕКТРОНИКА ИМ-02 • NU, POGODI!</div>
+
+    <!-- Left Controls (Top-Left, Bottom-Left) -->
+    <div class="dpad-side">
+      <div>
+        <button class="retro-btn" id="btnTL">↖</button>
+        <div class="btn-label">Q / UP-LEFT</div>
+      </div>
+      <div>
+        <button class="retro-btn" id="btnBL">↙</button>
+        <div class="btn-label">A / DN-LEFT</div>
+      </div>
+    </div>
+
+    <!-- Center Vintage LCD Frame -->
+    <div class="lcd-bezel">
+      <div class="lcd-screen">
+        <canvas id="lcdCanvas" width="416" height="356"></canvas>
+      </div>
+    </div>
+
+    <!-- Right Controls (Top-Right, Bottom-Right) -->
+    <div class="dpad-side">
+      <div>
+        <button class="retro-btn" id="btnTR">↗</button>
+        <div class="btn-label">E / UP-RIGHT</div>
+      </div>
+      <div>
+        <button class="retro-btn" id="btnBR">↘</button>
+        <div class="btn-label">D / DN-RIGHT</div>
+      </div>
+    </div>
+  </main>
+
+  <p class="controls-hint">
+    KEYBOARD: <kbd>Q</kbd> (Top-Left) &bull; <kbd>A</kbd> (Bottom-Left) &bull; <kbd>E</kbd> (Top-Right) &bull; <kbd>D</kbd> (Bottom-Right)<br>
+    Or use Arrow Keys: <kbd>▲</kbd> / <kbd>◄</kbd> / <kbd>▼</kbd> / <kbd>►</kbd> &bull; Press <kbd>Space</kbd> to Restart
+  </p>
+
+  <script>
+    /* Nu, Pogodi! (Wolf Catching Eggs) - 100% Pure Silent LCD Simulation */
+    (function () {
+      'use strict';
+
+      const canvas = document.getElementById('lcdCanvas');
+      const ctx = canvas.getContext('2d');
+
+      // 4 Positions: 0: Top-Left, 1: Bottom-Left, 2: Top-Right, 3: Bottom-Right
+      let wolfPos = 1; // Default bottom-left
+      let score = 0;
+      let misses = 0; // Max 3 misses
+      let gameOver = false;
+
+      // 4 Ramps/Slopes for eggs: Each ramp has 5 step slots (0=perch, 1, 2, 3, 4=drop)
+      let eggs = []; // Array of { ramp: 0..3, step: 0..4, timer: number }
+      let stepSpeed = 480; // ms per egg move
+      let lastMoveTime = 0;
+      let lastSpawnTime = 0;
+      let spawnInterval = 1800; // ms
+
+      // Perch ramp definitions [startX, startY, endX, endY]
+      const RAMPS = [
+        { sx: 50, sy: 95, ex: 140, ey: 155 }, // 0: Top-Left
+        { sx: 50, sy: 195, ex: 140, ey: 255 }, // 1: Bottom-Left
+        { sx: 366, sy: 95, ex: 276, ey: 155 }, // 2: Top-Right
+        { sx: 366, sy: 195, ex: 276, ey: 255 }  // 3: Bottom-Right
+      ];
+
+      // Buttons
+      const btnTL = document.getElementById('btnTL');
+      const btnBL = document.getElementById('btnBL');
+      const btnTR = document.getElementById('btnTR');
+      const btnBR = document.getElementById('btnBR');
+
+      function setWolfPos(pos, btn) {
+        if (gameOver) {
+          restartGame();
+          return;
+        }
+        wolfPos = pos;
+        if (btn) {
+          btn.classList.add('pressed');
+          setTimeout(() => btn.classList.remove('pressed'), 80);
+        }
+      }
+
+      btnTL.addEventListener('pointerdown', () => setWolfPos(0, btnTL));
+      btnBL.addEventListener('pointerdown', () => setWolfPos(1, btnBL));
+      btnTR.addEventListener('pointerdown', () => setWolfPos(2, btnTR));
+      btnBR.addEventListener('pointerdown', () => setWolfPos(3, btnBR));
+
+      window.addEventListener('keydown', (e) => {
+        if (e.code === 'KeyQ' || (e.code === 'ArrowUp' && wolfPos < 2)) setWolfPos(0, btnTL);
+        else if (e.code === 'KeyA' || e.code === 'ArrowLeft') setWolfPos(1, btnBL);
+        else if (e.code === 'KeyE' || (e.code === 'ArrowUp' && wolfPos >= 2)) setWolfPos(2, btnTR);
+        else if (e.code === 'KeyD' || e.code === 'ArrowRight' || e.code === 'ArrowDown') setWolfPos(3, btnBR);
+        else if (e.code === 'Space' && gameOver) restartGame();
+      });
+
+      function restartGame() {
+        score = 0;
+        misses = 0;
+        eggs = [];
+        gameOver = false;
+        stepSpeed = 480;
+        spawnInterval = 1800;
+      }
+
+      function spawnEgg() {
+        const ramp = Math.floor(Math.random() * 4);
+        eggs.push({ ramp: ramp, step: 0 });
+      }
+
+      // Main Loop
+      function gameLoop(now) {
+        requestAnimationFrame(gameLoop);
+
+        if (!gameOver) {
+          // Egg movement timing
+          if (now - lastMoveTime > stepSpeed) {
+            lastMoveTime = now;
+            updateEggs();
+          }
+
+          // Egg spawn timing
+          if (now - lastSpawnTime > spawnInterval) {
+            lastSpawnTime = now;
+            spawnEgg();
+          }
+        }
+
+        renderLCD();
+      }
+
+      function updateEggs() {
+        for (let i = eggs.length - 1; i >= 0; i--) {
+          const egg = eggs[i];
+          egg.step++;
+
+          // At step 4, the egg reaches the end of the ramp!
+          if (egg.step === 4) {
+            if (wolfPos === egg.ramp) {
+              // CAUGHT IN THE BASKET!
+              score++;
+              eggs.splice(i, 1);
+              // Progressive difficulty speedup
+              if (stepSpeed > 160) stepSpeed -= 4;
+              if (spawnInterval > 750) spawnInterval -= 12;
+            } else {
+              // MISSED! SMASH!
+              misses++;
+              eggs.splice(i, 1);
+              if (misses >= 3) {
+                gameOver = true;
+              }
+            }
+          }
+        }
+      }
+
+      // Render iconic black LCD liquid crystal segments
+      function renderLCD() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = '#1c221a'; // Deep LCD black pigment
+        ctx.strokeStyle = '#1c221a';
+        ctx.lineWidth = 4;
+
+        // 1. Draw 4 Fixed Wooden Chicken Perch Slopes
+        for (let r of RAMPS) {
+          ctx.beginPath();
+          ctx.moveTo(r.sx, r.sy);
+          ctx.lineTo(r.ex, r.ey);
+          ctx.stroke();
+
+          // Perch roof posts
+          ctx.beginPath();
+          ctx.arc(r.sx, r.sy - 8, 12, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        // 2. Draw Digital Score (Top Center)
+        ctx.font = '22px "Press Start 2P", monospace';
+        ctx.fillText(score.toString().padStart(4, '0'), 160, 45);
+
+        // 3. Draw Misses (Broken egg icons top right)
+        ctx.font = '14px "Press Start 2P", monospace';
+        let missStr = '❌'.repeat(misses);
+        ctx.fillText(missStr, 280, 42);
+
+        // 4. Draw Rolling Eggs along ramps
+        for (let egg of eggs) {
+          const ramp = RAMPS[egg.ramp];
+          const t = egg.step / 3.6;
+          const x = ramp.sx + (ramp.ex - ramp.sx) * t;
+          const y = ramp.sy + (ramp.ey - ramp.sy) * t - 8;
+
+          ctx.beginPath();
+          ctx.ellipse(x, y, 7, 10, Math.PI / 4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // 5. Draw Wolf in center holding basket at wolfPos (0: TL, 1: BL, 2: TR, 3: BR)
+        drawWolfLCD(wolfPos);
+
+        // 6. Game Over Overlay
+        if (gameOver) {
+          ctx.font = '20px "Press Start 2P", monospace';
+          ctx.fillText('GAME OVER', 125, 175);
+          ctx.font = '11px "Press Start 2P", monospace';
+          ctx.fillText('PRESS ANY BUTTON', 130, 205);
+        }
+      }
+
+      function drawWolfLCD(pos) {
+        const isLeft = pos < 2;
+        const isTop = pos === 0 || pos === 2;
+
+        const centerX = 208;
+        const centerY = 240;
+
+        ctx.save();
+        if (!isLeft) {
+          ctx.translate(canvas.width, 0);
+          ctx.scale(-1, 1);
+        }
+
+        // Wolf Body
+        ctx.beginPath();
+        ctx.ellipse(190, 240, 24, 38, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Wolf Head & Snout
+        ctx.beginPath();
+        ctx.arc(175, 185, 20, 0, Math.PI * 2);
+        ctx.fill();
+        // Snout
+        ctx.beginPath();
+        ctx.moveTo(170, 180);
+        ctx.lineTo(135, 188);
+        ctx.lineTo(165, 198);
+        ctx.fill();
+        // Ears & Cap
+        ctx.beginPath();
+        ctx.moveTo(175, 168);
+        ctx.lineTo(168, 145);
+        ctx.lineTo(185, 168);
+        ctx.fill();
+
+        // Legs
+        ctx.fillRect(175, 275, 12, 35);
+        ctx.fillRect(195, 275, 12, 35);
+
+        // Arm & Basket
+        const basketY = isTop ? 150 : 245;
+        const basketX = 135;
+
+        // Arm line
+        ctx.beginPath();
+        ctx.moveTo(180, 215);
+        ctx.lineTo(basketX + 10, basketY + 8);
+        ctx.lineWidth = 8;
+        ctx.stroke();
+
+        // Basket (Arc bowl)
+        ctx.beginPath();
+        ctx.arc(basketX, basketY, 18, 0, Math.PI);
+        ctx.lineWidth = 5;
+        ctx.stroke();
+
+        ctx.restore();
+      }
+
+      requestAnimationFrame(gameLoop);
+
+    })();
+  </script>
+</body>
+</html>
