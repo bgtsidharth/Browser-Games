@@ -43,6 +43,12 @@ The beloved physical tabletop mechanical game!
 - **Mechanics:** Violent neck lunging action! Snap up rolling, colliding, bouncy marbles in a circular arena against 3 AI hippos. Collect the special golden marble for 3x bonus points!
 - **Controls:** <kbd>Space</kbd> or click **"CHOMP!"** to extend your hippo's neck.
 
+### 8. 🦖 [Retro Dino Runner](dino-runner/index.html)
+Tribute to Google Chrome's famous "No Internet" offline dinosaur game!
+- **Mechanics:** Fast-paced infinite runner where your pixel dinosaur dashes across a desert wasteland. Jump over clusters of cacti, duck under flying pterodactyls, and survive day/night cycles with increasing speeds.
+- **Features:** High score saving via `localStorage`, ducking hitbox mechanics, and smooth mobile touch controls.
+- **Controls:** <kbd>Space</kbd> or <kbd>▲</kbd> to jump, <kbd>▼</kbd> to duck, or on-screen touch buttons.
+
 ---
 
 ## 🚀 How to Play Online Instantly (GitHub Pages)
@@ -60,6 +66,7 @@ Play all games directly in your browser without downloading anything!
    - 🔨 **Desktop Destroyer 98:** [https://bgtsidharth.github.io/Browser-Games/desktop-destroyer/](https://bgtsidharth.github.io/Browser-Games/desktop-destroyer/)  
    - 🍺 **Soda Tapper:** [https://bgtsidharth.github.io/Browser-Games/soda-tapper/](https://bgtsidharth.github.io/Browser-Games/soda-tapper/)  
    - 🦛 **Hungry Hippos:** [https://bgtsidharth.github.io/Browser-Games/hungry-hippos/](https://bgtsidharth.github.io/Browser-Games/hungry-hippos/)  
+   - 🦖 **Dino Runner:** [https://bgtsidharth.github.io/Browser-Games/dino-runner/](https://bgtsidharth.github.io/Browser-Games/dino-runner/)  
 
 ---
 

@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Retro Dino Runner 🦖🌵</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      background: #f7f7f7;
+      color: #535353;
+      font-family: 'Press Start 2P', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: background 0.5s, color 0.5s;
+    }
+
+    body.night-mode {
+      background: #202124;
+      color: #f1f3f4;
+    }
+
+    /* Top Navigation */
+    .top-nav {
+      position: absolute;
+      top: 14px;
+      left: 18px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-btn {
+      background: rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      color: inherit;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-family: inherit;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    body.night-mode .nav-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .nav-btn:hover {
+      background: #535353;
+      color: #fff;
+    }
+
+    body.night-mode .nav-btn:hover {
+      background: #fff;
+      color: #202124;
+    }
+
+    /* Game Container */
+    .runner-wrap {
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+    }
+
+    .runner-hud {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 760px;
+      margin-bottom: 12px;
+      font-size: 14px;
+      letter-spacing: 2px;
+    }
+
+    #gameCanvas {
+      width: 100%;
+      max-width: 760px;
+      height: 240px;
+      background: transparent;
+      border-bottom: 2px solid #535353;
+      display: block;
+      cursor: pointer;
+    }
+
+    body.night-mode #gameCanvas {
+      border-bottom-color: #f1f3f4;
+    }
+
+    .controls-hint {
+      margin-top: 18px;
+      font-size: 11px;
+      color: #888;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    /* Mobile Onscreen Action Buttons */
+    .touch-controls {
+      display: flex;
+      gap: 16px;
+      margin-top: 14px;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .touch-btn {
+      flex: 1;
+      padding: 14px;
+      font-family: inherit;
+      font-size: 13px;
+      background: rgba(0,0,0,0.06);
+      border: 2px solid #535353;
+      border-radius: 12px;
+      color: inherit;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    body.night-mode .touch-btn {
+      background: rgba(255,255,255,0.08);
+      border-color: #f1f3f4;
+    }
+
+    .touch-btn:active {
+      background: #535353;
+      color: #fff;
+    }
+
+    body.night-mode .touch-btn:active {
+      background: #f1f3f4;
+      color: #202124;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-btn">🎮 All Games</a>
+  </nav>
+
+  <main class="runner-wrap">
+    <div class="runner-hud">
+      <div>HI <span id="hiScoreText">00000</span></div>
+      <div><span id="scoreText">00000</span></div>
+    </div>
+
+    <canvas id="gameCanvas" width="760" height="240"></canvas>
+
+    <div class="touch-controls">
+      <button class="touch-btn" id="btnJump">▲ JUMP</button>
+      <button class="touch-btn" id="btnDuck">▼ DUCK</button>
+    </div>
+
+    <p class="controls-hint">
+      PRESS <kbd>SPACE</kbd> OR <kbd>▲</kbd> TO JUMP &bull; <kbd>▼</kbd> TO DUCK &bull; TAP SCREEN ON MOBILE
+    </p>
+  </main>
+
+  <script>
+    /* Retro Dino Runner - 100% Silent Offline Endless Runner */
+    (function () {
+      'use strict';
+
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+      const scoreText = document.getElementById('scoreText');
+      const hiScoreText = document.getElementById('hiScoreText');
+      const btnJump = document.getElementById('btnJump');
+      const btnDuck = document.getElementById('btnDuck');
+
+      const GROUND_Y = 200;
+      let score = 0;
+      let hiScore = parseInt(localStorage.getItem('dinoRunner_highScore') || '0', 10);
+      hiScoreText.textContent = hiScore.toString().padStart(5, '0');
+
+      let speed = 7.5;
+      let isPlaying = false;
+      let isGameOver = false;
+      let frameCount = 0;
+      let isNightMode = false;
+
+      // Dino Player
+      const dino = {
+        x: 50,
+        y: GROUND_Y - 44,
+        w: 40,
+        h: 44,
+        vy: 0,
+        gravity: 0.72,
+        jumpPower: -13.2,
+        isGrounded: true,
+        isDucking: false,
+        legFrame: 0
+      };
+
+      // Obstacles & Background Objects
+      let obstacles = []; // { type: 'cactus'|'pterodactyl', x, y, w, h }
+      let clouds = [];
+      let horizonBumps = [];
+
+      function initHorizon() {
+        clouds = [
+          { x: 200, y: 50, speed: 1 },
+          { x: 500, y: 70, speed: 0.8 },
+          { x: 750, y: 40, speed: 1.1 }
+        ];
+        horizonBumps = [];
+        for (let i = 0; i < 760; i += 30) {
+          if (Math.random() < 0.4) {
+            horizonBumps.push({ x: i, len: Math.random() * 8 + 3 });
+          }
+        }
+      }
+
+      function resetGame() {
+        score = 0;
+        speed = 7.5;
+        dino.y = GROUND_Y - 44;
+        dino.vy = 0;
+        dino.isGrounded = true;
+        dino.isDucking = false;
+        dino.h = 44;
+        obstacles = [];
+        isGameOver = false;
+        isPlaying = true;
+        isNightMode = false;
+        document.body.classList.remove('night-mode');
+        initHorizon();
+      }
+
+      function jump() {
+        if (!isPlaying) {
+          resetGame();
+          return;
+        }
+        if (dino.isGrounded && !dino.isDucking) {
+          dino.vy = dino.jumpPower;
+          dino.isGrounded = false;
+        }
+      }
+
+      function duck(active) {
+        if (!isPlaying) return;
+        dino.isDucking = active;
+        if (active) {
+          dino.h = 24;
+          if (dino.isGrounded) dino.y = GROUND_Y - 24;
+          else dino.vy += 4; // Fast drop
+        } else {
+          dino.h = 44;
+          if (dino.isGrounded) dino.y = GROUND_Y - 44;
+        }
+      }
+
+      // Input Listeners
+      window.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' || e.code === 'ArrowUp') {
+          e.preventDefault();
+          jump();
+        } else if (e.code === 'ArrowDown') {
+          e.preventDefault();
+          duck(true);
+        }
+      });
+
+      window.addEventListener('keyup', (e) => {
+        if (e.code === 'ArrowDown') {
+          duck(false);
+        }
+      });
+
+      canvas.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        jump();
+      });
+
+      btnJump.addEventListener('pointerdown', (e) => { e.preventDefault(); jump(); });
+      btnDuck.addEventListener('pointerdown', (e) => { e.preventDefault(); duck(true); });
+      btnDuck.addEventListener('pointerup', (e) => { e.preventDefault(); duck(false); });
+      btnDuck.addEventListener('pointercancel', (e) => { e.preventDefault(); duck(false); });
+
+      function spawnObstacle() {
+        const canSpawnPtero = score > 250;
+        const isPtero = canSpawnPtero && Math.random() < 0.35;
+
+        if (isPtero) {
+          // Pterodactyl at 3 possible heights: low (must duck), mid (must jump), high (walk under)
+          const heights = [GROUND_Y - 26, GROUND_Y - 45, GROUND_Y - 65];
+          const chosenY = heights[Math.floor(Math.random() * heights.length)];
+          obstacles.push({
+            type: 'pterodactyl',
+            x: 770,
+            y: chosenY,
+            w: 42,
+            h: 28,
+            wingFrame: 0
+          });
+        } else {
+          // Cacti: single, double, or giant
+          const count = Math.random() < 0.4 ? 2 : (Math.random() < 0.2 ? 3 : 1);
+          const w = count === 1 ? 18 : (count === 2 ? 34 : 48);
+          const h = 42;
+          obstacles.push({
+            type: 'cactus',
+            x: 770,
+            y: GROUND_Y - h,
+            w: w,
+            h: h
+          });
+        }
+      }
+
+      function update() {
+        if (!isPlaying || isGameOver) return;
+
+        frameCount++;
+
+        // Increase score & speed
+        if (frameCount % 4 === 0) {
+          score++;
+          scoreText.textContent = score.toString().padStart(5, '0');
+
+          if (score > hiScore) {
+            hiScore = score;
+            localStorage.setItem('dinoRunner_highScore', hiScore);
+            hiScoreText.textContent = hiScore.toString().padStart(5, '0');
+          }
+
+          // Gradual speed acceleration
+          if (score % 100 === 0 && speed < 16) {
+            speed += 0.35;
+          }
+
+          // Day / Night cycle every 500 points
+          if (score % 500 === 0) {
+            isNightMode = !isNightMode;
+            document.body.classList.toggle('night-mode', isNightMode);
+          }
+        }
+
+        // Dino Physics
+        if (!dino.isGrounded) {
+          dino.vy += dino.gravity;
+          dino.y += dino.vy;
+
+          if (dino.y >= GROUND_Y - dino.h) {
+            dino.y = GROUND_Y - dino.h;
+            dino.vy = 0;
+            dino.isGrounded = true;
+          }
+        }
+
+        dino.legFrame = (Math.floor(frameCount / 4) % 2);
+
+        // Move Horizon & Clouds
+        for (let c of clouds) {
+          c.x -= c.speed;
+          if (c.x < -80) c.x = 800;
+        }
+
+        for (let b of horizonBumps) {
+          b.x -= speed;
+          if (b.x < -20) b.x = 760;
+        }
+
+        // Spawn obstacles with randomized gaps
+        const lastObstacle = obstacles[obstacles.length - 1];
+        if (!lastObstacle || (760 - lastObstacle.x > Math.random() * 220 + 260)) {
+          spawnObstacle();
+        }
+
+        // Move obstacles and check collisions
+        for (let i = obstacles.length - 1; i >= 0; i--) {
+          const obs = obstacles[i];
+          obs.x -= speed;
+
+          if (obs.type === 'pterodactyl') {
+            obs.wingFrame = (Math.floor(frameCount / 8) % 2);
+          }
+
+          // AABB Hitbox detection with slight inner margin
+          const hitboxMargin = 5;
+          if (
+            dino.x + hitboxMargin < obs.x + obs.w - hitboxMargin &&
+            dino.x + dino.w - hitboxMargin > obs.x + hitboxMargin &&
+            dino.y + hitboxMargin < obs.y + obs.h - hitboxMargin &&
+            dino.y + dino.h - hitboxMargin > obs.y + hitboxMargin
+          ) {
+            // Collision! Game Over!
+            isGameOver = true;
+          }
+
+          if (obs.x < -60) {
+            obstacles.splice(i, 1);
+          }
+        }
+      }
+
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const color = isNightMode ? '#f1f3f4' : '#535353';
+        ctx.fillStyle = color;
+        ctx.strokeStyle = color;
+
+        // 1. Draw Clouds
+        for (let c of clouds) {
+          drawPixelCloud(c.x, c.y);
+        }
+
+        // 2. Draw Horizon Ground Line and bumps
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, GROUND_Y);
+        ctx.lineTo(760, GROUND_Y);
+        ctx.stroke();
+
+        for (let b of horizonBumps) {
+          ctx.fillRect(b.x, GROUND_Y + 4, b.len, 2);
+        }
+
+        // 3. Draw Dino
+        drawPixelDino(dino.x, dino.y, dino.w, dino.h, dino.isDucking, dino.legFrame, isGameOver);
+
+        // 4. Draw Obstacles
+        for (let obs of obstacles) {
+          if (obs.type === 'cactus') {
+            drawPixelCactus(obs.x, obs.y, obs.w, obs.h);
+          } else {
+            drawPixelPterodactyl(obs.x, obs.y, obs.wingFrame);
+          }
+        }
+
+        // 5. Game Over Text
+        if (isGameOver) {
+          ctx.font = '16px "Press Start 2P", monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText('G A M E   O V E R', canvas.width / 2, 90);
+
+          // Restart Icon
+          ctx.font = '24px "Press Start 2P", monospace';
+          ctx.fillText('🔄', canvas.width / 2, 135);
+          ctx.font = '10px "Press Start 2P", monospace';
+          ctx.fillText('PRESS SPACE TO RESTART', canvas.width / 2, 165);
+          ctx.textAlign = 'start';
+        } else if (!isPlaying) {
+          ctx.font = '12px "Press Start 2P", monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText('PRESS SPACE TO PLAY', canvas.width / 2, 110);
+          ctx.textAlign = 'start';
+        }
+      }
+
+      // Pixel Art Render Helpers
+      function drawPixelCloud(x, y) {
+        ctx.fillRect(x + 10, y, 35, 6);
+        ctx.fillRect(x, y + 6, 50, 6);
+        ctx.fillRect(x + 5, y + 12, 40, 4);
+      }
+
+      function drawPixelCactus(x, y, w, h) {
+        // Main stem
+        ctx.fillRect(x + w / 2 - 4, y, 8, h);
+        // Arms
+        if (w > 20) {
+          ctx.fillRect(x, y + 12, 6, 14);
+          ctx.fillRect(x, y + 22, w / 2 - 4, 4);
+        }
+        if (w > 30) {
+          ctx.fillRect(x + w - 6, y + 8, 6, 14);
+          ctx.fillRect(x + w / 2 + 4, y + 18, w / 2 - 4, 4);
+        }
+      }
+
+      function drawPixelPterodactyl(x, y, wing) {
+        // Body & Beak
+        ctx.fillRect(x + 12, y + 10, 20, 8);
+        ctx.fillRect(x, y + 12, 12, 4); // Beak
+        // Head
+        ctx.fillRect(x + 8, y + 6, 10, 8);
+
+        // Wings
+        if (wing === 0) { // Wings Up
+          ctx.fillRect(x + 18, y, 6, 10);
+          ctx.fillRect(x + 24, y + 2, 6, 8);
+        } else { // Wings Down
+          ctx.fillRect(x + 18, y + 18, 6, 10);
+          ctx.fillRect(x + 24, y + 16, 6, 8);
+        }
+      }
+
+      function drawPixelDino(x, y, w, h, ducking, leg, dead) {
+        if (ducking) {
+          // Crouching Dino
+          ctx.fillRect(x, y + 8, 48, 12);
+          ctx.fillRect(x + 40, y, 14, 14); // Head low
+          // Eye
+          ctx.fillStyle = isNightMode ? '#202124' : '#f7f7f7';
+          ctx.fillRect(x + 48, y + 4, 3, 3);
+          ctx.fillStyle = isNightMode ? '#f1f3f4' : '#535353';
+          // Legs
+          if (leg === 0) {
+            ctx.fillRect(x + 12, y + 20, 4, 4);
+            ctx.fillRect(x + 26, y + 18, 4, 6);
+          } else {
+            ctx.fillRect(x + 12, y + 18, 4, 6);
+            ctx.fillRect(x + 26, y + 20, 4, 4);
+          }
+        } else {
+          // Standing Dino
+          // Head
+          ctx.fillRect(x + 20, y, 20, 16);
+          ctx.fillRect(x + 16, y + 4, 4, 12);
+          ctx.fillRect(x + 20, y + 16, 12, 4); // Snout
+          // Eye
+          ctx.fillStyle = isNightMode ? '#202124' : '#f7f7f7';
+          if (dead) {
+            // X mark eye
+            ctx.fillRect(x + 24, y + 4, 4, 4);
+          } else {
+            ctx.fillRect(x + 24, y + 4, 3, 3);
+          }
+          ctx.fillStyle = isNightMode ? '#f1f3f4' : '#535353';
+
+          // Body
+          ctx.fillRect(x + 8, y + 14, 18, 18);
+          ctx.fillRect(x, y + 18, 8, 8); // Tail
+
+          // Small hands
+          ctx.fillRect(x + 24, y + 22, 6, 3);
+
+          // Legs
+          if (dino.isGrounded && !dead) {
+            if (leg === 0) {
+              ctx.fillRect(x + 10, y + 32, 4, 12);
+              ctx.fillRect(x + 18, y + 32, 4, 8);
+              ctx.fillRect(x + 18, y + 38, 4, 4);
+            } else {
+              ctx.fillRect(x + 10, y + 32, 4, 8);
+              ctx.fillRect(x + 10, y + 38, 4, 4);
+              ctx.fillRect(x + 18, y + 32, 4, 12);
+            }
+          } else {
+            // Mid-air jump legs
+            ctx.fillRect(x + 10, y + 32, 4, 10);
+            ctx.fillRect(x + 18, y + 32, 4, 10);
+          }
+        }
+      }
+
+      function loop() {
+        requestAnimationFrame(loop);
+        update();
+        render();
+      }
+
+      initHorizon();
+      requestAnimationFrame(loop);
+
+    })();
+  </script>
+</body>
+</html>
