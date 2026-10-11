@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#07120e">
+  <title>Pixel Snake | Retro Browser Games</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#183524,#07120e 65%);color:#e9ffe8;font:16px system-ui,sans-serif;display:grid;place-items:center;padding:20px}.cabinet{width:min(100%,560px);text-align:center}.home{display:inline-block;color:#a7f3b5;text-decoration:none;font-weight:700;margin-bottom:12px}.home:hover{text-decoration:underline}h1{font:clamp(24px,6vw,38px) monospace;letter-spacing:3px;margin:4px 0;color:#b8ff54;text-shadow:3px 3px #17643d}.sub{color:#b3cdb9;margin:0 0 16px}.screen{position:relative;border:8px solid #34483a;border-radius:20px;background:#07120e;box-shadow:0 18px 60px #0009, inset 0 0 0 3px #111;width:100%;overflow:hidden}canvas{display:block;width:100%;height:auto;aspect-ratio:3/4;image-rendering:pixelated;touch-action:none}.hud{position:absolute;inset:12px 14px auto;display:flex;justify-content:space-between;pointer-events:none;color:#e9ffe8;font:700 14px monospace;text-shadow:0 2px 4px #000}.overlay{position:absolute;inset:0;background:#06120edb;display:grid;place-items:center;padding:24px}.overlay[hidden]{display:none}.panel{max-width:340px}.panel h2{font:24px monospace;color:#b8ff54;margin:0 0 12px}.panel p{line-height:1.5;color:#d0e5d4}.action{border:0;border-radius:9px;padding:13px 22px;background:#b8ff54;color:#102716;font:800 15px monospace;cursor:pointer}.action:hover{filter:brightness(1.08);transform:translateY(-1px)}.touch{display:grid;grid-template-columns:repeat(3,64px);grid-template-rows:repeat(2,52px);gap:8px;justify-content:center;margin:16px auto 10px}.touch button{border:1px solid #6da978;border-radius:12px;background:#183524;color:#efffee;font-size:22px;touch-action:manipulation}.touch button:active{background:#3e784c}.touch .up{grid-column:2}.touch .left{grid-column:1;grid-row:2}.touch .down{grid-column:2;grid-row:2}.touch .right{grid-column:3;grid-row:2}.hint{font-size:13px;color:#a9bbaa;line-height:1.6}.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="cabinet">
+    <a class="home" href="../index.html">← ARCADE</a>
+    <h1>PIXEL SNAKE</h1>
+    <p class="sub">Nibble, grow, and don't bite your tail.</p>
+    <div class="screen">
+      <canvas id="game" width="480" height="640" aria-label="Pixel Snake playfield" role="img" tabindex="0"></canvas>
+      <div class="hud"><span>SCORE <b id="score">0</b></span><span>BEST <b id="best">0</b></span></div>
+      <div class="overlay" id="overlay"><div class="panel"><h2 id="headline">READY?</h2><p id="message">Collect the glowing fruit. The snake gets faster as it grows.</p><button class="action" id="start">START GAME</button></div></div>
+    </div>
+    <div class="touch" aria-label="Touch direction controls"><button class="up" data-dir="up" aria-label="Up">▲</button><button class="left" data-dir="left" aria-label="Left">◀</button><button class="down" data-dir="down" aria-label="Down">▼</button><button class="right" data-dir="right" aria-label="Right">▶</button></div>
+    <p class="hint">Move with <b>arrow keys</b> or <b>WASD</b> · Swipe or tap arrows on mobile<br>Press <b>P</b> to pause · <b>Enter</b> to start or restart</p>
+    <p class="sr" id="announcement" aria-live="polite"></p>
+  </main>
+  <script>
+    (()=>{'use strict';
+      const canvas=document.getElementById('game'),ctx=canvas.getContext('2d'),overlay=document.getElementById('overlay'),scoreEl=document.getElementById('score'),bestEl=document.getElementById('best'),headline=document.getElementById('headline'),message=document.getElementById('message'),startBtn=document.getElementById('start');
+      const cols=24,rows=32,cell=20;let snake,dir,nextDir,food,score=0,best=Number(localStorage.getItem('pixelSnake_highScore'))||0,state='ready',last=0,acc=0;
+      bestEl.textContent=best;
+      snake=[{x:11,y:16},{x:10,y:16},{x:9,y:16}];dir={x:1,y:0};nextDir=dir;food={x:17,y:14};
+      function placeFood(){do{food={x:Math.floor(Math.random()*cols),y:Math.floor(Math.random()*rows)}}while(snake.some(s=>s.x===food.x&&s.y===food.y))}
+      function reset(){snake=[{x:11,y:16},{x:10,y:16},{x:9,y:16}];dir={x:1,y:0};nextDir=dir;score=0;scoreEl.textContent='0';placeFood();acc=0;state='playing';overlay.hidden=true;last=performance.now();canvas.focus({preventScroll:true})}
+      function setDir(name){const map={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}},d=map[name];if(d&&d.x!==-dir.x&&d.y!==-dir.y)nextDir=d;if(state!=='playing'&&state==='ready')reset()}
+      function end(){state='over';headline.textContent='GAME OVER';message.textContent=`You scored ${score}. ${score>0?'One more run?':'Ready to give it another try?'}`;startBtn.textContent='PLAY AGAIN';overlay.hidden=false;document.getElementById('announcement').textContent=`Game over. Score ${score}.`}
+      function update(){dir=nextDir;const head={x:snake[0].x+dir.x,y:snake[0].y+dir.y},eating=head.x===food.x&&head.y===food.y,body=eating?snake:snake.slice(0,-1);if(head.x<0||head.x>=cols||head.y<0||head.y>=rows||body.some(s=>s.x===head.x&&s.y===head.y)){end();return}snake.unshift(head);if(eating){score+=10;scoreEl.textContent=score;placeFood();if(score>best){best=score;bestEl.textContent=best;localStorage.setItem('pixelSnake_highScore',best)}}else snake.pop()}
+      function draw(){ctx.fillStyle='#08150f';ctx.fillRect(0,0,480,640);ctx.fillStyle='#102219';for(let y=0;y<rows;y++)for(let x=0;x<cols;x++)if((x+y)%2===0)ctx.fillRect(x*cell,y*cell,cell,cell);ctx.fillStyle='#ff5c65';ctx.shadowColor='#ff5964';ctx.shadowBlur=16;ctx.beginPath();ctx.arc(food.x*cell+10,food.y*cell+10,7,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;snake.forEach((s,i)=>{ctx.fillStyle=i?'#4cba65':'#b8ff54';ctx.fillRect(s.x*cell+2,s.y*cell+2,cell-4,cell-4);if(!i){ctx.fillStyle='#102416';const ex=s.x*cell+(dir.x===1?14:dir.x===-1?5:dir.y===1?6:14),ey=s.y*cell+(dir.y===1?14:dir.y===-1?5:dir.x===1?6:14);ctx.fillRect(ex,ey,3,3);ctx.fillRect(ex+(dir.y?5:0),ey+(dir.x?5:0),3,3)}})}
+      function loop(t){if(state==='playing'){acc+=Math.min(100,t-last);const step=Math.max(62,145-score/5);while(acc>=step&&state==='playing'){update();acc-=step}}last=t;draw();requestAnimationFrame(loop)}
+      const keyMap={ArrowUp:'up',w:'up',W:'up',ArrowDown:'down',s:'down',S:'down',ArrowLeft:'left',a:'left',A:'left',ArrowRight:'right',d:'right',D:'right'};
+      window.addEventListener('keydown',e=>{if(keyMap[e.key]){e.preventDefault();setDir(keyMap[e.key])}else if(e.key==='Enter'&&state!=='playing')reset();else if((e.key==='p'||e.key==='P')&&state==='playing'){state='paused';headline.textContent='PAUSED';message.textContent='Take a breath. Press P to continue.';startBtn.textContent='RESUME';overlay.hidden=false}else if((e.key==='p'||e.key==='P')&&state==='paused'){state='playing';overlay.hidden=true;last=performance.now()}});
+      document.querySelectorAll('[data-dir]').forEach(b=>b.addEventListener('click',()=>setDir(b.dataset.dir)));startBtn.addEventListener('click',()=>{if(state==='paused'){state='playing';overlay.hidden=true;last=performance.now()}else reset()});
+      let sx=0,sy=0;canvas.addEventListener('pointerdown',e=>{sx=e.clientX;sy=e.clientY});canvas.addEventListener('pointerup',e=>{const dx=e.clientX-sx,dy=e.clientY-sy;if(Math.max(Math.abs(dx),Math.abs(dy))>20)setDir(Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up')});
+      requestAnimationFrame(loop);
+    })();
+  </script>
+</body>
+</html>
+
