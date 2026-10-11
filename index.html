@@ -2,13 +2,241 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=water-ring-toss/index.html">
-  <title>Browser Games</title>
-  <script>
-    window.location.replace("water-ring-toss/index.html");
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Retro Browser Games Arcade 🕹️</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Fredoka+One&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 30%, #1a1033 0%, #0d061c 70%, #05020a 100%);
+      color: #fff;
+      font-family: 'Fredoka One', cursive, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 20px;
+    }
+
+    .hub-container {
+      width: 100%;
+      max-width: 940px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .hub-badge {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 11px;
+      color: #00f3ff;
+      background: rgba(0, 243, 255, 0.15);
+      border: 2px solid #00f3ff;
+      padding: 6px 14px;
+      border-radius: 999px;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+    }
+
+    .hub-title {
+      font-family: 'Bungee', cursive;
+      font-size: clamp(32px, 6vw, 56px);
+      letter-spacing: 2px;
+      color: #ffe600;
+      text-shadow:
+        4px 4px 0 #ff0055,
+        -2px -2px 0 #00e5ff,
+        0 10px 25px rgba(0, 0, 0, 0.8);
+      margin-bottom: 8px;
+    }
+
+    .hub-subtitle {
+      font-size: 17px;
+      color: #b8b3db;
+      max-width: 580px;
+      margin-bottom: 40px;
+      line-height: 1.5;
+    }
+
+    /* Cards Grid */
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 28px;
+      width: 100%;
+      margin-bottom: 35px;
+    }
+
+    .game-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 3px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      text-decoration: none;
+      color: #fff;
+      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, #ff0055, #ffe600);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .game-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      border-color: #ffe600;
+      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 230, 0, 0.25);
+    }
+
+    .game-card:hover::before {
+      opacity: 1;
+    }
+
+    .card-icon {
+      font-size: 58px;
+      margin-bottom: 16px;
+      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
+      transition: transform 0.25s;
+    }
+
+    .game-card:hover .card-icon {
+      transform: scale(1.15) rotate(5deg);
+    }
+
+    .card-title {
+      font-family: 'Bungee', cursive;
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #fff;
+      letter-spacing: 1px;
+    }
+
+    .card-tags {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .tag {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #00f3ff;
+      border: 1px solid rgba(0, 243, 255, 0.3);
+    }
+
+    .card-desc {
+      font-size: 14px;
+      color: #b0abbf;
+      line-height: 1.5;
+      margin-bottom: 22px;
+      flex: 1;
+    }
+
+    .card-play-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #ff0055, #ff5500);
+      color: #fff;
+      font-family: 'Bungee', cursive;
+      font-size: 16px;
+      padding: 12px 24px;
+      border-radius: 999px;
+      border: 2px solid #fff;
+      box-shadow: 0 6px 15px rgba(255, 0, 85, 0.4);
+      display: inline-block;
+      transition: all 0.2s;
+    }
+
+    .game-card:hover .card-play-btn {
+      background: linear-gradient(135deg, #ffe600, #ff0055);
+      box-shadow: 0 8px 20px rgba(255, 230, 0, 0.6);
+      color: #111;
+    }
+
+    .footer-note {
+      font-size: 13px;
+      color: #6d678a;
+      letter-spacing: 0.5px;
+    }
+
+    .footer-note a {
+      color: #00f3ff;
+      text-decoration: none;
+    }
+  </style>
 </head>
-<body style="background:#0d1222;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
-  <p>Loading game... <a href="water-ring-toss/index.html" style="color:#00c6ff;">Click here if you are not redirected</a>.</p>
+<body>
+
+  <div class="hub-container">
+    <div class="hub-badge">🕹️ RETRO NOVELTY ARCADE</div>
+    <h1 class="hub-title">BROWSER GAMES</h1>
+    <p class="hub-subtitle">
+      Zero installation. Pure HTML5 Canvas & Physics. 100% free to play right in your browser!
+    </p>
+
+    <div class="games-grid">
+      <!-- Game 1: Water Ring Toss -->
+      <a href="water-ring-toss/index.html" class="game-card">
+        <div class="card-icon">🌊</div>
+        <h2 class="card-title">WATER RING TOSS</h2>
+        <div class="card-tags">
+          <span class="tag">BUOYANT HYDRODYNAMICS</span>
+          <span class="tag">RETRO TOY</span>
+        </div>
+        <p class="card-desc">
+          Faithful physics recreation of the vintage handheld water ring toss toy. Squeeze pneumatic buttons to shoot water jets and ring the target posts!
+        </p>
+        <span class="card-play-btn">PLAY NOW 🎮</span>
+      </a>
+
+      <!-- Game 2: Bishi Bashi: Soda Rocket -->
+      <a href="bishi-bashi/index.html" class="game-card">
+        <div class="card-icon">🚀</div>
+        <h2 class="card-title">BISHI BASHI: SODA ROCKET</h2>
+        <div class="card-tags">
+          <span class="tag">BUTTON MASHER</span>
+          <span class="tag">KONAMI ARCADE TRIBUTE</span>
+        </div>
+        <p class="card-desc">
+          Insanely chaotic retro arcade button masher! Alternate Red, Green, and Blue buttons furiously to build carbonation and blast your soda can into outer space!
+        </p>
+        <span class="card-play-btn">PLAY NOW 🚀</span>
+      </a>
+    </div>
+
+    <p class="footer-note">
+      Created by <a href="https://github.com/bgtsidharth/Browser-Games">@bgtsidharth</a> • Completely silent & safe for any environment
+    </p>
+  </div>
+
 </body>
 </html>

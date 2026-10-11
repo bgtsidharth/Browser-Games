@@ -1,16 +1,21 @@
 # 🎮 Browser Games
 
-A curated collection of nostalgic, interactive, physics-based games designed to run directly in any web browser with zero external dependencies.
+A curated collection of nostalgic, interactive, physics-based retro novelty games designed to run directly in any web browser with zero external dependencies.
 
 ---
 
-## 🌊 Game 1: 3D Water Ring Toss Handheld Toy
+## 🕹️ Games in this Collection
 
+### 1. 🌊 [Water Ring Toss Handheld Toy](water-ring-toss/index.html)
 A faithful digital recreation of the iconic retro handheld water ring toss toy ([YouTube Video Reference](https://www.youtube.com/watch?v=YpFm_tH28sY)).
+- **Physics:** Buoyant hydrodynamics ($g_{\text{eff}} = 0.065$), pneumatic rubber bellows puff dynamics, continuous tip-hooking, rigid body pole collisions, and 3D toroidal rendering.
+- **Controls:** <kbd>A</kbd> / <kbd>D</kbd> (Left / Right Jets), <kbd>T</kbd> / <kbd>Space</kbd> (Tilt/Shake), <kbd>R</kbd> (Reset).
 
-![Water Ring Toss](https://img.shields.io/badge/Physics-Hydrodynamic%20Simulation-00c6ff)
-![HTML5 Canvas](https://img.shields.io/badge/Platform-HTML5%20%2F%20Canvas-ff3366)
-![Zero Dependencies](https://img.shields.io/badge/Dependencies-None%20(Pure%20JS)-06d6a0)
+### 2. 🚀 [Bishi Bashi: Shake the Soda Rocket!](bishi-bashi/index.html)
+Tribute to Konami's legendary chaotic arcade party game *Bishi Bashi Special*!
+- **Mechanics:** 3 giant retro arcade buttons (Red, Green, Blue). Alternate buttons as fast as humanly possible to build carbonation pressure and launch your soda can beyond Earth's orbit!
+- **Features:** Exaggerated anime facial expressions, combo streak multipliers, dynamic pressure decay, milestone space landmarks (Airliners, ISS, satellites, Moon flyby), and flight rank evaluation (C up to SSS Galaxy Emperor).
+- **Controls:** <kbd>Z</kbd> / <kbd>1</kbd> (Red), <kbd>X</kbd> / <kbd>2</kbd> (Green), <kbd>C</kbd> / <kbd>3</kbd> (Blue), or touch/click on screen buttons.
 
 ---
 
@@ -18,55 +23,32 @@ A faithful digital recreation of the iconic retro handheld water ring toss toy (
 
 ### Option A: Play Online Instantly (GitHub Pages)
 
-You can play the game right in your browser without downloading anything!
+Play all games directly in your browser without downloading anything!
 
-1. **Direct Link:**  
-   👉 **[https://bgtsidharth.github.io/Browser-Games/](https://bgtsidharth.github.io/Browser-Games/)**  
-   *(Or [`https://bgtsidharth.github.io/Browser-Games/water-ring-toss/`](https://bgtsidharth.github.io/Browser-Games/water-ring-toss/))*
+1. **Arcade Hub (Select Any Game):**  
+   👉 **[https://bgtsidharth.github.io/Browser-Games/](https://bgtsidharth.github.io/Browser-Games/)**
 
-> **Note for Repository Owner:**  
-> To enable GitHub Pages:  
-> 1. Go to your repo **Settings** on GitHub.  
-> 2. Scroll to the **Pages** section on the left sidebar.  
-> 3. Under **Branch**, select `main` and root `/` folder, then click **Save**.  
-> 4. The game will be live worldwide in ~1 minute!
+2. **Direct Game Links:**  
+   - 🌊 **Water Ring Toss:** [https://bgtsidharth.github.io/Browser-Games/water-ring-toss/](https://bgtsidharth.github.io/Browser-Games/water-ring-toss/)  
+   - 🚀 **Bishi Bashi Soda Rocket:** [https://bgtsidharth.github.io/Browser-Games/bishi-bashi/](https://bgtsidharth.github.io/Browser-Games/bishi-bashi/)  
 
 ---
 
 ### Option B: Play Locally on Your Computer
 
-No installation, Node.js, or web server required!
+No installation, Node.js, or server setup required!
 
 1. **Clone or Download the Repository:**
    ```bash
    git clone https://github.com/bgtsidharth/Browser-Games.git
    ```
-   *(Or click **Code > Download ZIP** on GitHub and unzip it).*
+   *(Or click **Code > Download ZIP** on GitHub and extract the archive).*
 
-2. **Open the Game:**
-   - Double-click **[`water-ring-toss/index.html`](water-ring-toss/index.html)** in your file explorer.
-   - It will immediately open and run in any web browser (Chrome, Edge, Firefox, Safari).
-
----
-
-## 🕹️ Controls & Mechanics
-
-| Action | Mouse / Touch | Keyboard Shortcut |
-| :--- | :--- | :--- |
-| **Left Jet Pump** | Click / Tap Left Yellow Button | <kbd>A</kbd> or <kbd>◄ Left Arrow</kbd> |
-| **Right Jet Pump** | Click / Tap Right Yellow Button | <kbd>D</kbd> or <kbd>► Right Arrow</kbd> |
-| **Tilt / Shake Toy** | Click Center <kbd>📳</kbd> Button | <kbd>T</kbd> or <kbd>Space</kbd> |
-| **Scatter / Reset Rings** | Click **"🔄 Shake / Reset"** | <kbd>R</kbd> |
-
-> 💡 **Tip:** Tap the pump buttons in short, rhythmic bursts just like squeezing the physical rubber bulbs on the toy! A sustained hold will decay the squeeze volume naturally.
+2. **Launch Any Game:**
+   - Double-click **[`index.html`](index.html)** in the root folder to open the Arcade Hub.
+   - Or open **[`water-ring-toss/index.html`](water-ring-toss/index.html)** or **[`bishi-bashi/index.html`](bishi-bashi/index.html)** directly in your browser (Chrome, Edge, Firefox, Safari).
 
 ---
 
-## ✨ Features & Physics Highlights
-
-- **Authentic Buoyant Hydrodynamics:** Lightweight plastic rings float and sink gently in water ($g_{\text{eff}} = 0.065$) with natural falling-leaf flutter and viscous drag.
-- **Physical Rubber Bellows Puffs:** Push buttons deliver realistic fluid impulses that shoot bubble trails up outer nozzles, curling over the top and cascading through the center.
-- **Solid Rod Deflections & Hooking:** Rings bounce off the solid golden rod shafts from the side. When falling onto the tip, rings with aligned holes slip on and slide down to stack, while off-center hits deflect off the tip.
-- **True 3D Toroidal Rendering:** Rings feature 3D donut geometry, ambient drop shadows on the tank backplate, tubular volume lighting, and physical front/back rod-threading layers.
-- **Custom Device Skins:** Choose between **💖 Pink Phone**, **🌊 Ocean Aqua**, **🔮 Retro Lilac**, **⭐ Sunshine Yellow**, and **👾 Cyber Neon**.
-- **Mobile Accelerometer Support:** Tilt your smartphone to tilt the water tank using device gyroscope sensors.
+## 🔇 Audio Policy
+All games in this collection are built completely silent (zero Web Audio API or oscillator sound effects) so you can enjoy them safely in any environment without surprise noise.

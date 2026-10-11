@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Bishi Bashi: Shake the Soda Rocket! 🚀🥤</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Press+Start+2P&family=Fredoka+One&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: #0f0a1c;
+      color: #fff;
+      font-family: 'Fredoka One', cursive, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Retro Arcade Animated Background */
+    .bg-stripes {
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: repeating-linear-gradient(
+        -45deg,
+        #1c1033,
+        #1c1033 40px,
+        #28174a 40px,
+        #28174a 80px
+      );
+      z-index: 0;
+      animation: bgScroll 25s linear infinite;
+    }
+
+    @keyframes bgScroll {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(80px, 80px); }
+    }
+
+    /* Starry Space Layer */
+    #spaceBg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1.5s ease;
+      z-index: 1;
+      background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    }
+
+    /* Navigation header */
+    .top-nav {
+      position: absolute;
+      top: 14px;
+      left: 18px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-family: 'Fredoka One', cursive;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-btn:hover {
+      background: #ff0055;
+      border-color: #fff;
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255, 0, 85, 0.6);
+    }
+
+    /* Main Arcade Cabinet / Screen Frame */
+    .arcade-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 780px;
+      height: 94vh;
+      max-height: 860px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+    }
+
+    /* Title Marquee */
+    .arcade-marquee {
+      text-align: center;
+      margin-top: 10px;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
+    }
+
+    .marquee-title {
+      font-family: 'Bungee', cursive;
+      font-size: clamp(24px, 5vw, 42px);
+      letter-spacing: 2px;
+      color: #ffe600;
+      text-shadow:
+        3px 3px 0 #ff0055,
+        -2px -2px 0 #00e5ff,
+        0 8px 16px rgba(0, 0, 0, 0.8);
+      transform: skew(-4deg);
+      display: inline-block;
+      animation: pulseTitle 1.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulseTitle {
+      0% { transform: skew(-4deg) scale(1); }
+      100% { transform: skew(-4deg) scale(1.03); }
+    }
+
+    .marquee-sub {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(9px, 1.8vw, 13px);
+      color: #00f3ff;
+      letter-spacing: 1px;
+      margin-top: 4px;
+      text-shadow: 0 0 8px rgba(0, 243, 255, 0.8);
+    }
+
+    /* Main Stage Screen */
+    .game-stage {
+      position: relative;
+      width: 100%;
+      flex: 1;
+      max-height: 480px;
+      background: radial-gradient(circle at 50% 65%, #2a1b4e 0%, #110926 75%, #080314 100%);
+      border-radius: 28px;
+      border: 6px solid #ffe600;
+      box-shadow:
+        0 0 0 4px #ff0055,
+        0 15px 40px rgba(0,0,0,0.8),
+        inset 0 0 60px rgba(0,0,0,0.6);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    /* Ground & Scenery */
+    .stage-sky {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      transition: background 2s ease;
+    }
+
+    .cloud {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 50px;
+      filter: blur(2px);
+      animation: floatCloud 20s linear infinite;
+    }
+
+    @keyframes floatCloud {
+      0% { transform: translateX(110%); }
+      100% { transform: translateX(-150%); }
+    }
+
+    .stage-ground {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 90px;
+      background: linear-gradient(to top, #18192b, #2b2b45);
+      border-top: 5px solid #00f3ff;
+      box-shadow: 0 -4px 15px rgba(0, 243, 255, 0.3);
+      z-index: 5;
+    }
+
+    .ground-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(0, 243, 255, 0.15) 40px, rgba(0, 243, 255, 0.15) 42px);
+    }
+
+    /* Launchpad */
+    .launchpad {
+      position: absolute;
+      bottom: 45px;
+      width: 180px;
+      height: 30px;
+      background: #474768;
+      border-radius: 8px 8px 0 0;
+      border: 4px solid #fff;
+      border-bottom: none;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 6;
+    }
+
+    .launch-light {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #ff0055;
+      box-shadow: 0 0 10px #ff0055;
+      animation: blinkLight 0.6s infinite alternate;
+    }
+
+    .launch-light:nth-child(2) {
+      background: #ffe600;
+      box-shadow: 0 0 10px #ffe600;
+      animation-delay: 0.2s;
+    }
+
+    .launch-light:nth-child(3) {
+      background: #00f3ff;
+      box-shadow: 0 0 10px #00f3ff;
+      animation-delay: 0.4s;
+    }
+
+    @keyframes blinkLight {
+      0% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+
+    /* Comical Guy / Shaker Character */
+    .character-wrap {
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.05s ease;
+    }
+
+    /* Character SVG */
+    .character-svg {
+      width: 140px;
+      height: 170px;
+      filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.6));
+    }
+
+    /* Soda Can */
+    .soda-can-wrap {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 15;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .soda-can {
+      width: 68px;
+      height: 110px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ff0844 0%, #ff4e50 50%, #b2022f 100%);
+      border: 3px solid #fff;
+      box-shadow:
+        inset -8px 0 12px rgba(0,0,0,0.4),
+        inset 8px 0 12px rgba(255,255,255,0.4),
+        0 10px 20px rgba(0,0,0,0.5);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.05s linear;
+    }
+
+    .can-top-rim {
+      position: absolute;
+      top: -8px;
+      width: 58px;
+      height: 12px;
+      background: #d8d8d8;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      box-shadow: inset 0 -2px 4px rgba(0,0,0,0.4);
+    }
+
+    .can-tab {
+      position: absolute;
+      top: 2px;
+      width: 16px;
+      height: 8px;
+      background: #888;
+      border-radius: 4px;
+      border: 1px solid #aaa;
+    }
+
+    .can-bottom-rim {
+      position: absolute;
+      bottom: -6px;
+      width: 60px;
+      height: 10px;
+      background: #bbb;
+      border: 2px solid #fff;
+      border-radius: 50%;
+    }
+
+    .can-label {
+      font-family: 'Bungee', cursive;
+      font-size: 13px;
+      color: #ffe600;
+      text-shadow: 2px 2px 0 #000;
+      transform: rotate(-90deg);
+      letter-spacing: 2px;
+    }
+
+    .can-star {
+      position: absolute;
+      font-size: 18px;
+      color: #fff;
+      filter: drop-shadow(0 0 4px #ffe600);
+    }
+
+    /* Fizz & Foam Spray Particles */
+    .fizz-spray {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+    }
+
+    /* Blast Exhaust Tail when flying */
+    .rocket-exhaust {
+      position: absolute;
+      bottom: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 80px;
+      background: radial-gradient(ellipse at top, #00f3ff, #ff0055 60%, transparent 90%);
+      filter: blur(3px);
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    /* Pressure & Meter HUD (Left / Right overlays) */
+    .stage-hud {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .hud-box {
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      border: 3px solid #00f3ff;
+      border-radius: 14px;
+      padding: 10px 16px;
+      box-shadow: 0 4px 15px rgba(0, 243, 255, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hud-timer-num {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 26px;
+      color: #ffe600;
+      text-shadow: 0 0 10px rgba(255, 230, 0, 0.8);
+    }
+
+    .hud-timer-lbl {
+      font-size: 11px;
+      color: #00f3ff;
+      letter-spacing: 1px;
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+
+    /* Pressure Thermometer Bar */
+    .pressure-wrap {
+      width: 140px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 3px solid #ff0055;
+      border-radius: 14px;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 15px rgba(255, 0, 85, 0.4);
+    }
+
+    .pressure-lbl {
+      font-size: 11px;
+      color: #ff0055;
+      font-family: 'Press Start 2P', monospace;
+      letter-spacing: 0.5px;
+    }
+
+    .pressure-bar-bg {
+      width: 100%;
+      height: 16px;
+      background: #1e1333;
+      border-radius: 10px;
+      border: 2px solid #fff;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .pressure-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #00f3ff 0%, #ffe600 50%, #ff0055 100%);
+      transition: width 0.06s ease-out;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ffe600;
+    }
+
+    .pressure-val-text {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 13px;
+      color: #fff;
+    }
+
+    /* Massive Alert Banners */
+    .popup-banner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      font-family: 'Bungee', cursive;
+      font-size: clamp(34px, 8vw, 64px);
+      text-align: center;
+      z-index: 50;
+      pointer-events: none;
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      line-height: 1.1;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .popup-banner.active {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .banner-ready {
+      color: #ffe600;
+      text-shadow: 4px 4px 0 #ff0055, -2px -2px 0 #00f3ff, 0 10px 25px rgba(0,0,0,0.8);
+    }
+
+    .banner-shake {
+      color: #ff0055;
+      text-shadow: 4px 4px 0 #fff, -3px -3px 0 #ffe600, 0 10px 30px rgba(255, 0, 85, 0.8);
+      animation: crazyShake 0.1s infinite alternate;
+    }
+
+    .banner-launch {
+      color: #00f3ff;
+      text-shadow: 4px 4px 0 #ff0055, -2px -2px 0 #fff, 0 10px 30px rgba(0, 243, 255, 0.9);
+    }
+
+    @keyframes crazyShake {
+      0% { transform: translate(-52%, -48%) rotate(-3deg) scale(1.1); }
+      100% { transform: translate(-48%, -52%) rotate(3deg) scale(1.15); }
+    }
+
+    /* Altitude Flyby HUD (during flight) */
+    .flight-hud {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 40;
+      background: rgba(0,0,0,0.85);
+      border: 3px solid #ffe600;
+      border-radius: 16px;
+      padding: 10px 24px;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .flight-alt-title {
+      font-size: 12px;
+      font-family: 'Press Start 2P', monospace;
+      color: #00f3ff;
+      letter-spacing: 1px;
+    }
+
+    .flight-alt-val {
+      font-family: 'Bungee', cursive;
+      font-size: 32px;
+      color: #ffe600;
+      text-shadow: 0 0 15px rgba(255, 230, 0, 0.8);
+    }
+
+    /* Result Modal / Score Board */
+    .result-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 5, 20, 0.92);
+      backdrop-filter: blur(10px);
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      text-align: center;
+    }
+
+    .result-screen.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .result-title {
+      font-family: 'Bungee', cursive;
+      font-size: clamp(28px, 6vw, 44px);
+      color: #ffe600;
+      text-shadow: 3px 3px 0 #ff0055, 0 8px 20px rgba(0,0,0,0.7);
+    }
+
+    .result-rank {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(14px, 3.5vw, 20px);
+      color: #00f3ff;
+      margin: 12px 0 8px;
+      text-shadow: 0 0 10px rgba(0, 243, 255, 0.8);
+    }
+
+    .result-stats-card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 16px 28px;
+      margin: 14px 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 260px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 15px;
+      color: #ddd;
+    }
+
+    .stat-val {
+      font-family: 'Press Start 2P', monospace;
+      color: #ffe600;
+    }
+
+    .btn-replay {
+      background: linear-gradient(135deg, #ff0055, #ff5500);
+      border: 4px solid #fff;
+      color: #fff;
+      font-family: 'Bungee', cursive;
+      font-size: 20px;
+      padding: 14px 38px;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(255, 0, 85, 0.6);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .btn-replay:hover {
+      transform: scale(1.08);
+      box-shadow: 0 12px 35px rgba(255, 0, 85, 0.9);
+    }
+
+    .btn-replay:active {
+      transform: scale(0.96);
+    }
+
+    /* 3 Giant Bishi Bashi Arcade Buttons */
+    .button-console {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .controls-hint {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 11px;
+      color: #ffe600;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+      text-align: center;
+    }
+
+    .arcade-buttons-grid {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: clamp(14px, 4vw, 36px);
+      width: 100%;
+      padding: 6px 0;
+    }
+
+    /* Giant 3D Arcade Push Button */
+    .mash-btn {
+      position: relative;
+      width: clamp(75px, 20vw, 115px);
+      height: clamp(75px, 20vw, 115px);
+      border-radius: 50%;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Bungee', cursive;
+      font-size: clamp(13px, 3.2vw, 17px);
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.7);
+      transition: transform 0.04s ease, box-shadow 0.04s ease, filter 0.04s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Red Button (Left) */
+    .btn-red {
+      background: radial-gradient(circle at 35% 30%, #ff5277, #d40037 60%, #80001f 100%);
+      box-shadow:
+        0 10px 0 #5e0017,
+        0 14px 20px rgba(0, 0, 0, 0.6),
+        inset 0 4px 6px rgba(255, 255, 255, 0.6);
+    }
+    .btn-red:active, .btn-red.pressed {
+      transform: translateY(8px);
+      box-shadow:
+        0 2px 0 #5e0017,
+        0 4px 8px rgba(0, 0, 0, 0.6),
+        inset 0 2px 4px rgba(0, 0, 0, 0.4);
+      filter: brightness(1.2);
+    }
+
+    /* Green Button (Middle) */
+    .btn-green {
+      background: radial-gradient(circle at 35% 30%, #4eed84, #00b843 60%, #006624 100%);
+      box-shadow:
+        0 10px 0 #004418,
+        0 14px 20px rgba(0, 0, 0, 0.6),
+        inset 0 4px 6px rgba(255, 255, 255, 0.6);
+    }
+    .btn-green:active, .btn-green.pressed {
+      transform: translateY(8px);
+      box-shadow:
+        0 2px 0 #004418,
+        0 4px 8px rgba(0, 0, 0, 0.6),
+        inset 0 2px 4px rgba(0, 0, 0, 0.4);
+      filter: brightness(1.2);
+    }
+
+    /* Blue Button (Right) */
+    .btn-blue {
+      background: radial-gradient(circle at 35% 30%, #52c7ff, #0088d4 60%, #004e80 100%);
+      box-shadow:
+        0 10px 0 #003354,
+        0 14px 20px rgba(0, 0, 0, 0.6),
+        inset 0 4px 6px rgba(255, 255, 255, 0.6);
+    }
+    .btn-blue:active, .btn-blue.pressed {
+      transform: translateY(8px);
+      box-shadow:
+        0 2px 0 #003354,
+        0 4px 8px rgba(0, 0, 0, 0.6),
+        inset 0 2px 4px rgba(0, 0, 0, 0.4);
+      filter: brightness(1.2);
+    }
+
+    .key-badge {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(9px, 2vw, 11px);
+      background: rgba(0, 0, 0, 0.4);
+      padding: 3px 8px;
+      border-radius: 6px;
+      margin-top: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    /* Milestone Landmarks passed during launch */
+    .fly-landmark {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 13px;
+      color: #ffe600;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 2px solid #00f3ff;
+      white-space: nowrap;
+      z-index: 12;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Responsive adjustments */
+    @media (max-height: 700px) {
+      .marquee-title { font-size: 22px; }
+      .game-stage { max-height: 380px; }
+      .character-svg { width: 110px; height: 135px; }
+      .soda-can { width: 56px; height: 90px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Animated Retro Pattern Background -->
+  <div class="bg-stripes"></div>
+  <canvas id="spaceBg"></canvas>
+
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-btn">
+      🎮 All Games
+    </a>
+    <a href="../water-ring-toss/index.html" class="nav-btn">
+      🌊 Water Ring Toss
+    </a>
+  </nav>
+
+  <!-- Arcade Main Wrapper -->
+  <main class="arcade-wrapper">
+
+    <!-- Header Marquee -->
+    <header class="arcade-marquee">
+      <h1 class="marquee-title">BISHI BASHI: SODA ROCKET!</h1>
+      <p class="marquee-sub">ALTERNATE 3 BUTTONS FAST AS HUMANLY POSSIBLE!</p>
+    </header>
+
+    <!-- Main Stage Screen -->
+    <section class="game-stage" id="stage">
+      <div class="stage-sky" id="stageSky">
+        <div class="cloud" style="top: 15%; width: 140px; height: 35px; animation-duration: 18s;"></div>
+        <div class="cloud" style="top: 35%; width: 90px; height: 26px; animation-duration: 26s; animation-delay: -8s;"></div>
+        <div class="cloud" style="top: 55%; width: 180px; height: 42px; animation-duration: 22s; animation-delay: -14s;"></div>
+      </div>
+
+      <!-- Ground Platform -->
+      <div class="stage-ground" id="stageGround">
+        <div class="ground-grid"></div>
+      </div>
+
+      <!-- Launchpad -->
+      <div class="launchpad" id="launchpad">
+        <div class="launch-light"></div>
+        <div class="launch-light"></div>
+        <div class="launch-light"></div>
+      </div>
+
+      <!-- Flying Landmark Notification -->
+      <div class="fly-landmark" id="flyLandmark">✈️ PASSING CLOUDS (1,000m)</div>
+
+      <!-- Comical Shaker Character (SVG) -->
+      <div class="character-wrap" id="characterWrap">
+        <svg class="character-svg" viewBox="0 0 140 170" id="characterSvg">
+          <!-- Body / Torso -->
+          <ellipse cx="70" cy="115" rx="35" ry="42" fill="#ff7f50" stroke="#222" stroke-width="4"/>
+          <!-- T-Shirt Graphic -->
+          <circle cx="70" cy="112" r="14" fill="#ffe600"/>
+          <text x="70" y="117" font-family="'Fredoka One', cursive" font-size="14" fill="#ff0055" text-anchor="middle">★</text>
+          <!-- Pants -->
+          <path d="M40 145 L100 145 L95 168 L73 168 L70 152 L67 168 L45 168 Z" fill="#2952a3" stroke="#222" stroke-width="4"/>
+          <!-- Feet -->
+          <ellipse cx="54" cy="167" rx="14" ry="7" fill="#ff0055" stroke="#222" stroke-width="3"/>
+          <ellipse cx="86" cy="167" rx="14" ry="7" fill="#ff0055" stroke="#222" stroke-width="3"/>
+
+          <!-- Head -->
+          <circle cx="70" cy="62" r="32" fill="#ffd199" stroke="#222" stroke-width="4"/>
+          <!-- Hair (Retro Anime Spikes) -->
+          <path d="M38 60 Q42 30 70 30 Q98 30 102 60 Q90 35 70 42 Q50 35 38 60 Z" fill="#2d1303" stroke="#222" stroke-width="3"/>
+          <!-- Exaggerated Anime Eyes -->
+          <ellipse cx="58" cy="62" rx="7" ry="11" fill="#fff" stroke="#222" stroke-width="3" id="eyeLeft"/>
+          <circle cx="58" cy="62" r="4" fill="#000" id="pupilLeft"/>
+          <ellipse cx="82" cy="62" rx="7" ry="11" fill="#fff" stroke="#222" stroke-width="3" id="eyeRight"/>
+          <circle cx="82" cy="62" r="4" fill="#000" id="pupilRight"/>
+          <!-- Sweat Drops (Appears as pressure rises) -->
+          <g id="sweatDrops" opacity="0">
+            <path d="M98 50 Q106 55 98 62 Q92 56 98 50 Z" fill="#00f3ff"/>
+            <path d="M42 48 Q34 53 42 60 Q48 54 42 48 Z" fill="#00f3ff"/>
+          </g>
+          <!-- Hilarious Screaming Mouth -->
+          <ellipse cx="70" cy="78" rx="8" ry="7" fill="#80001f" stroke="#222" stroke-width="3" id="charMouth"/>
+          <ellipse cx="70" cy="80" rx="5" ry="3" fill="#ff6688"/>
+
+          <!-- Animated Arms Shaking the Can -->
+          <!-- Left Arm -->
+          <path d="M38 100 Q40 85 55 80" stroke="#ffd199" stroke-width="12" stroke-linecap="round" fill="none" id="armLeft"/>
+          <path d="M38 100 Q40 85 55 80" stroke="#222" stroke-width="3" fill="none"/>
+          <!-- Right Arm -->
+          <path d="M102 100 Q100 85 85 80" stroke="#ffd199" stroke-width="12" stroke-linecap="round" fill="none" id="armRight"/>
+          <path d="M102 100 Q100 85 85 80" stroke="#222" stroke-width="3" fill="none"/>
+        </svg>
+
+        <!-- Soda Can Entity -->
+        <div class="soda-can-wrap" id="sodaCanWrap">
+          <div class="soda-can" id="sodaCan">
+            <div class="can-top-rim">
+              <div class="can-tab"></div>
+            </div>
+            <div class="can-star" style="top: 15px; left: 10px;">★</div>
+            <div class="can-label">COLA</div>
+            <div class="can-star" style="bottom: 15px; right: 10px;">★</div>
+            <div class="can-bottom-rim"></div>
+            <div class="fizz-spray" id="fizzSpray"></div>
+            <div class="rocket-exhaust" id="rocketExhaust"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HUD Top Overlay -->
+      <div class="stage-hud">
+        <!-- Pressure Gauge -->
+        <div class="pressure-wrap">
+          <div class="pressure-lbl">PRESSURE</div>
+          <div class="pressure-bar-bg">
+            <div class="pressure-bar-fill" id="pressureBar"></div>
+          </div>
+          <div class="pressure-val-text"><span id="pressureVal">0</span>%</div>
+        </div>
+
+        <!-- Timer HUD -->
+        <div class="hud-box">
+          <div class="hud-timer-num" id="timerNum">10.0</div>
+          <div class="hud-timer-lbl">SHAKE TIME</div>
+        </div>
+      </div>
+
+      <!-- Altitude Fly HUD during Launch -->
+      <div class="flight-hud" id="flightHud">
+        <div class="flight-alt-title">ROCKET ALTITUDE</div>
+        <div class="flight-alt-val"><span id="flightAltVal">0</span> KM</div>
+      </div>
+
+      <!-- Action Banners -->
+      <div class="popup-banner banner-ready" id="bannerReady">READY... GO!</div>
+      <div class="popup-banner banner-shake" id="bannerShake">SHAKE IT!</div>
+      <div class="popup-banner banner-launch" id="bannerLaunch">🚀 BLAST OFF!! 🚀</div>
+
+      <!-- Game Result Screen -->
+      <div class="result-screen" id="resultScreen">
+        <h2 class="result-title">BLAST RECORD!</h2>
+        <div class="result-rank" id="resultRank">RANK: SSS (GALAXY CLASS)</div>
+        <div class="result-stats-card">
+          <div class="stat-row">
+            <span>FINAL ALTITUDE:</span>
+            <span class="stat-val" id="resAltitude">0 km</span>
+          </div>
+          <div class="stat-row">
+            <span>PEAK PRESSURE:</span>
+            <span class="stat-val" id="resPressure">0%</span>
+          </div>
+          <div class="stat-row">
+            <span>MASH FREQUENCY:</span>
+            <span class="stat-val" id="resFrequency">0/sec</span>
+          </div>
+          <div class="stat-row">
+            <span>TOTAL SHAKES:</span>
+            <span class="stat-val" id="resShakes">0</span>
+          </div>
+        </div>
+        <button class="btn-replay" id="btnReplay">PLAY AGAIN 🔄</button>
+      </div>
+
+    </section>
+
+    <!-- 3 Big Bishi Bashi Arcade Buttons Console -->
+    <footer class="button-console">
+      <p class="controls-hint">TAP RAPIDLY IN ROTATION: [ Z ] &nbsp; [ X ] &nbsp; [ C ]</p>
+      <div class="arcade-buttons-grid">
+        <!-- Red Button -->
+        <button class="mash-btn btn-red" id="btnRed" data-key="z">
+          <span>RED</span>
+          <span class="key-badge">Z / 1</span>
+        </button>
+        <!-- Green Button -->
+        <button class="mash-btn btn-green" id="btnGreen" data-key="x">
+          <span>GREEN</span>
+          <span class="key-badge">X / 2</span>
+        </button>
+        <!-- Blue Button -->
+        <button class="mash-btn btn-blue" id="btnBlue" data-key="c">
+          <span>BLUE</span>
+          <span class="key-badge">C / 3</span>
+        </button>
+      </div>
+    </footer>
+
+  </main>
+
+  <script>
+    /* Bishi Bashi: Shake the Soda Rocket! - 100% Pure Silent Game Engine */
+    (function () {
+      'use strict';
+
+      // --- GAME STATE ---
+      const STATE = {
+        IDLE: 'idle',
+        COUNTDOWN: 'countdown',
+        SHAKING: 'shaking',
+        LAUNCHING: 'launching',
+        RESULTS: 'results'
+      };
+
+      let currentState = STATE.IDLE;
+      let timeLeft = 10.0;
+      let pressure = 0; // 0 to 100+
+      let totalShakes = 0;
+      let lastButtonPressed = null;
+      let shakeStreak = 0;
+      let timerInterval = null;
+      let shakeDecayInterval = null;
+      let launchAnimId = null;
+      let finalAltitudeKm = 0;
+      let startTime = 0;
+
+      // DOM Elements
+      const stage = document.getElementById('stage');
+      const stageSky = document.getElementById('stageSky');
+      const stageGround = document.getElementById('stageGround');
+      const launchpad = document.getElementById('launchpad');
+      const characterWrap = document.getElementById('characterWrap');
+      const characterSvg = document.getElementById('characterSvg');
+      const sodaCanWrap = document.getElementById('sodaCanWrap');
+      const sodaCan = document.getElementById('sodaCan');
+      const rocketExhaust = document.getElementById('rocketExhaust');
+      const pressureBar = document.getElementById('pressureBar');
+      const pressureVal = document.getElementById('pressureVal');
+      const timerNum = document.getElementById('timerNum');
+      const bannerReady = document.getElementById('bannerReady');
+      const bannerShake = document.getElementById('bannerShake');
+      const bannerLaunch = document.getElementById('bannerLaunch');
+      const flightHud = document.getElementById('flightHud');
+      const flightAltVal = document.getElementById('flightAltVal');
+      const flyLandmark = document.getElementById('flyLandmark');
+      const resultScreen = document.getElementById('resultScreen');
+      const resultRank = document.getElementById('resultRank');
+      const resAltitude = document.getElementById('resAltitude');
+      const resPressure = document.getElementById('resPressure');
+      const resFrequency = document.getElementById('resFrequency');
+      const resShakes = document.getElementById('resShakes');
+      const btnReplay = document.getElementById('btnReplay');
+      const sweatDrops = document.getElementById('sweatDrops');
+      const charMouth = document.getElementById('charMouth');
+      const eyeLeft = document.getElementById('eyeLeft');
+      const eyeRight = document.getElementById('eyeRight');
+
+      const btnRed = document.getElementById('btnRed');
+      const btnGreen = document.getElementById('btnGreen');
+      const btnBlue = document.getElementById('btnBlue');
+      const buttons = [btnRed, btnGreen, btnBlue];
+
+      // Starfield Canvas for space flight
+      const spaceCanvas = document.getElementById('spaceBg');
+      const spaceCtx = spaceCanvas.getContext('2d');
+      let stars = [];
+
+      function initStars() {
+        spaceCanvas.width = window.innerWidth;
+        spaceCanvas.height = window.innerHeight;
+        stars = [];
+        for (let i = 0; i < 220; i++) {
+          stars.push({
+            x: Math.random() * spaceCanvas.width,
+            y: Math.random() * spaceCanvas.height,
+            size: Math.random() * 2.5 + 0.5,
+            speed: Math.random() * 3 + 1,
+            color: ['#fff', '#ffe600', '#00f3ff', '#ff0055'][Math.floor(Math.random() * 4)]
+          });
+        }
+      }
+      window.addEventListener('resize', initStars);
+      initStars();
+
+      // --- COMICAL FACE ANIMATIONS ---
+      function updateComicalFace(ratio) {
+        // ratio 0 to 1+
+        if (ratio < 0.25) {
+          // Normal smile / mild effort
+          sweatDrops.style.opacity = '0';
+          charMouth.setAttribute('rx', '8');
+          charMouth.setAttribute('ry', '7');
+          eyeLeft.setAttribute('ry', '11');
+          eyeRight.setAttribute('ry', '11');
+        } else if (ratio < 0.6) {
+          // Intense grunting
+          sweatDrops.style.opacity = '0.6';
+          charMouth.setAttribute('rx', '13');
+          charMouth.setAttribute('ry', '12');
+          eyeLeft.setAttribute('ry', '7');
+          eyeRight.setAttribute('ry', '7');
+        } else {
+          // EXTREME BISHI BASHI SCREAMING ANIME FACE
+          sweatDrops.style.opacity = '1';
+          charMouth.setAttribute('rx', '18');
+          charMouth.setAttribute('ry', '22');
+          eyeLeft.setAttribute('ry', '14');
+          eyeRight.setAttribute('ry', '14');
+          // Can bulges slightly under hyper pressure
+          const bulge = 1 + (ratio - 0.6) * 0.35;
+          sodaCan.style.transform = `scale(${bulge}, ${1 / bulge})`;
+        }
+      }
+
+      // --- GAME LIFECYCLE ---
+      function startGame() {
+        currentState = STATE.COUNTDOWN;
+        timeLeft = 10.0;
+        pressure = 0;
+        totalShakes = 0;
+        lastButtonPressed = null;
+        shakeStreak = 0;
+        finalAltitudeKm = 0;
+
+        // Reset HUD and characters
+        timerNum.textContent = '10.0';
+        pressureBar.style.width = '0%';
+        pressureVal.textContent = '0';
+        resultScreen.classList.remove('active');
+        flightHud.style.opacity = '0';
+        spaceCanvas.style.opacity = '0';
+        flyLandmark.style.opacity = '0';
+        stageGround.style.transform = 'translateY(0)';
+        launchpad.style.transform = 'translateY(0)';
+        characterWrap.style.transform = 'translateX(-50%) translateY(0)';
+        sodaCanWrap.style.transform = 'translateX(-50%) translateY(0)';
+        rocketExhaust.style.opacity = '0';
+        sodaCan.style.transform = 'scale(1, 1)';
+        stageSky.style.background = 'transparent';
+        updateComicalFace(0);
+
+        // Show Ready Banner
+        bannerReady.classList.add('active');
+        bannerShake.classList.remove('active');
+        bannerLaunch.classList.remove('active');
+
+        setTimeout(() => {
+          bannerReady.classList.remove('active');
+          currentState = STATE.SHAKING;
+          startTime = performance.now();
+          bannerShake.classList.add('active');
+          setTimeout(() => bannerShake.classList.remove('active'), 900);
+
+          startShakingTimer();
+        }, 1200);
+      }
+
+      function startShakingTimer() {
+        const tickRate = 50; // ms
+        timerInterval = setInterval(() => {
+          timeLeft = Math.max(0, timeLeft - (tickRate / 1000));
+          timerNum.textContent = timeLeft.toFixed(1);
+
+          // Pressure natural decay if player stops mashing
+          if (pressure > 2) {
+            pressure = Math.max(0, pressure - 0.22);
+            updatePressureBar();
+          }
+
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            triggerLaunch();
+          }
+        }, tickRate);
+      }
+
+      function handleMash(buttonName) {
+        if (currentState !== STATE.SHAKING) return;
+
+        // Bishi Bashi Combo Mechanic:
+        // Bonus points for alternating between Red, Green, and Blue!
+        let boost = 1.35;
+        if (lastButtonPressed !== null && lastButtonPressed !== buttonName) {
+          shakeStreak++;
+          boost = 1.8 + Math.min(shakeStreak * 0.1, 1.2); // Combo multiplier!
+        } else {
+          shakeStreak = 0; // Repeated same button gives smaller pressure
+          boost = 0.8;
+        }
+
+        lastButtonPressed = buttonName;
+        totalShakes++;
+        pressure += boost;
+        updatePressureBar();
+
+        // Hilarious cartoon shake wobble on the character and can
+        const jitterX = (Math.random() - 0.5) * (12 + pressure * 0.15);
+        const jitterY = (Math.random() - 0.5) * (10 + pressure * 0.15);
+        const rot = (Math.random() - 0.5) * (10 + pressure * 0.18);
+        characterWrap.style.transform = `translateX(calc(-50% + ${jitterX}px)) translateY(${jitterY}px) rotate(${rot}deg)`;
+
+        // Fizz sparks emission
+        createFizzBubble();
+      }
+
+      function updatePressureBar() {
+        const displayPercent = Math.min(pressure, 200);
+        const barWidth = Math.min(100, (pressure / 120) * 100);
+        pressureBar.style.width = barWidth + '%';
+        pressureVal.textContent = Math.floor(displayPercent);
+
+        const ratio = pressure / 100;
+        updateComicalFace(ratio);
+      }
+
+      function createFizzBubble() {
+        const fizz = document.createElement('div');
+        const size = Math.random() * 8 + 4;
+        fizz.style.cssText = `
+          position: absolute;
+          top: -10px;
+          left: ${Math.random() * 40 + 10}px;
+          width: ${size}px;
+          height: ${size}px;
+          background: #fff;
+          border-radius: 50%;
+          pointer-events: none;
+          box-shadow: 0 0 6px #ffe600;
+          opacity: 0.9;
+          transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+          z-index: 25;
+        `;
+        sodaCan.appendChild(fizz);
+        requestAnimationFrame(() => {
+          fizz.style.transform = `translate(${(Math.random() - 0.5) * 60}px, -${Math.random() * 50 + 20}px) scale(1.6)`;
+          fizz.style.opacity = '0';
+        });
+        setTimeout(() => fizz.remove(), 450);
+      }
+
+      // --- LAUNCH SEQUENCE ---
+      function triggerLaunch() {
+        currentState = STATE.LAUNCHING;
+        bannerShake.classList.remove('active');
+        bannerLaunch.classList.add('active');
+
+        // Can detaches from character!
+        // Character gets blown back onto the ground in comical cartoon shock
+        characterWrap.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        characterWrap.style.transform = 'translateX(-50%) translateY(40px) rotate(18deg) scale(0.95)';
+        sweatDrops.style.opacity = '1';
+        charMouth.setAttribute('rx', '24');
+        charMouth.setAttribute('ry', '28');
+
+        // Exhaust blast lights up
+        rocketExhaust.style.opacity = '1';
+
+        setTimeout(() => {
+          bannerLaunch.classList.remove('active');
+          flightHud.style.opacity = '1';
+          startFlightSimulation();
+        }, 1100);
+      }
+
+      function startFlightSimulation() {
+        // Calculate max altitude based on pressure
+        // Low: ~25 km (stratosphere)
+        // Mid: ~350 km (ISS orbit)
+        // High: ~2500 km (outer space)
+        // Insane: ~100,000 km (lunar distance)
+        const baseKm = Math.pow(pressure, 2.3) * 0.85;
+        const targetAltitudeKm = Math.max(12, Math.round(baseKm));
+        finalAltitudeKm = targetAltitudeKm;
+
+        let currentAlt = 0;
+        let speed = Math.max(50, targetAltitudeKm * 0.015);
+        let launchFrame = 0;
+        spaceCanvas.style.opacity = '1';
+
+        // Landmarks to trigger during ascent
+        const landmarks = [
+          { alt: 10, text: '✈️ 10 KM: AIRLINER CRUISING ALTITUDE!' },
+          { alt: 50, text: '☁️ 50 KM: STRATOSPHERE BROKEN!' },
+          { alt: 100, text: '🚀 100 KM: THE KÁRMÁN LINE (ENTERED SPACE)!' },
+          { alt: 400, text: '🛰️ 400 KM: PASSED INTERNATIONAL SPACE STATION!' },
+          { alt: 2000, text: '⭐ 2,000 KM: DEEP SATELLITE ORBIT!' },
+          { alt: 36000, text: '🛰️ 36,000 KM: GEOSTATIONARY ORBIT!' },
+          { alt: 100000, text: '🌕 100,000 KM: MOON FLYBY ROUTE!' }
+        ];
+        let nextLandmarkIdx = 0;
+
+        function animateFlight() {
+          launchFrame++;
+          currentAlt += speed;
+
+          // Sky darkens into space
+          if (currentAlt > 80) {
+            stageSky.style.background = '#060212';
+          }
+
+          // Ground scrolls down rapidly
+          const groundDrop = Math.min(300, launchFrame * 14);
+          stageGround.style.transform = `translateY(${groundDrop}px)`;
+          launchpad.style.transform = `translateY(${groundDrop}px)`;
+          characterWrap.style.transform = `translateX(-50%) translateY(${groundDrop + 40}px) rotate(18deg)`;
+
+          // Soda can rocket vibrations and ascending speed
+          const blastWobble = (Math.random() - 0.5) * 6;
+          sodaCanWrap.style.transform = `translateX(calc(-50% + ${blastWobble}px)) translateY(-${Math.min(180, launchFrame * 6)}px)`;
+
+          // Update HUD altitude readout
+          flightAltVal.textContent = Math.floor(currentAlt).toLocaleString();
+
+          // Check milestones
+          if (nextLandmarkIdx < landmarks.length && currentAlt >= landmarks[nextLandmarkIdx].alt) {
+            showLandmark(landmarks[nextLandmarkIdx].text);
+            nextLandmarkIdx++;
+          }
+
+          // Stars motion
+          renderStars(speed);
+
+          // Decelerate toward apex
+          const progress = currentAlt / targetAltitudeKm;
+          if (progress > 0.7) {
+            speed *= 0.94;
+          }
+
+          if (currentAlt >= targetAltitudeKm || speed < 0.5) {
+            cancelAnimationFrame(launchAnimId);
+            flightAltVal.textContent = Math.floor(targetAltitudeKm).toLocaleString();
+            setTimeout(showResults, 1200);
+            return;
+          }
+
+          launchAnimId = requestAnimationFrame(animateFlight);
+        }
+
+        launchAnimId = requestAnimationFrame(animateFlight);
+      }
+
+      function renderStars(speed) {
+        spaceCtx.clearRect(0, 0, spaceCanvas.width, spaceCanvas.height);
+        for (let s of stars) {
+          s.y += s.speed * (speed * 0.05 + 1);
+          if (s.y > spaceCanvas.height) {
+            s.y = 0;
+            s.x = Math.random() * spaceCanvas.width;
+          }
+          spaceCtx.fillStyle = s.color;
+          spaceCtx.beginPath();
+          spaceCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+          spaceCtx.fill();
+        }
+      }
+
+      function showLandmark(text) {
+        flyLandmark.textContent = text;
+        flyLandmark.style.opacity = '1';
+        flyLandmark.style.transform = 'translateX(-50%) translateY(0)';
+        setTimeout(() => {
+          flyLandmark.style.opacity = '0';
+        }, 1600);
+      }
+
+      function showResults() {
+        currentState = STATE.RESULTS;
+        flightHud.style.opacity = '0';
+        resultScreen.classList.add('active');
+
+        // Compute Rank
+        let rank = 'C';
+        let rankTitle = 'FIZZLE SODA';
+        if (finalAltitudeKm > 25000) {
+          rank = 'SSS';
+          rankTitle = 'GALAXY EMPEROR 👑';
+        } else if (finalAltitudeKm > 5000) {
+          rank = 'SS';
+          rankTitle = 'COSMIC ASTRONAUT 🚀';
+        } else if (finalAltitudeKm > 800) {
+          rank = 'S';
+          rankTitle = 'SPACE STATION HITTER 🛰️';
+        } else if (finalAltitudeKm > 150) {
+          rank = 'A';
+          rankTitle = 'SUB-ORBITAL ROCKET 💥';
+        } else if (finalAltitudeKm > 40) {
+          rank = 'B';
+          rankTitle = 'STRATOSPHERE BURST 🎈';
+        }
+
+        const mps = (totalShakes / 10).toFixed(1);
+        resultRank.textContent = `RANK: ${rank} (${rankTitle})`;
+        resAltitude.textContent = `${finalAltitudeKm.toLocaleString()} km`;
+        resPressure.textContent = `${Math.floor(pressure)}%`;
+        resFrequency.textContent = `${mps} / sec`;
+        resShakes.textContent = totalShakes;
+      }
+
+      // --- BUTTON CONTROLS & BINDINGS ---
+      function pressButtonVisual(btn) {
+        btn.classList.add('pressed');
+        setTimeout(() => btn.classList.remove('pressed'), 80);
+      }
+
+      // Mouse / Touch handlers for 3 arcade buttons
+      buttons.forEach(btn => {
+        const keyName = btn.dataset.key;
+        btn.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          pressButtonVisual(btn);
+          if (currentState === STATE.IDLE) {
+            startGame();
+          } else {
+            handleMash(keyName);
+          }
+        });
+      });
+
+      // Keyboard Controls: Z, X, C or 1, 2, 3 or Arrows
+      const KEY_MAP = {
+        'KeyZ': btnRed,
+        'Digit1': btnRed,
+        'KeyX': btnGreen,
+        'Digit2': btnGreen,
+        'KeyC': btnBlue,
+        'Digit3': btnBlue,
+        'ArrowLeft': btnRed,
+        'ArrowDown': btnGreen,
+        'ArrowRight': btnBlue,
+        'Space': null // starts if idle
+      };
+
+      window.addEventListener('keydown', (e) => {
+        if (e.repeat) return; // Disallow keyboard hold repeat: must physically mash!
+
+        if (e.code === 'Space' && (currentState === STATE.IDLE || currentState === STATE.RESULTS)) {
+          startGame();
+          return;
+        }
+
+        const targetBtn = KEY_MAP[e.code];
+        if (targetBtn) {
+          e.preventDefault();
+          pressButtonVisual(targetBtn);
+          if (currentState === STATE.IDLE) {
+            startGame();
+          } else {
+            handleMash(targetBtn.dataset.key);
+          }
+        }
+      });
+
+      // Play again button
+      btnReplay.addEventListener('click', startGame);
+
+      // Tap soda can directly on mobile to start / mash
+      sodaCanWrap.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        if (currentState === STATE.IDLE) {
+          startGame();
+        } else if (currentState === STATE.SHAKING) {
+          // Cycle through buttons automatically on can tap
+          const autoKey = ['z', 'x', 'c'][totalShakes % 3];
+          pressButtonVisual(buttons[totalShakes % 3]);
+          handleMash(autoKey);
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>
