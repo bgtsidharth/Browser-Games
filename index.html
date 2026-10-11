@@ -479,6 +479,14 @@
         <p class="card-desc">Defend the arcade from a descending pixel fleet. Dodge return fire and clear wave after wave.</p>
         <span class="card-play-btn">PLAY NOW 👾</span>
       </a>
+      <!-- Game 13: Echo Delivery -->
+      <a href="echo-delivery/index.html" class="game-card">
+        <div class="card-icon">🌀</div>
+        <h2 class="card-title">ECHO DELIVERY</h2>
+        <div class="card-tags"><span class="tag">TIME LOOP</span><span class="tag">PUZZLE ARCADE</span></div>
+        <p class="card-desc">Record an 8-second courier run. Your past selves become echoes that hold switches open for the next delivery.</p>
+        <span class="card-play-btn">PLAY NOW 🌀</span>
+      </a>
       <p class="games-empty" id="gamesEmpty">No games match that search. Try another title or clear the search.</p>
     </div>
 
@@ -573,6 +581,7 @@
         <a href="snake/index.html" class="lb-card"><div class="lb-icon">🐍</div><div class="lb-info"><span class="lb-name">Pixel Snake</span><span class="lb-score" id="lbSnake">--</span></div></a>
         <a href="breakout/index.html" class="lb-card"><div class="lb-icon">🧱</div><div class="lb-info"><span class="lb-name">Neon Breakout</span><span class="lb-score" id="lbBreakout">--</span></div></a>
         <a href="space-invaders/index.html" class="lb-card"><div class="lb-icon">👾</div><div class="lb-info"><span class="lb-name">Star Invaders</span><span class="lb-score" id="lbInvaders">--</span></div></a>
+        <a href="echo-delivery/index.html" class="lb-card"><div class="lb-icon">🌀</div><div class="lb-info"><span class="lb-name">Echo Delivery</span><span class="lb-score" id="lbEcho">--</span></div></a>
       </div>
     </section>
 
@@ -770,7 +779,7 @@
           lbTrackElem.classList.add('empty');
         }
 
-        [['lbSnake','pixelSnake_highScore','Pts'],['lbBreakout','neonBreakout_highScore','Pts'],['lbInvaders','starInvaders_highScore','Pts']].forEach(([id,key,label]) => {
+        [['lbSnake','pixelSnake_highScore','Pts'],['lbBreakout','neonBreakout_highScore','Pts'],['lbInvaders','starInvaders_highScore','Pts'],['lbEcho','echoDelivery_highScore','Pts']].forEach(([id,key,label]) => {
           const value = Number(localStorage.getItem(key)) || 0;
           const element = document.getElementById(id);
           element.textContent = value > 0 ? `${value} ${label}` : 'NO RECORD YET';
@@ -795,6 +804,7 @@
           localStorage.removeItem('pixelSnake_highScore');
           localStorage.removeItem('neonBreakout_highScore');
           localStorage.removeItem('starInvaders_highScore');
+          localStorage.removeItem('echoDelivery_highScore');
           loadLeaderboard();
         }
       });
