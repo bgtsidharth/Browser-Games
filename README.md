@@ -15,30 +15,33 @@ A faithful digital recreation of the iconic retro handheld water ring toss toy (
 Tribute to Konami's legendary chaotic arcade party game *Bishi Bashi Special*!
 - **Mechanics:** 3 giant retro arcade buttons (Red, Green, Blue). Alternate buttons as fast as humanly possible to build carbonation pressure and launch your soda can beyond Earth's orbit!
 - **Features:** Exaggerated anime facial expressions, combo streak multipliers, dynamic pressure decay, milestone space landmarks, and flight rank evaluation (C up to SSS Galaxy Emperor).
-- **Controls:** <kbd>Z</kbd> / <kbd>1</kbd> (Red), <kbd>X</kbd> / <kbd>2</kbd> (Green), <kbd>C</kbd> / <kbd>3</kbd> (Blue), or touch/click on screen buttons.
+- **Controls:** <kbd>Z</kbd> / <kbd>1</kbd> (Red), <kbd>X</kbd> / <kbd>2</kbd> (Green), <kbd>C</kbd> / <kbd>3</kbd> (Blue).
 
 ### 3. 🐊 [Crocodile Dentist](crocodile-dentist/index.html)
 The legendary physical tabletop suspense roulette toy!
 - **Mechanics:** Take turns pressing down the crocodile's 10 teeth. One randomly selected tooth is secretly sore. Press it, and the jaws slam shut in a sudden chomp!
 - **Features:** Interactive 3D SVG crocodile model with eyes that actively follow your cursor or finger, nervous tremors, and jaw slam jump-scare.
-- **Controls:** Click / tap any tooth to test your luck. Click **"Open Jaws / New Game"** to reset the sore tooth.
+- **Controls:** Click / tap any tooth to test your luck.
 
 ### 4. 🐺 [Nu, Pogodi! (Wolf Catching Eggs)](nu-pogodi/index.html)
 The iconic 1980s Soviet Elektronika IM-02 / Nintendo Game & Watch handheld LCD game simulator.
 - **Mechanics:** Help the panicked cartoon Wolf catch eggs rolling down 4 hen perches into his basket before they smash on the ground.
 - **Features:** Authentic olive-green LCD screen with segmented black crystal animations, progressive speed ramps, and classic retro beige handheld plastic casing.
-- **Controls:** <kbd>Q</kbd> (Top-Left), <kbd>A</kbd> (Bottom-Left), <kbd>E</kbd> (Top-Right), <kbd>D</kbd> (Bottom-Right), or directional on-screen buttons.
+- **Controls:** <kbd>Q</kbd> (Top-Left), <kbd>A</kbd> (Bottom-Left), <kbd>E</kbd> (Top-Right), <kbd>D</kbd> (Bottom-Right).
 
 ### 5. 🔨 [Desktop Destroyer 98](desktop-destroyer/index.html)
 The legendary 90s screen stress-relief novelty screentoy!
-- **Mechanics:** Unleash mayhem onto an authentic Windows 98 desktop with a full arsenal of destructive tools.
-- **Tools Included:**
-  - 🔨 **Hammer:** Smashes procedural spiderweb cracks into the glass screen.
-  - 🪚 **Chainsaw:** Slices chunks out of desktop windows and icons.
-  - 🔫 **Machine Gun:** Sprays bullet holes and lead dents.
-  - 🧯 **Flamethrower:** Scorches realistic char marks and smoke.
-  - 🐜 **Termites:** Spawns autonomous termites that crawl and chew away pixels.
-  - 🧼 **Sponge Washer:** Scrubs everything clean and restores the screen.
+- **Mechanics:** Unleash mayhem onto an authentic Windows 98 desktop with a full arsenal of destructive tools (Hammer, Chainsaw, Machine Gun, Flamethrower, Termites, and Sponge Washer).
+
+### 6. 🍺 [Retro Soda Tapper](soda-tapper/index.html)
+Classic 1983 arcade hit bartender simulation!
+- **Mechanics:** Pour foaming mugs of soda and slide them down 4 long wooden bar counters to thirsty, advancing patrons before they overrun you. Catch sliding empty mugs on their return!
+- **Controls:** <kbd>▲</kbd> / <kbd>▼</kbd> (or <kbd>W</kbd>/<kbd>S</kbd>) to change bar counters, <kbd>Space</kbd> to pour & slide drinks.
+
+### 7. 🦛 [Hungry Hippos](hungry-hippos/index.html)
+The beloved physical tabletop mechanical game!
+- **Mechanics:** Violent neck lunging action! Snap up rolling, colliding, bouncy marbles in a circular arena against 3 AI hippos. Collect the special golden marble for 3x bonus points!
+- **Controls:** <kbd>Space</kbd> or click **"CHOMP!"** to extend your hippo's neck.
 
 ---
 
@@ -55,6 +58,8 @@ Play all games directly in your browser without downloading anything!
    - 🐊 **Crocodile Dentist:** [https://bgtsidharth.github.io/Browser-Games/crocodile-dentist/](https://bgtsidharth.github.io/Browser-Games/crocodile-dentist/)  
    - 🐺 **Nu, Pogodi! (Wolf & Eggs):** [https://bgtsidharth.github.io/Browser-Games/nu-pogodi/](https://bgtsidharth.github.io/Browser-Games/nu-pogodi/)  
    - 🔨 **Desktop Destroyer 98:** [https://bgtsidharth.github.io/Browser-Games/desktop-destroyer/](https://bgtsidharth.github.io/Browser-Games/desktop-destroyer/)  
+   - 🍺 **Soda Tapper:** [https://bgtsidharth.github.io/Browser-Games/soda-tapper/](https://bgtsidharth.github.io/Browser-Games/soda-tapper/)  
+   - 🦛 **Hungry Hippos:** [https://bgtsidharth.github.io/Browser-Games/hungry-hippos/](https://bgtsidharth.github.io/Browser-Games/hungry-hippos/)  
 
 ---
 
