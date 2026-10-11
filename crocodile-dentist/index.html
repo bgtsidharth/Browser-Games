@@ -429,7 +429,7 @@
       let soreToothIndex = -1;
       let safePressed = 0;
       let isChomped = false;
-      let bestStreakCount = 0;
+      let bestStreakCount = parseInt(localStorage.getItem('crocDentist_bestStreak') || '0', 10);
 
       const teethArch = document.getElementById('teethArch');
       const upperJawGroup = document.getElementById('upperJawGroup');
@@ -536,8 +536,9 @@
         remainingCount.textContent = TOTAL_TEETH - safePressed;
         if (safePressed > bestStreakCount) {
           bestStreakCount = safePressed;
-          bestStreak.textContent = bestStreakCount;
+          localStorage.setItem('crocDentist_bestStreak', bestStreakCount);
         }
+        bestStreak.textContent = bestStreakCount;
       }
 
       function nervousEyeJitter() {

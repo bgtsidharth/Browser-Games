@@ -387,8 +387,17 @@
           ctx.stroke();
         }
 
-        // 2. Draw Digital Score (Top Center)
-        ctx.font = '22px "Press Start 2P", monospace';
+        // 2. Draw Digital Score (Top Center) & High Score (Top Left)
+        let highScore = parseInt(localStorage.getItem('nuPogodi_highScore') || '0', 10);
+        if (score > highScore) {
+          highScore = score;
+          localStorage.setItem('nuPogodi_highScore', highScore);
+        }
+
+        ctx.font = '8px "Press Start 2P", monospace';
+        ctx.fillText(`HI:${highScore.toString().padStart(4, '0')}`, 45, 42);
+
+        ctx.font = '20px "Press Start 2P", monospace';
         ctx.fillText(score.toString().padStart(4, '0'), 160, 45);
 
         // 3. Draw Misses (Broken egg icons top right)
@@ -415,8 +424,9 @@
         if (gameOver) {
           ctx.font = '20px "Press Start 2P", monospace';
           ctx.fillText('GAME OVER', 125, 175);
-          ctx.font = '11px "Press Start 2P", monospace';
-          ctx.fillText('PRESS ANY BUTTON', 130, 205);
+          ctx.font = '10px "Press Start 2P", monospace';
+          ctx.fillText(`BEST: ${highScore.toString().padStart(4, '0')}`, 155, 205);
+          ctx.fillText('PRESS ANY BUTTON', 115, 225);
         }
       }
 

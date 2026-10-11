@@ -226,24 +226,30 @@
       left: 50%;
       transform: translateX(-50%);
       z-index: 12;
-      background: rgba(10, 25, 47, 0.65);
+      background: rgba(10, 25, 47, 0.75);
       border: 1px solid rgba(255, 255, 255, 0.3);
       backdrop-filter: blur(4px);
       padding: 4px 14px;
       border-radius: 16px;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 700;
       letter-spacing: 0.5px;
       color: #e2f1ff;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 10px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
       pointer-events: none;
+      white-space: nowrap;
     }
 
     .hud-badge .star-icon {
       color: #ffd166;
+    }
+    .hud-best {
+      color: #ffd166;
+      border-left: 1px solid rgba(255,255,255,0.3);
+      padding-left: 8px;
     }
 
     /* Bottom Controller Area (Buttons) */
@@ -525,6 +531,7 @@
           <div class="hud-badge">
             <span class="star-icon">★</span>
             <span id="hudScore">Hooked: 0 / 12</span>
+            <span class="hud-best" id="hudBest">BEST: 0</span>
           </div>
 
           <!-- Victory Popup Inside the Chamber -->
@@ -1259,9 +1266,18 @@
       updateScoreHUD();
     }
 
+    const hudBest = document.getElementById('hudBest');
+    let bestHookedRecord = parseInt(localStorage.getItem('waterRingToss_bestScore') || '0', 10);
+    if (hudBest) hudBest.textContent = `BEST: ${bestHookedRecord}`;
+
     function updateScoreHUD() {
       const total = PEGS[0].hookedRings.length + PEGS[1].hookedRings.length;
       hudScore.textContent = `Hooked: ${total} / ${TOTAL_RINGS}`;
+      if (total > bestHookedRecord) {
+        bestHookedRecord = total;
+        localStorage.setItem('waterRingToss_bestScore', bestHookedRecord);
+        if (hudBest) hudBest.textContent = `BEST: ${bestHookedRecord}`;
+      }
     }
 
     function checkWinCondition() {

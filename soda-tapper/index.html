@@ -140,7 +140,7 @@
   <main class="arcade-cabinet">
     <div class="saloon-header">
       <div>SCORE: <span id="hudScore">0</span></div>
-      <div>ROOT BEER TAPPER</div>
+      <div>HIGH: <span id="hudHigh" style="color: #00e5ff;">0</span></div>
       <div>LIVES: <span id="hudLives">❤️❤️❤️</span></div>
     </div>
 
@@ -166,7 +166,11 @@
       const ctx = canvas.getContext('2d');
 
       const hudScore = document.getElementById('hudScore');
+      const hudHigh = document.getElementById('hudHigh');
       const hudLives = document.getElementById('hudLives');
+
+      let highScore = parseInt(localStorage.getItem('sodaTapper_highScore') || '0', 10);
+      if (hudHigh) hudHigh.textContent = highScore;
 
       // 4 Bar counters
       const LANES = [
@@ -200,6 +204,11 @@
 
       function updateHUD() {
         hudScore.textContent = score;
+        if (score > highScore) {
+          highScore = score;
+          localStorage.setItem('sodaTapper_highScore', highScore);
+        }
+        if (hudHigh) hudHigh.textContent = highScore;
         hudLives.textContent = '❤️'.repeat(Math.max(0, lives));
       }
 

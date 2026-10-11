@@ -923,6 +923,10 @@
             <span>TOTAL SHAKES:</span>
             <span class="stat-val" id="resShakes">0</span>
           </div>
+          <div class="stat-row" style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 6px;">
+            <span style="color: #00f3ff;">🏆 ALL-TIME BEST:</span>
+            <span class="stat-val" id="resBestAlt" style="color: #00f3ff;">0 km</span>
+          </div>
         </div>
         <button class="btn-replay" id="btnReplay">PLAY AGAIN 🔄</button>
       </div>
@@ -1349,6 +1353,17 @@
         resPressure.textContent = `${Math.floor(pressure)}%`;
         resFrequency.textContent = `${mps} / sec`;
         resShakes.textContent = totalShakes;
+
+        // Persistent All-Time Best Altitude Record
+        let bestAlt = parseInt(localStorage.getItem('bishiBashi_bestAltitude') || '0', 10);
+        if (finalAltitudeKm > bestAlt) {
+          bestAlt = finalAltitudeKm;
+          localStorage.setItem('bishiBashi_bestAltitude', bestAlt);
+        }
+        const resBestAlt = document.getElementById('resBestAlt');
+        if (resBestAlt) {
+          resBestAlt.textContent = `${bestAlt.toLocaleString()} km`;
+        }
       }
 
       // --- BUTTON CONTROLS & BINDINGS ---

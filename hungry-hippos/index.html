@@ -166,13 +166,16 @@
 
     <div class="score-board">
       <div class="score-chip" style="border-color: #ff3366;">
-        <span>YOU (PINK):</span> <strong id="playerScore" style="color: #ff3366;">0</strong>
+        <span>YOU:</span> <strong id="playerScore" style="color: #ff3366;">0</strong>
+      </div>
+      <div class="score-chip" style="border-color: #00e5ff;">
+        <span>🏆 BEST:</span> <strong id="bestScore" style="color: #00e5ff;">0</strong>
       </div>
       <div class="score-chip" style="border-color: #00e676;">
-        <span>CPU 1 (GREEN):</span> <strong id="cpu1Score" style="color: #00e676;">0</strong>
+        <span>CPU 1:</span> <strong id="cpu1Score" style="color: #00e676;">0</strong>
       </div>
       <div class="score-chip" style="border-color: #ffe600;">
-        <span>CPU 2 (YELLOW):</span> <strong id="cpu2Score" style="color: #ffe600;">0</strong>
+        <span>CPU 2:</span> <strong id="cpu2Score" style="color: #ffe600;">0</strong>
       </div>
     </div>
 
@@ -246,10 +249,21 @@
         updateHUD();
       });
 
+      const bestScoreElem = document.getElementById('bestScore');
+      let hippoBestScore = parseInt(localStorage.getItem('hungryHippos_bestScore') || '0', 10);
+      if (bestScoreElem) bestScoreElem.textContent = hippoBestScore;
+
       function updateHUD() {
-        pScoreElem.textContent = HIPPOS[0].score;
+        const pScore = HIPPOS[0].score;
+        pScoreElem.textContent = pScore;
         c1ScoreElem.textContent = HIPPOS[1].score;
         c2ScoreElem.textContent = HIPPOS[2].score;
+
+        if (pScore > hippoBestScore) {
+          hippoBestScore = pScore;
+          localStorage.setItem('hungryHippos_bestScore', hippoBestScore);
+        }
+        if (bestScoreElem) bestScoreElem.textContent = hippoBestScore;
       }
 
       function loop() {

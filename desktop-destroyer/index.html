@@ -277,6 +277,10 @@
     <button class="tool-btn" data-tool="flame">🧯 Fire</button>
     <button class="tool-btn" data-tool="termites">🐜 Termites</button>
     <button class="tool-btn btn-clean" data-tool="wash">🧼 Clean</button>
+    <div style="font-size: 11px; font-weight: bold; padding: 0 6px; border-left: 1px solid #888; display: flex; flex-direction: column;">
+      <span>💥 HITS: <span id="hitCount" style="color: #8b0000;">0</span></span>
+      <span style="color: #000080;">🏆 BEST: <span id="bestHits">0</span></span>
+    </div>
   </div>
 
   <!-- Drawing Canvas for Destruction FX -->
@@ -314,12 +318,32 @@
         });
       });
 
+      let totalHits = 0;
+      let bestHitsRecord = parseInt(localStorage.getItem('desktopDestroyer_bestHits') || '0', 10);
+      const hitCountElem = document.getElementById('hitCount');
+      const bestHitsElem = document.getElementById('bestHits');
+      if (bestHitsElem) bestHitsElem.textContent = bestHitsRecord;
+
+      function updateHitsHUD() {
+        if (hitCountElem) hitCountElem.textContent = totalHits;
+        if (totalHits > bestHitsRecord) {
+          bestHitsRecord = totalHits;
+          localStorage.setItem('desktopDestroyer_bestHits', bestHitsRecord);
+        }
+        if (bestHitsElem) bestHitsElem.textContent = bestHitsRecord;
+      }
+
       function cleanCanvas() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         termites = [];
+        totalHits = 0;
+        updateHitsHUD();
       }
 
       function attack(x, y) {
+        totalHits++;
+        updateHitsHUD();
+
         if (currentTool === 'hammer') {
           drawHammerCrack(x, y);
         } else if (currentTool === 'gun') {
